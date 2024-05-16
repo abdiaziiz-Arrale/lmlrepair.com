@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { Service } from "@prisma/client";
+import { PartialBy } from "../type";
 
 export const getServices = async (): Promise<Service[]> => {
   try {
@@ -14,7 +15,9 @@ export const getServices = async (): Promise<Service[]> => {
   }
 };
 
-export const createService = async (serviceData: any) => {
+export const createService = async (
+  serviceData: PartialBy<Service, "service_id">
+) => {
   try {
     return await prisma.service.create({
       data: serviceData,

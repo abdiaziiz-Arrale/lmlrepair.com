@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -21,7 +21,7 @@ model Service {
   service_name   String
   service_desc   String
   service_image  String
-  service_type    ServiceType
+  service_type    String
 
   // Category relation
   categories     Category[]
@@ -95,7 +95,3 @@ model ModelCategory {
   model_id       Int
 }
 
-enum ServiceType {
-  REPAIRS_SERVICE
-  GENERAL_SERVICE
-}
