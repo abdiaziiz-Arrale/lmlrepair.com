@@ -12,3 +12,90 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// schema.prisma
+
+// Services table
+model Service {
+  service_id     Int      @id @default(autoincrement())
+  service_name   String
+  service_desc   String
+  service_image  String
+  service_type    ServiceType
+
+  // Category relation
+  categories     Category[]
+}
+
+// Category table
+model Category {
+  category_id    Int      @id @default(autoincrement())
+  type_Of_Repair String
+  raw            Float
+  tax            Float
+  shipping       Float
+  timeFrame      String
+  total          Float
+
+  // Service relation
+  service        Service @relation(fields: [service_id], references: [service_id])
+  service_id     Int
+}
+
+// Brand table
+model Brand {
+  brand_id       Int      @id @default(autoincrement())
+  brand_name     String
+  brand_image    String
+  brand_desc     String
+
+  // Series relation
+  series         Series[]
+}
+
+// Series table
+model Series {
+  series_id      Int      @id @default(autoincrement())
+  series_name    String
+  series_image   String
+  series_desc    String
+
+  // Brand relation
+  brand          Brand    @relation(fields: [brand_id], references: [brand_id])
+  brand_id       Int
+   model         Model[]
+}
+
+// Model table
+model Model {
+  model_id       Int      @id @default(autoincrement())
+  model_name     String
+  model_image    String
+
+  // Series relation
+  series         Series   @relation(fields: [series_id], references: [series_id])
+  series_id      Int
+
+  // ModelCategory relation
+  modelCategorys   ModelCategory[]
+}
+
+// ModelCategory table
+model ModelCategory {
+  modelCategory_id Int      @id @default(autoincrement())
+  type_of_repair String
+  raw            Float
+  tax            Float
+  shipping       Float
+  timeFrame      String
+  total          Float
+
+  // Model relation
+  model          Model    @relation(fields: [model_id], references: [model_id])
+  model_id       Int
+}
+
+enum ServiceType {
+  REPAIRS_SERVICE
+  GENERAL_SERVICE
+}
