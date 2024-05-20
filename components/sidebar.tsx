@@ -1,5 +1,5 @@
 'use client';
-import { SIDENAV_ITEMS } from '@/app/menu_constants';
+import { SIDENAV_ITEMS } from '@/app/dashboard/menu_constants';
 import { useSideBarToggle } from '@/hooks/use-sidebar-toggle';
 import classNames from 'classnames';
 import { useEffect, useState } from 'react';

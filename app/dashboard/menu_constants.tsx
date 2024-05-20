@@ -7,6 +7,7 @@ import {
    BsListUl,
    BsQuestionCircle,
 } from 'react-icons/bs';
+import { HandCoins, Users } from 'lucide-react';
 
 export const SIDENAV_ITEMS: SideNavItemGroup[] = [
    {
@@ -14,7 +15,7 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
       menuList: [
          {
             title: 'Dashboard',
-            path: '/',
+            path: '/dashboard',
             icon: <BsHouseDoor size={20} />,
          },
       ],
@@ -24,37 +25,40 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
       menuList: [
          {
             title: 'Products',
-            path: '/products',
+            path: '/dashboard/products',
             icon: <BsKanban size={20} />,
             submenu: true,
             subMenuItems: [
-               { title: 'All', path: '/products' },
-               { title: 'New', path: '/products/new' },
+               { title: 'All', path: '/dashboard/products' },
+               { title: 'New', path: '/dashboard/products/new' },
             ],
          },
          {
             title: 'Services',
-            path: '/services',
-            icon: <BsKanban size={20} />,
+            path: '/dashboard/services',
+            icon: <HandCoins size={20} />,
             submenu: true,
             subMenuItems: [
-               { title: 'General Services', path: '/services/general' },
+               {
+                  title: 'General Services',
+                  path: '/dashboard/services/general',
+               },
                {
                   title: 'Repair Services',
-                  path: '/services/repairs',
+                  path: '/dashboard/services/repairs',
                },
             ],
          },
 
          {
             title: 'Orders',
-            path: '/orders',
+            path: '/dashboard/orders',
             icon: <BsListUl size={20} />,
          },
          {
-            title: 'Feedbacks',
-            path: '/feedbacks',
-            icon: <BsEnvelope size={20} />,
+            title: 'Customers',
+            path: '/dashboard/customers',
+            icon: <Users size={20} />,
          },
       ],
    },
@@ -63,12 +67,12 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
       menuList: [
          {
             title: 'Account',
-            path: '/account',
+            path: '/dashboard/account',
             icon: <BsGear size={20} />,
          },
          {
             title: 'Help',
-            path: '/help',
+            path: '/dashboard/help',
             icon: <BsQuestionCircle size={20} />,
          },
       ],
