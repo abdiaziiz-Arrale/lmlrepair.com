@@ -7,7 +7,7 @@ import {
    BsListUl,
    BsQuestionCircle,
 } from 'react-icons/bs';
-import { HandCoins, Users } from 'lucide-react';
+import { HandCoins, Users, Key } from 'lucide-react';
 
 export const SIDENAV_ITEMS: SideNavItemGroup[] = [
    {
@@ -59,6 +59,11 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
             title: 'Customers',
             path: '/dashboard/customers',
             icon: <Users size={20} />,
+         },
+         {
+            title: 'Staff',
+            path: '/dashboard/staff',
+            icon: <Key size={20} />,
          },
       ],
    },

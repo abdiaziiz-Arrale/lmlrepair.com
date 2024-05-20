@@ -9,7 +9,7 @@ const karla = Karla({
    variable: '--font-karla',
 });
 export const metadata: Metadata = {
-   title: 'LML Repair',
+   title: 'LML Portal',
    description: 'LML Portal dashboard',
 };
 
