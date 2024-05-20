@@ -16,7 +16,7 @@ export const metadata: Metadata = {
    description: 'LML Portal dashboard',
 };
 
-export default function RootLayout({
+export default function DashboardLayout({
    children,
 }: {
    children: React.ReactNode;
@@ -30,7 +30,7 @@ export default function RootLayout({
       >
          <div className=' h-screen overflow-hidden'>
             <SideBar />
-            <div className='flex flex-col h-full w-full'>
+            <div className='flex flex-col h-full w-full '>
                <Header />
                <PageWrapper children={children} />
             </div>

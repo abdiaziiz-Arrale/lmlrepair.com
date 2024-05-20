@@ -1,4 +1,3 @@
-import { ThemeProvider } from '@/components/theme-provider';
 import { Metadata } from 'next';
 import { Karla } from 'next/font/google';
 import './globals.css';
@@ -20,19 +19,8 @@ export default function RootLayout({
 }) {
    return (
       <html lang='en' suppressHydrationWarning>
-         <body className={karla.className + ' h-screen overflow-hidden'}>
-            <ThemeProvider
-               themes={['dark', 'custom', 'light']}
-               attribute='class'
-               enableSystem
-               disableTransitionOnChange
-            >
-               <>
-                  <div className='flex flex-col h-full w-full'>
-                     <main>{children}</main>
-                  </div>
-               </>
-            </ThemeProvider>
+         <body className={karla.className}>
+            <main>{children}</main>
          </body>
       </html>
    );
