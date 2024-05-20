@@ -9,8 +9,8 @@ const karla = Karla({
    variable: '--font-karla',
 });
 export const metadata: Metadata = {
-   title: 'LML Portal',
-   description: 'LML Portal dashboard',
+   title: 'LML',
+   description: 'LML',
 };
 
 export default function RootLayout({
