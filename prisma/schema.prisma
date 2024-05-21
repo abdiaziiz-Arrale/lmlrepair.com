@@ -66,6 +66,7 @@ model Series {
    model         Model[]
 }
 
+
 // Model table
 model Model {
   model_id       Int      @id @default(autoincrement())
@@ -94,4 +95,12 @@ model ModelCategory {
   model          Model    @relation(fields: [model_id], references: [model_id])
   model_id       Int
 }
+
+model Staff {
+  staff_id      Int      @id @default(autoincrement())
+  staff_name    String
+  mobile_number   String
+  email    String
+}
+
 
