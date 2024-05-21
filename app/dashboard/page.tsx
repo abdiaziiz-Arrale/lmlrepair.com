@@ -8,7 +8,7 @@ import {
 import { Overview } from './_components/overview';
 import { RecentSales } from './_components/recent-sales';
 
-export default function Home() {
+export default function Dashboard() {
    return (
       <>
          <h2 className='text-3xl font-bold tracking-tight my-4'>Dashboard</h2>
