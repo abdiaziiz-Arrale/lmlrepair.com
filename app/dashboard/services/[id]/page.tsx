@@ -1,5 +1,7 @@
 "use client";
+import AddCategory from "@/components/AddCategory";
 import CustomContainer from "@/components/CustomContainer";
+import EditCategory from "@/components/EditCategory";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -85,6 +87,10 @@ const Service = ({ params, searchParams }: Props) => {
           </div>
         </Card>
         <Card>
+          <AddCategory
+            serviceId={parseInt(params.id)}
+            serviceName={searchParams.serviceName}
+          />
           {loading ? (
             <div className="p-5">Loading...</div>
           ) : error ? (
@@ -100,6 +106,7 @@ const Service = ({ params, searchParams }: Props) => {
                   <TableHead>Labour</TableHead>
                   <TableHead>Time Frame</TableHead>
                   <TableHead>Total</TableHead>
+                  <TableHead>Action</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -116,13 +123,27 @@ const Service = ({ params, searchParams }: Props) => {
                       {category.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
-                      i dont have this data
+                      {category.labour}
                     </TableCell>
                     <TableCell className="font-medium">
                       {category.timeFrame}
                     </TableCell>
                     <TableCell className="font-medium">
                       {category.total}
+                    </TableCell>
+
+                    <TableCell className="font-medium">
+                      <EditCategory
+                        categoryId={category.category_id}
+                        serviceId={category.service_id}
+                        serviceName={category.type_Of_Repair}
+                        tax={category.tax.toString()}
+                        labour={category.labour.toString()}
+                        shipping={category.shipping.toString()}
+                        raw={category.raw.toString()}
+                        timeFrame={category.timeFrame}
+                        typeOfRepair={category.type_Of_Repair.toString()}
+                      />
                     </TableCell>
                   </TableRow>
                 ))}
