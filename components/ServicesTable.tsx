@@ -1,8 +1,14 @@
 "use client";
 
-import Image from "next/image";
+import { Service } from "@prisma/client";
+import { Search } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import AddService from "./AddService";
 import CustomContainer from "./CustomContainer";
+import EditService from "./EditService";
 import { Card } from "./ui/card";
+import { Input } from "./ui/input";
 import {
   Table,
   TableBody,
@@ -16,6 +22,7 @@ import { Service } from "@prisma/client";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
+import { Button } from "./ui/button";
 import EditService from "./EditService";
 import AddService from "./AddService";
 
