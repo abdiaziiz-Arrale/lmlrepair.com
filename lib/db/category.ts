@@ -4,10 +4,10 @@ import prisma from "@/lib/prisma";
 import { Category } from "@prisma/client";
 import { PartialBy } from "../type";
 
-export const getCategory = async (categoryId: number): Promise<Category[]> => {
+export const getCategory = async (serviceId: number): Promise<Category[]> => {
   try {
     return await prisma.category.findMany({
-      where: { category_id: categoryId },
+      where: { service_id: serviceId },
       orderBy: { type_Of_Repair: "asc" },
     });
   } catch (error) {

@@ -179,7 +179,6 @@ const AddCategory = ({ serviceId }: AddCategoryProps) => {
               value={formData.timeFrame}
               onChange={handleInputChange}
               className="col-span-3"
-              type="number"
             />
           </div>
         </div>

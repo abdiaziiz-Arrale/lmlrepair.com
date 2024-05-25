@@ -137,7 +137,7 @@ const Service = ({ params, searchParams }: Props) => {
                         labour={category.labour.toString()}
                         shipping={category.shipping.toString()}
                         raw={category.raw.toString()}
-                        timeFrame={category.timeFrame.toString()}
+                        timeFrame={category.timeFrame}
                         typeOfRepair={category.type_Of_Repair.toString()}
                       />
                     </TableCell>

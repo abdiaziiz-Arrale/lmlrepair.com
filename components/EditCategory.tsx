@@ -191,7 +191,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({
               value={formData.timeFrame}
               onChange={handleInputChange}
               className="col-span-3"
-              type="number"
             />
           </div>
         </div>
