@@ -26,16 +26,26 @@ import { Pencil } from "lucide-react";
 
 interface EditServiceProps {
   serviceId: number;
+  serviceName: string;
+  serviceImage: string;
+  serviceDescription: string;
+  serviceType: string;
 }
 
-const EditService: React.FC<EditServiceProps> = ({ serviceId }) => {
+const EditService: React.FC<EditServiceProps> = ({
+  serviceId,
+  serviceName,
+  serviceImage,
+  serviceDescription,
+  serviceType,
+}: EditServiceProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    serviceName: "",
-    serviceDescription: "",
-    serviceImage: "",
+    serviceName: serviceName,
+    serviceDescription: serviceDescription,
+    serviceImage: serviceImage,
   });
-  const [type, setType] = useState("");
+  const [type, setType] = useState(serviceType);
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;

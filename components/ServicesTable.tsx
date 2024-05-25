@@ -68,7 +68,7 @@ function ServicesTable({ services }: ServicesTableProps) {
           </TableHeader>
           <TableBody>
             {filteredServices.map((service) => (
-              <TableRow>
+              <TableRow key={service.service_id}>
                 <TableCell className="font-medium w-72 hover:underline hover:text-blue-500">
                   {service.service_type === "general_service" ? (
                     <Link
@@ -92,7 +92,13 @@ function ServicesTable({ services }: ServicesTableProps) {
                   {service.service_type}
                 </TableCell>
                 <TableCell className="font-medium">
-                  <EditService serviceId={service.service_id} />
+                  <EditService
+                    serviceId={service.service_id}
+                    serviceImage={service.service_image}
+                    serviceName={service.service_name}
+                    serviceDescription={service.service_desc}
+                    serviceType={service.service_type}
+                  />
                 </TableCell>
               </TableRow>
             ))}
