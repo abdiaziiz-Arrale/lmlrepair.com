@@ -87,7 +87,10 @@ const Service = ({ params, searchParams }: Props) => {
           </div>
         </Card>
         <Card>
-          <AddCategory serviceId={parseInt(params.id)} />
+          <AddCategory
+            serviceId={parseInt(params.id)}
+            serviceName={searchParams.serviceName}
+          />
           {loading ? (
             <div className="p-5">Loading...</div>
           ) : error ? (
@@ -133,6 +136,7 @@ const Service = ({ params, searchParams }: Props) => {
                       <EditCategory
                         categoryId={category.category_id}
                         serviceId={category.service_id}
+                        serviceName={category.type_Of_Repair}
                         tax={category.tax.toString()}
                         labour={category.labour.toString()}
                         shipping={category.shipping.toString()}

@@ -26,9 +26,10 @@ import { createCategory } from "@/lib/db/category";
 
 interface AddCategoryProps {
   serviceId: number;
+  serviceName: string;
 }
 
-const AddCategory = ({ serviceId }: AddCategoryProps) => {
+const AddCategory = ({ serviceId, serviceName }: AddCategoryProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     typeOfRepair: "",
@@ -78,7 +79,7 @@ const AddCategory = ({ serviceId }: AddCategoryProps) => {
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/services";
+      window.location.href = `/dashboard/services/${serviceId}?serviceName=${serviceName}`;
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

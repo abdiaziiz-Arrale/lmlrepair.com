@@ -20,6 +20,7 @@ import { updateCategory } from "@/lib/db/category";
 interface EditCategoryProps {
   categoryId: number;
   serviceId: number;
+  serviceName: string;
   typeOfRepair: string;
   raw: string;
   tax: string;
@@ -31,6 +32,7 @@ interface EditCategoryProps {
 const EditCategory: React.FC<EditCategoryProps> = ({
   categoryId,
   serviceId,
+  serviceName,
   typeOfRepair,
   raw,
   tax,
@@ -88,7 +90,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/services";
+      window.location.href = `/dashboard/services/${serviceId}?serviceName=${serviceName}`;
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
