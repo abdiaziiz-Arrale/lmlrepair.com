@@ -9,43 +9,34 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-import { updateService } from "@/lib/db/serviceCrud";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { createService } from "@/lib/db/serviceCrud";
 import moment from "moment";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Pencil } from "lucide-react";
-import { updateCategory } from "@/lib/db/category";
+import { createCategory } from "@/lib/db/category";
 
-interface EditCategoryProps {
-  categoryId: number;
+interface AddCategoryProps {
   serviceId: number;
-  typeOfRepair: string;
-  raw: string;
-  tax: string;
-  shipping: string;
-  labour: string;
-  timeFrame: string;
 }
 
-const EditCategory: React.FC<EditCategoryProps> = ({
-  categoryId,
-  serviceId,
-  typeOfRepair,
-  raw,
-  tax,
-  shipping,
-  labour,
-  timeFrame,
-}: EditCategoryProps) => {
+const AddCategory = ({ serviceId }: AddCategoryProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    typeOfRepair: typeOfRepair,
-    raw: raw,
-    tax: tax,
-    shipping: shipping,
-    labour: labour,
-    timeFrame: timeFrame,
+    typeOfRepair: "",
+    raw: "0",
+    tax: "0",
+    shipping: "0",
+    labour: "0",
+    timeFrame: "0",
   });
 
   const handleInputChange = (event: any) => {
@@ -69,10 +60,9 @@ const EditCategory: React.FC<EditCategoryProps> = ({
     }
     try {
       setLoading(true);
-      const formattedDate = moment().format("YYYY-MM-DD");
 
-      await updateCategory(categoryId, {
-        category_id: categoryId,
+      await createCategory({
+        category_id: undefined,
         service_id: serviceId,
         type_Of_Repair: formData.typeOfRepair,
         raw: parseInt(formData.raw),
@@ -98,13 +88,11 @@ const EditCategory: React.FC<EditCategoryProps> = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default">
-          <Pencil />
-        </Button>
+        <Button variant="default">Add new</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Category</DialogTitle>
+          <DialogTitle>Add Category</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
@@ -211,4 +199,4 @@ const EditCategory: React.FC<EditCategoryProps> = ({
   );
 };
 
-export default EditCategory;
+export default AddCategory;

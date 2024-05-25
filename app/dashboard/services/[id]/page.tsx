@@ -1,4 +1,5 @@
 "use client";
+import AddCategory from "@/components/AddCategory";
 import CustomContainer from "@/components/CustomContainer";
 import EditCategory from "@/components/EditCategory";
 import { Button } from "@/components/ui/button";
@@ -86,6 +87,7 @@ const Service = ({ params, searchParams }: Props) => {
           </div>
         </Card>
         <Card>
+          <AddCategory serviceId={parseInt(params.id)} />
           {loading ? (
             <div className="p-5">Loading...</div>
           ) : error ? (
