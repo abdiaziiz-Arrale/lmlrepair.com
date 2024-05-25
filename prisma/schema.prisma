@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,94 +7,78 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// schema.prisma
-
-// Services table
 model Service {
-  service_id     Int      @id @default(autoincrement())
-  service_name   String
-  service_desc   String
-  service_image  String
-  service_type    String
-
-  // Category relation
-  categories     Category[]
+  service_id    Int        @id @default(autoincrement())
+  service_name  String
+  service_desc  String
+  service_image String
+  service_type  String
+  categories    Category[]
 }
 
-// Category table
 model Category {
-  category_id    Int      @id @default(autoincrement())
+  category_id    Int     @id @default(autoincrement())
   type_Of_Repair String
   raw            Float
   tax            Float
   shipping       Float
   timeFrame      String
   total          Float
-
-  // Service relation
-  service        Service @relation(fields: [service_id], references: [service_id])
   service_id     Int
+  labour         Int     @default(100)
+  service        Service @relation(fields: [service_id], references: [service_id])
+
+  @@index([service_id], map: "Category_service_id_fkey")
 }
 
-// Brand table
 model Brand {
-  brand_id       Int      @id @default(autoincrement())
-  brand_name     String
-  brand_image    String
-  brand_desc     String
-
-  // Series relation
-  series         Series[]
+  brand_id    Int      @id @default(autoincrement())
+  brand_name  String
+  brand_image String
+  brand_desc  String
+  series      Series[]
 }
 
-// Series table
 model Series {
-  series_id      Int      @id @default(autoincrement())
-  series_name    String
-  series_image   String
-  series_desc    String
+  series_id    Int     @id @default(autoincrement())
+  series_name  String
+  series_image String
+  series_desc  String
+  brand_id     Int
+  model        Model[]
+  brand        Brand   @relation(fields: [brand_id], references: [brand_id])
 
-  // Brand relation
-  brand          Brand    @relation(fields: [brand_id], references: [brand_id])
-  brand_id       Int
-   model         Model[]
+  @@index([brand_id], map: "Series_brand_id_fkey")
 }
 
-
-// Model table
 model Model {
-  model_id       Int      @id @default(autoincrement())
+  model_id       Int             @id @default(autoincrement())
   model_name     String
   model_image    String
-
-  // Series relation
-  series         Series   @relation(fields: [series_id], references: [series_id])
   series_id      Int
+  series         Series          @relation(fields: [series_id], references: [series_id])
+  modelCategorys ModelCategory[]
 
-  // ModelCategory relation
-  modelCategorys   ModelCategory[]
+  @@index([series_id], map: "Model_series_id_fkey")
 }
 
-// ModelCategory table
 model ModelCategory {
-  modelCategory_id Int      @id @default(autoincrement())
-  type_of_repair String
-  raw            Float
-  tax            Float
-  shipping       Float
-  timeFrame      String
-  total          Float
+  modelCategory_id Int    @id @default(autoincrement())
+  type_of_repair   String
+  raw              Float
+  tax              Float
+  shipping         Float
+  timeFrame        String
+  total            Float
+  model_id         Int
+  model            Model  @relation(fields: [model_id], references: [model_id])
 
-  // Model relation
-  model          Model    @relation(fields: [model_id], references: [model_id])
-  model_id       Int
+  @@index([model_id], map: "ModelCategory_model_id_fkey")
 }
 
 model Staff {
-  staff_id      Int      @id @default(autoincrement())
+  staff_id      Int    @id @default(autoincrement())
   staff_name    String
-  mobile_number   String
-  email    String
+  mobile_number String
+  email         String
 }
-
-
