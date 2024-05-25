@@ -16,7 +16,6 @@ import { Service } from "@prisma/client";
 import { useState } from "react";
 import { Search } from "lucide-react";
 import { Input } from "./ui/input";
-import { Button } from "./ui/button";
 import EditService from "./EditService";
 import AddService from "./AddService";
 

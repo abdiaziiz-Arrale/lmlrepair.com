@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -22,8 +22,11 @@ import { createService } from "@/lib/db/serviceCrud";
 import moment from "moment";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import type { PutBlobResult } from "@vercel/blob";
 
 const AddService = () => {
+  const inputFileRef = useRef<HTMLInputElement>(null);
+
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     serviceName: "",
@@ -52,14 +55,35 @@ const AddService = () => {
     }
     try {
       setLoading(true);
-      const formattedDate = moment().format("YYYY-MM-DD");
+      let imageUrl: string | null = null;
+      if (inputFileRef.current?.files) {
+        const file = inputFileRef.current.files[0];
+
+        const response = await fetch(`/api/upload?filename=${file.name}`, {
+          method: "POST",
+          body: file,
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to upload file.");
+        }
+
+        const newBlob = (await response.json()) as PutBlobResult;
+        imageUrl = newBlob.url;
+      } else {
+        throw new Error("Please provide an image for the department.");
+      }
+
+      if (!imageUrl) {
+        throw new Error("Image upload failed. Please try again.");
+      }
 
       await createService({
         service_id: undefined,
         service_name: formData.serviceName,
         service_desc: formData.serviceDescription,
         service_type: type,
-        service_image: formData.serviceImage,
+        service_image: imageUrl,
       });
 
       setLoading(false);
@@ -115,7 +139,9 @@ const AddService = () => {
               value={formData.serviceImage}
               onChange={handleInputChange}
               className="col-span-3"
-              placeholder="Service image"
+              type="file"
+              accept="image/*"
+              ref={inputFileRef}
             />
           </div>
 
