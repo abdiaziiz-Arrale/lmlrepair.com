@@ -15,6 +15,19 @@ export const getServices = async (): Promise<Service[]> => {
   }
 };
 
+export const getService = async (
+  serviceId: number
+): Promise<Service | null> => {
+  try {
+    return await prisma.service.findFirst({
+      where: { service_id: serviceId },
+    });
+  } catch (error) {
+    console.error("Error fetching service:", error);
+    throw new Error("Failed to fetch service");
+  }
+};
+
 export const createService = async (
   serviceData: PartialBy<Service, "service_id">
 ) => {
