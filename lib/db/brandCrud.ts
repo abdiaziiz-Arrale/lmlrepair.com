@@ -26,7 +26,10 @@ export const createBrand = async (brandData: PartialBy<Brand, "brand_id">) => {
   }
 };
 
-export const updateBrand = async (brandId: number, updatedData: Brand) => {
+export const updateBrand = async (
+  brandId: number,
+  updatedData: PartialBy<Brand, "brand_id" | "brand_image">
+) => {
   try {
     return await prisma.brand.update({
       where: { brand_id: brandId },

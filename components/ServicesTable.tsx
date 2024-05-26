@@ -17,6 +17,7 @@ import {
   TableHeader,
   TableRow,
 } from "./ui/table";
+import Image from "next/image";
 
 interface ServicesTableProps {
   services: Service[];
@@ -70,7 +71,7 @@ function ServicesTable({ services }: ServicesTableProps) {
                 <TableCell className="font-medium w-72 hover:underline hover:text-blue-500">
                   {service.service_type === "general_service" ? (
                     <Link
-                      href={`/dashboard/services/${service.service_id}?serviceName=${service.service_name}`}
+                      href={`/dashboard/services/${service.service_id}?serviceName=${service.service_name}&serviceImage=${service.service_image}`}
                     >
                       {service.service_name}
                     </Link>
@@ -80,8 +81,14 @@ function ServicesTable({ services }: ServicesTableProps) {
                     </Link>
                   )}
                 </TableCell>
-                <TableCell className="font-medium">
-                  {service.service_image ? <h1>image</h1> : <h1>no image</h1>}
+                <TableCell>
+                  <img
+                    src={service.service_image}
+                    alt={service.service_name}
+                    width={100}
+                    height={100}
+                    className="rounded-full object-cover"
+                  />
                 </TableCell>
                 <TableCell className="font-medium w-80 ">
                   {service.service_desc}
@@ -92,7 +99,6 @@ function ServicesTable({ services }: ServicesTableProps) {
                 <TableCell className="font-medium">
                   <EditService
                     serviceId={service.service_id}
-                    serviceImage={service.service_image}
                     serviceName={service.service_name}
                     serviceDescription={service.service_desc}
                     serviceType={service.service_type}

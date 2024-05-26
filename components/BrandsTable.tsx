@@ -2,7 +2,6 @@
 
 import { Search } from "lucide-react";
 import Image from "next/image";
-import AddService from "./AddService";
 import CustomContainer from "./CustomContainer";
 import { Card } from "./ui/card";
 import { Input } from "./ui/input";
@@ -17,6 +16,8 @@ import {
 import Link from "next/link";
 import { useState } from "react";
 import { Brand } from "@prisma/client";
+import AddBrand from "./AddBrand";
+import EditBrand from "./EditBrand";
 interface BrandsTableProps {
   brands: Brand[];
 }
@@ -47,7 +48,7 @@ function BrandsTable({ brands }: BrandsTableProps) {
               onChange={handleInputChange}
             />
           </div>
-          <AddService />
+          <AddBrand />
         </div>
       </Card>
       <Table>
@@ -61,21 +62,33 @@ function BrandsTable({ brands }: BrandsTableProps) {
         </TableHeader>
         <TableBody>
           {filteredBrands.map((brand) => (
-            <TableRow>
-              <Link href={`/dashboard/brands/${brand?.brand_id}/series`}>
-                <TableCell>{brand.brand_name}</TableCell>
-              </Link>
+            <TableRow key={brand.brand_id}>
               <TableCell>
-                <Image
-                  src={"/lml_logo.png"}
+                <Link
+                  className="hover:underline"
+                  href={`/dashboard/brands/${brand?.brand_id}/series`}
+                >
+                  {brand.brand_name}
+                </Link>
+              </TableCell>
+
+              <TableCell>
+                <img
+                  src={brand.brand_image}
                   alt={brand.brand_name}
-                  width={50}
-                  height={50}
-                  className="rounded-md object-cover"
+                  width={100}
+                  height={100}
+                  className="rounded-full object-cover"
                 />
               </TableCell>
               <TableCell>{brand.brand_desc}</TableCell>
-              <TableCell>Edit</TableCell>
+              <TableCell>
+                <EditBrand
+                  brandId={brand.brand_id}
+                  brandName={brand.brand_name}
+                  brandDescription={brand.brand_desc}
+                />
+              </TableCell>
             </TableRow>
           ))}
         </TableBody>

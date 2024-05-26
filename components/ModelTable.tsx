@@ -1,67 +1,113 @@
-'use client';
+"use client";
 
-import { Search } from 'lucide-react';
-import Image from 'next/image';
-import AddService from './AddService';
-import CustomContainer from './CustomContainer';
-import { Card } from './ui/card';
-import { Input } from './ui/input';
+import { Search } from "lucide-react";
+import Link from "next/link";
+import CustomContainer from "./CustomContainer";
+import { Card } from "./ui/card";
+import { Input } from "./ui/input";
 import {
-   Table,
-   TableBody,
-   TableCell,
-   TableHead,
-   TableHeader,
-   TableRow,
-} from './ui/table';
-import Link from 'next/link';
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "./ui/table";
+import { useState } from "react";
+import AddModel from "./AddModel";
+import EditModel from "./EditModel";
 
-function ModelTable({ models }: any) {
-   return (
-      <CustomContainer>
-         <h1 className='text-3xl px-2 mb-4'>Series</h1>
-         <Card className='mb-4'>
-            <div className='flex justify-between items-center gap-5 px-3 py-6'>
-               <div className='flex items-center border border-primary-foreground px-3 rounded-md '>
-                  <Search />
-                  <Input
-                     placeholder='Search series'
-                     className='lg:w-96 border-none focus-visible:outline-none '
-                  />
-               </div>
-               <AddService />
-            </div>
-         </Card>
-         <Table>
-            <TableHeader>
-               <TableRow>
-                  <TableHead>Series Name</TableHead>
-                  <TableHead>Series Image</TableHead>
-                  <TableHead>Action</TableHead>
-               </TableRow>
-            </TableHeader>
-            <TableBody>
-               {models?.map((model: any) => (
-                  <TableRow>
-                     <TableCell>{model.model_name}</TableCell>
+type Model = {
+  model_id: number;
+  model_name: string;
+  model_image: string;
+  series_id: number;
+  series: {
+    brand_id: number;
+    series_name: string;
+  };
+};
 
-                     <TableCell>
-                        <Image
-                           src={'/lml_logo.png'}
-                           alt={model?.model_name}
-                           width={50}
-                           height={50}
-                           className='rounded-md object-cover'
-                        />
-                     </TableCell>
-
-                     <TableCell>Edit</TableCell>
-                  </TableRow>
-               ))}
-            </TableBody>
-         </Table>
-      </CustomContainer>
-   );
+interface ModalTableProps {
+  models: Model[];
+  seriesId: number;
+  brandId: number;
 }
 
-export default ModelTable;
+function ModalTable({ models, seriesId, brandId }: ModalTableProps) {
+  const [search, setSearch] = useState("");
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const inputValue = e.target.value;
+    setSearch(inputValue);
+  };
+
+  const filteredModel = models.filter((model) => {
+    return (
+      search.toLowerCase() === "" ||
+      model.model_name.toLowerCase().includes(search)
+    );
+  });
+  return (
+    <CustomContainer>
+      <h1 className="text-3xl px-2 mb-4">
+        {models.length !== 0 ? models[0].series.series_name : "No"} model
+      </h1>
+      <Card className="mb-4">
+        <div className="flex justify-between items-center gap-5 px-3 py-6">
+          <div className="flex items-center border border-primary-foreground px-3 rounded-md ">
+            <Search />
+            <Input
+              placeholder="Search series..."
+              className="w-96 border-none focus-visible:outline-none "
+              onChange={handleInputChange}
+            />
+          </div>
+
+          <AddModel seriesId={seriesId} brandId={brandId} />
+        </div>
+      </Card>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="w-72">Model Name</TableHead>
+            <TableHead>Model Image</TableHead>
+            <TableHead>Action</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {filteredModel.map((model) => (
+            <TableRow>
+              <TableCell>
+                <Link
+                  className="hover:underline"
+                  href={`/dashboard/brands/${model.series.brand_id}/series/${seriesId}/model`}
+                >
+                  {model.model_name}
+                </Link>
+              </TableCell>
+              <TableCell>
+                <img
+                  src={model.model_image}
+                  alt={model.model_name}
+                  width={100}
+                  height={100}
+                  className="rounded-full object-cover"
+                />
+              </TableCell>
+              <TableCell>
+                <EditModel
+                  seriesId={model.series_id}
+                  brandId={model.series.brand_id}
+                  modelId={model.model_id}
+                  modelName={model.model_name}
+                />
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+    </CustomContainer>
+  );
+}
+export default ModalTable;
