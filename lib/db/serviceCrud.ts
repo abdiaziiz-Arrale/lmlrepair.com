@@ -43,7 +43,7 @@ export const createService = async (
 
 export const updateService = async (
    serviceId: number,
-   updatedData: Service
+   updatedData: PartialBy<Service, 'service_id' | 'service_image'>
 ) => {
    try {
       return await prisma.service.update({

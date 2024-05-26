@@ -15,21 +15,56 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
+import { useState } from 'react';
+import EditSeries from './EditSeries';
+import AddSeries from './AddSeries';
 
-function seriesTable({ series, brandId }: any) {
+type Series = {
+   series_id: number;
+   series_name: string;
+   series_image: string;
+   series_desc: string;
+   brand_id: number;
+   brand: {
+      brand_name: string;
+   };
+};
+
+interface seriesTableProps {
+   series: Series[];
+   brandId: number;
+}
+
+function seriesTable({ series, brandId }: seriesTableProps) {
+   const [search, setSearch] = useState('');
+
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value;
+      setSearch(inputValue);
+   };
+
+   const filteredSeries = series.filter((series) => {
+      return (
+         search.toLowerCase() === '' ||
+         series.series_name.toLowerCase().includes(search)
+      );
+   });
    return (
       <CustomContainer>
-         <h1 className='text-3xl px-2 mb-4'>Series</h1>
+         <h1 className='text-3xl px-2 mb-4'>
+            {series.length !== 0 ? series[0].brand.brand_name : 'No'} series
+         </h1>
          <Card className='mb-4'>
             <div className='flex justify-between items-center gap-5 px-3 py-6'>
                <div className='flex items-center border border-primary-foreground px-3 rounded-md '>
                   <Search />
                   <Input
-                     placeholder='Search series'
-                     className='lg:w-96 border-none focus-visible:outline-none '
+                     placeholder='Search series...'
+                     className='w-96 border-none focus-visible:outline-none '
+                     onChange={handleInputChange}
                   />
                </div>
-               <AddService />
+               <AddSeries brandId={brandId} />
             </div>
          </Card>
          <Table>
@@ -42,24 +77,34 @@ function seriesTable({ series, brandId }: any) {
                </TableRow>
             </TableHeader>
             <TableBody>
-               {series?.map((series: any) => (
+               {filteredSeries.map((series) => (
                   <TableRow>
-                     <Link
-                        href={`/dashboard/brands/${brandId}/series/${series?.series_id}/model`}
-                     >
-                        <TableCell>{series.series_name}</TableCell>
-                     </Link>
                      <TableCell>
-                        <Image
-                           src={'/lml_logo.png'}
-                           alt={series.name}
-                           width={50}
-                           height={50}
-                           className='rounded-md object-cover'
+                        <Link
+                           className='hover:underline'
+                           href={`/dashboard/brands/${brandId}/series/${series?.series_id}/model`}
+                        >
+                           {series.series_name}
+                        </Link>
+                     </TableCell>
+                     <TableCell>
+                        <img
+                           src={series.series_image}
+                           alt={series.series_name}
+                           width={100}
+                           height={100}
+                           className='rounded-full object-cover'
                         />
                      </TableCell>
                      <TableCell>{series.series_desc}</TableCell>
-                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <EditSeries
+                           brandId={series.brand_id}
+                           seriesId={series.series_id}
+                           seriesName={series.series_name}
+                           seriesDescription={series.series_desc}
+                        />
+                     </TableCell>
                   </TableRow>
                ))}
             </TableBody>

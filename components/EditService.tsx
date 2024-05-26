@@ -19,15 +19,13 @@ import {
 import { updateService } from '@/lib/db/serviceCrud';
 import { Pencil } from 'lucide-react';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-
+import type { PutBlobResult } from '@vercel/blob';
 interface EditServiceProps {
-<<<<<<< HEAD
    serviceId: number;
    serviceName: string;
-   serviceImage: string;
    serviceDescription: string;
    serviceType: string;
 }
@@ -35,40 +33,16 @@ interface EditServiceProps {
 const EditService: React.FC<EditServiceProps> = ({
    serviceId,
    serviceName,
-   serviceImage,
    serviceDescription,
    serviceType,
 }: EditServiceProps) => {
+   const inputFileRef = useRef<HTMLInputElement>(null);
    const [loading, setLoading] = useState(false);
    const [formData, setFormData] = useState({
       serviceName: serviceName,
       serviceDescription: serviceDescription,
-      serviceImage: serviceImage,
    });
    const [type, setType] = useState(serviceType);
-=======
-  serviceId: number;
-  serviceName: string;
-  serviceImage: string;
-  serviceDescription: string;
-  serviceType: string;
-}
-
-const EditService: React.FC<EditServiceProps> = ({
-  serviceId,
-  serviceName,
-  serviceImage,
-  serviceDescription,
-  serviceType,
-}: EditServiceProps) => {
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    serviceName: serviceName,
-    serviceDescription: serviceDescription,
-    serviceImage: serviceImage,
-  });
-  const [type, setType] = useState(serviceType);
->>>>>>> 2cc34c3ce5263618fee76240892faaab5d161e06
 
    const handleInputChange = (event: any) => {
       const { name, value } = event.target;
@@ -79,32 +53,52 @@ const EditService: React.FC<EditServiceProps> = ({
    };
 
    async function onSubmit() {
-      if (
-         !formData.serviceName ||
-         !formData.serviceImage ||
-         !type ||
-         !formData.serviceDescription
-      ) {
+      if (!formData.serviceName || !type || !formData.serviceDescription) {
          alert('missing info');
          return 0;
       }
       try {
          setLoading(true);
-         const formattedDate = moment().format('YYYY-MM-DD');
+         let imageUrl: string | null = null;
+         if (inputFileRef.current?.files) {
+            const file = inputFileRef.current.files[0];
+            if (!file) {
+               await updateService(serviceId, {
+                  service_name: formData.serviceName,
+                  service_desc: formData.serviceDescription,
+                  service_type: type,
+               });
+               setLoading(false);
+               window.location.href = '/dashboard/services';
+               return;
+            }
 
-         await updateService(serviceId, {
-            service_id: serviceId,
-            service_name: formData.serviceName,
-            service_desc: formData.serviceDescription,
-            service_type: type,
-            service_image: formData.serviceImage,
-         });
+            const response = await fetch(`/api/upload?filename=${file.name}`, {
+               method: 'POST',
+               body: file,
+            });
 
-         setLoading(false);
-         window.location.href = '/dashboard/services';
+            if (!response.ok) {
+               throw new Error('Failed to upload file.');
+            }
+
+            const newBlob = (await response.json()) as PutBlobResult;
+            imageUrl = newBlob.url;
+
+            if (!imageUrl) {
+               throw new Error('Image upload failed. Please try again.');
+            }
+            await updateService(serviceId, {
+               service_name: formData.serviceName,
+               service_desc: formData.serviceDescription,
+               service_type: type,
+               service_image: imageUrl,
+            });
+         } else {
+            throw new Error('Image upload failed. Please try again.');
+         }
       } catch (error) {
-         console.error('An error occurred:', error);
-         setLoading(false);
+         console.log(error);
       }
    }
 
@@ -143,16 +137,17 @@ const EditService: React.FC<EditServiceProps> = ({
                         onChange={handleInputChange}
                      />
                   </div>
-                  <div className='flex flex-col gap-2'>
-                     <Label>Service Image</Label>
-
+                  <div className='grid grid-cols-4 items-center gap-4'>
+                     <Label htmlFor='serviceImage' className='text-right'>
+                        Change Image
+                     </Label>
                      <Input
-                        // name='serviceImage'
-                        // value={formData.serviceImage}
+                        name='serviceImage'
+                        onChange={handleInputChange}
+                        className='col-span-3'
                         type='file'
-                        id='image'
-                        placeholder='Enter service Image'
-                        // onChange={handleInputChange}
+                        accept='image/*'
+                        ref={inputFileRef}
                      />
                   </div>
                   <div className='flex flex-col gap-2'>
@@ -162,7 +157,7 @@ const EditService: React.FC<EditServiceProps> = ({
                         onValueChange={(value: any) => setType(value)}
                      >
                         <SelectTrigger>
-                           <SelectValue placeholder='Service' />
+                           <SelectValue placeholder={`${serviceType}`} />
                         </SelectTrigger>
                         <SelectContent>
                            <SelectItem value='general_service'>

@@ -9,31 +9,31 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { createService } from "@/lib/db/serviceCrud";
-import moment from "moment";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
+import { Pencil } from "lucide-react";
+import { updateSeries } from "@/lib/db/seriesCrud";
 
-const AddService = () => {
+interface EditSeriesProps {
+  seriesId: number;
+  brandId: number;
+  seriesName: string;
+  seriesDescription: string;
+}
+
+const EditSeries = ({
+  seriesId,
+  brandId,
+  seriesName,
+  seriesDescription,
+}: EditSeriesProps) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
-
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    serviceName: "",
-    serviceDescription: "",
-    serviceImage: "",
+    seriesName: seriesName,
+    seriesDescription: seriesDescription,
   });
-  const [type, setType] = useState("");
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -44,7 +44,7 @@ const AddService = () => {
   };
 
   async function onSubmit() {
-    if (!formData.serviceName || !type || !formData.serviceDescription) {
+    if (!formData.seriesName || !formData.seriesDescription) {
       alert("missing info");
       return 0;
     }
@@ -53,16 +53,14 @@ const AddService = () => {
       let imageUrl: string | null = null;
       if (inputFileRef.current?.files) {
         const file = inputFileRef.current.files[0];
-
         if (!file) {
-          await createService({
-            service_name: formData.serviceName,
-            service_desc: formData.serviceDescription,
-            service_type: type,
-            service_image: "/lml_logo.png",
+          await updateSeries(seriesId, {
+            brand_id: brandId,
+            series_name: formData.seriesName,
+            series_desc: formData.seriesDescription,
           });
           setLoading(false);
-          window.location.href = "/dashboard/services";
+          window.location.href = `/dashboard/brands/${brandId}/series`;
           return;
         }
 
@@ -78,23 +76,23 @@ const AddService = () => {
         const newBlob = (await response.json()) as PutBlobResult;
         imageUrl = newBlob.url;
       } else {
-        throw new Error("Please provide an image for the brand.");
+        throw new Error("Please provide an image for the series.");
       }
 
       if (!imageUrl) {
         throw new Error("Image upload failed. Please try again.");
       }
 
-      await createService({
-        service_id: undefined,
-        service_name: formData.serviceName,
-        service_desc: formData.serviceDescription,
-        service_type: type,
-        service_image: imageUrl,
+      await updateSeries(seriesId, {
+        series_id: seriesId,
+        brand_id: brandId,
+        series_name: formData.seriesName,
+        series_desc: formData.seriesDescription,
+        series_image: imageUrl,
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/services";
+      window.location.href = `/dashboard/brands/${brandId}/series`;
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -104,33 +102,35 @@ const AddService = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default">Add new</Button>
+        <Button variant="default">
+          <Pencil />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Service</DialogTitle>
+          <DialogTitle>Add series</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceName" className="text-right">
-              service name
+            <Label htmlFor="seriesName" className="text-right">
+              series name
             </Label>
             <Input
-              name="serviceName"
-              value={formData.serviceName}
+              name="seriesName"
+              value={formData.seriesName}
               onChange={handleInputChange}
               className="col-span-3"
-              placeholder="Service Name"
+              placeholder="series Name"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceDescription" className="text-right">
+            <Label htmlFor="seriesDescription" className="text-right">
               Description
             </Label>
             <Input
-              name="serviceDescription"
-              value={formData.serviceDescription}
+              name="seriesDescription"
+              value={formData.seriesDescription}
               onChange={handleInputChange}
               className="col-span-3"
               placeholder="Service Description"
@@ -138,38 +138,16 @@ const AddService = () => {
           </div>
 
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceImage" className="text-right">
+            <Label htmlFor="seriesImage" className="text-right">
               Image
             </Label>
             <Input
-              name="serviceImage"
-              value={formData.serviceImage}
-              onChange={handleInputChange}
+              name="seriesImage"
               className="col-span-3"
               type="file"
               accept="image/*"
               ref={inputFileRef}
             />
-          </div>
-
-          <div className=" ml-12 flex items-center gap-4">
-            <Label htmlFor="serviceType" className="text-right">
-              Type
-            </Label>
-            <Select required onValueChange={(value: any) => setType(value)}>
-              <SelectTrigger className="w-max">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Type:</SelectLabel>
-                  <SelectItem value="repair_service">Repair service</SelectItem>
-                  <SelectItem value="general_service">
-                    General services
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
@@ -188,4 +166,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default EditSeries;

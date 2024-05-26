@@ -9,31 +9,19 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { createService } from "@/lib/db/serviceCrud";
-import moment from "moment";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
+import { createBrand } from "@/lib/db/brandCrud";
 
-const AddService = () => {
+const AddBrand = () => {
   const inputFileRef = useRef<HTMLInputElement>(null);
 
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    serviceName: "",
-    serviceDescription: "",
-    serviceImage: "",
+    brandName: "",
+    brandDescription: "",
   });
-  const [type, setType] = useState("");
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -44,7 +32,7 @@ const AddService = () => {
   };
 
   async function onSubmit() {
-    if (!formData.serviceName || !type || !formData.serviceDescription) {
+    if (!formData.brandName || !formData.brandDescription) {
       alert("missing info");
       return 0;
     }
@@ -55,14 +43,14 @@ const AddService = () => {
         const file = inputFileRef.current.files[0];
 
         if (!file) {
-          await createService({
-            service_name: formData.serviceName,
-            service_desc: formData.serviceDescription,
-            service_type: type,
-            service_image: "/lml_logo.png",
+          await createBrand({
+            brand_id: undefined,
+            brand_name: formData.brandName,
+            brand_desc: formData.brandDescription,
+            brand_image: "/lml_logo.png",
           });
           setLoading(false);
-          window.location.href = "/dashboard/services";
+          window.location.href = "/dashboard/brands";
           return;
         }
 
@@ -85,16 +73,15 @@ const AddService = () => {
         throw new Error("Image upload failed. Please try again.");
       }
 
-      await createService({
-        service_id: undefined,
-        service_name: formData.serviceName,
-        service_desc: formData.serviceDescription,
-        service_type: type,
-        service_image: imageUrl,
+      await createBrand({
+        brand_id: undefined,
+        brand_name: formData.brandName,
+        brand_desc: formData.brandDescription,
+        brand_image: imageUrl,
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/services";
+      window.location.href = "/dashboard/brands";
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -113,24 +100,24 @@ const AddService = () => {
 
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceName" className="text-right">
-              service name
+            <Label htmlFor="brandName" className="text-right">
+              brand name
             </Label>
             <Input
-              name="serviceName"
-              value={formData.serviceName}
+              name="brandName"
+              value={formData.brandName}
               onChange={handleInputChange}
               className="col-span-3"
-              placeholder="Service Name"
+              placeholder="brand Name"
             />
           </div>
           <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceDescription" className="text-right">
+            <Label htmlFor="brandDescription" className="text-right">
               Description
             </Label>
             <Input
-              name="serviceDescription"
-              value={formData.serviceDescription}
+              name="brandDescription"
+              value={formData.brandDescription}
               onChange={handleInputChange}
               className="col-span-3"
               placeholder="Service Description"
@@ -143,33 +130,11 @@ const AddService = () => {
             </Label>
             <Input
               name="serviceImage"
-              value={formData.serviceImage}
-              onChange={handleInputChange}
               className="col-span-3"
               type="file"
               accept="image/*"
               ref={inputFileRef}
             />
-          </div>
-
-          <div className=" ml-12 flex items-center gap-4">
-            <Label htmlFor="serviceType" className="text-right">
-              Type
-            </Label>
-            <Select required onValueChange={(value: any) => setType(value)}>
-              <SelectTrigger className="w-max">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Type:</SelectLabel>
-                  <SelectItem value="repair_service">Repair service</SelectItem>
-                  <SelectItem value="general_service">
-                    General services
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
           </div>
         </div>
 
@@ -188,4 +153,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default AddBrand;

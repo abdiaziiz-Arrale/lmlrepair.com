@@ -2,7 +2,6 @@
 
 import { Search } from 'lucide-react';
 import Image from 'next/image';
-import AddService from './AddService';
 import CustomContainer from './CustomContainer';
 import { Card } from './ui/card';
 import { Input } from './ui/input';
@@ -15,11 +14,31 @@ import {
    TableRow,
 } from './ui/table';
 import Link from 'next/link';
+import { useState } from 'react';
+import { Brand } from '@prisma/client';
+import AddBrand from './AddBrand';
+import EditBrand from './EditBrand';
 
-function BrandsTable({ brands }: any) {
+interface BrandsTableProps {
+   brands: Brand[];
+}
+function BrandsTable({ brands }: BrandsTableProps) {
+   const [search, setSearch] = useState('');
+
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value;
+      setSearch(inputValue);
+   };
+
+   const filteredBrands = brands.filter((brand) => {
+      return (
+         search.toLowerCase() === '' ||
+         brand.brand_name.toLowerCase().includes(search)
+      );
+   });
    return (
       <CustomContainer>
-         <h1 className='text-3xl px-2 mb-4'>Services</h1>
+         <h1 className='text-3xl px-2 mb-4'>Brands</h1>
          <Card className='mb-4'>
             <div className='flex justify-between items-center gap-5 px-3 py-6'>
                <div className='flex items-center border border-primary-foreground px-3 rounded-md '>
@@ -27,9 +46,10 @@ function BrandsTable({ brands }: any) {
                   <Input
                      placeholder='Search brands'
                      className='lg:w-96 border-none focus-visible:outline-none '
+                     onChange={handleInputChange}
                   />
                </div>
-               <AddService />
+               <AddBrand />
             </div>
          </Card>
          <Table>
@@ -42,22 +62,34 @@ function BrandsTable({ brands }: any) {
                </TableRow>
             </TableHeader>
             <TableBody>
-               {brands?.map((brand: any) => (
-                  <TableRow>
-                     <Link href={`/dashboard/brands/${brand?.brand_id}/series`}>
-                        <TableCell>{brand.brand_name}</TableCell>
-                     </Link>
+               {filteredBrands.map((brand) => (
+                  <TableRow key={brand.brand_id}>
                      <TableCell>
-                        <Image
-                           src={'/lml_logo.png'}
-                           alt={brand.name}
-                           width={50}
-                           height={50}
-                           className='rounded-md object-cover'
+                        <Link
+                           className='hover:underline'
+                           href={`/dashboard/brands/${brand?.brand_id}/series`}
+                        >
+                           {brand.brand_name}
+                        </Link>
+                     </TableCell>
+
+                     <TableCell>
+                        <img
+                           src={brand.brand_image}
+                           alt={brand.brand_name}
+                           width={100}
+                           height={100}
+                           className='rounded-full object-cover'
                         />
                      </TableCell>
                      <TableCell>{brand.brand_desc}</TableCell>
-                     <TableCell>Edit</TableCell>
+                     <TableCell>
+                        <EditBrand
+                           brandId={brand.brand_id}
+                           brandName={brand.brand_name}
+                           brandDescription={brand.brand_desc}
+                        />
+                     </TableCell>
                   </TableRow>
                ))}
             </TableBody>
