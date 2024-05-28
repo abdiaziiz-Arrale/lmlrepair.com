@@ -1,47 +1,72 @@
 import { PrismaClient } from '@prisma/client';
 
 import {
-   brands,
-   categories,
-   model,
-   modelCategory,
-   series,
-   services,
-} from './seededitems';
+   ItemsCategory,
+   ItemsSubCategory,
+   Vendor,
+   Location,
+   InventoryItem,
+   Variation,
+   StockReturn,
+   InternalTransfer,
+   Sale,
+   InventoryAge,
+   LowStockAlert,
+} from './inventoryItems';
 
 const prisma = new PrismaClient();
 
 async function main() {
-   await prisma.service.createMany({
-      data: services,
+   await prisma.itemsCategory.createMany({
+      data: ItemsCategory,
    });
 
-   await prisma.brand.createMany({
-      data: brands,
+   await prisma.itemsSubCategory.createMany({
+      data: ItemsSubCategory,
    });
 
-   await prisma.category.createMany({
-      data: categories,
+   await prisma.vendor.createMany({
+      data: Vendor,
    });
 
-   await prisma.series.createMany({
-      data: series,
+   await prisma.location.createMany({
+      data: Location,
    });
 
-   await prisma.model.createMany({
-      data: model,
+   await prisma.inventoryItem.createMany({
+      data: InventoryItem,
    });
 
-   await prisma.modelCategory.createMany({
-      data: modelCategory,
+   await prisma.variation.createMany({
+      data: Variation,
+   });
+
+   await prisma.stockReturn.createMany({
+      data: StockReturn,
+   });
+
+   await prisma.internalTransfer.createMany({
+      data: InternalTransfer,
+   });
+
+   await prisma.sale.createMany({
+      data: Sale,
+   });
+
+   await prisma.inventoryAge.createMany({
+      data: InventoryAge,
+   });
+
+   await prisma.lowStockAlert.createMany({
+      data: LowStockAlert,
    });
 }
 
 main()
    .catch((error) => {
-      console.log(error);
+      console.error(error);
       process.exit(1);
    })
-   .finally(() => {
-      prisma.$disconnect();
+   .finally(async () => {
+      await prisma.$disconnect();
    });
