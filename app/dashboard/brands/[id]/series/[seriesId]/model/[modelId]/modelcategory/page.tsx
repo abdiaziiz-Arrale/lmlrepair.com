@@ -27,7 +27,6 @@ interface Props {
   };
   searchParams: {
     modelName: string;
-    modelImage: string;
   };
 }
 
@@ -61,13 +60,6 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
           <div className="flex justify-between p-5">
             <div className="flex items-center gap-4 ">
               <div className="flex flex-col gap-1">
-                <img
-                  src={searchParams.modelImage}
-                  alt={searchParams.modelName}
-                  width={100}
-                  height={100}
-                  className="rounded-full object-cover"
-                />
                 <div className="flex gap-4">
                   <h1 className="text-2xl font-semibold">
                     {searchParams.modelName}
