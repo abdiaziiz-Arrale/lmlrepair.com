@@ -1,13 +1,12 @@
 import { SideNavItemGroup } from "@/types/type";
+import { Boxes, HandCoins, Key, Users } from "lucide-react";
 import {
-  BsEnvelope,
   BsGear,
   BsHouseDoor,
   BsKanban,
   BsListUl,
   BsQuestionCircle,
 } from "react-icons/bs";
-import { HandCoins, Users, Key } from "lucide-react";
 
 export const SIDENAV_ITEMS: SideNavItemGroup[] = [
   {
@@ -27,6 +26,11 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
         title: "Products",
         path: "/dashboard/products",
         icon: <BsKanban size={20} />,
+        submenu: true,
+        subMenuItems: [
+          { title: "All", path: "/dashboard/products" },
+          { title: "New", path: "/dashboard/products/new" },
+        ],
       },
       {
         title: "Services",
