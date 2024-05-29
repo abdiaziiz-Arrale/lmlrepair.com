@@ -11,27 +11,44 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { createCategory } from "@/lib/db/category";
+import { updateModelCategory } from "@/lib/db/modelCategoryCrud";
+import { Pencil } from "lucide-react";
 
-interface AddCategoryProps {
-  serviceId: number;
-  serviceName: string;
-  serviceImage: string;
+interface EditModelCategoryProps {
+  modelCategory_id: number;
+  modelId: number;
+  brandId: number;
+  seriesId: number;
+  modelName: string;
+  typeOfRepair: string;
+  raw: string;
+  tax: string;
+  shipping: string;
+  labour: string;
+  timeFrame: string;
 }
 
-const AddCategory = ({
-  serviceId,
-  serviceName,
-  serviceImage,
-}: AddCategoryProps) => {
+const EditModelCategory = ({
+  modelCategory_id,
+  modelId,
+  modelName,
+  brandId,
+  seriesId,
+  typeOfRepair,
+  raw,
+  tax,
+  shipping,
+  labour,
+  timeFrame,
+}: EditModelCategoryProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    typeOfRepair: "",
-    raw: "0",
-    tax: "0",
-    shipping: "0",
-    labour: "0",
-    timeFrame: "0",
+    typeOfRepair: typeOfRepair,
+    raw: raw,
+    tax: tax,
+    shipping: shipping,
+    labour: labour,
+    timeFrame: timeFrame,
   });
 
   const handleInputChange = (event: any) => {
@@ -56,10 +73,9 @@ const AddCategory = ({
     try {
       setLoading(true);
 
-      await createCategory({
-        category_id: undefined,
-        service_id: serviceId,
-        type_Of_Repair: formData.typeOfRepair,
+      await updateModelCategory(modelCategory_id, {
+        model_id: modelId,
+        type_of_repair: formData.typeOfRepair,
         raw: parseInt(formData.raw),
         tax: parseInt(formData.tax),
         shipping: parseInt(formData.shipping),
@@ -68,7 +84,7 @@ const AddCategory = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/services/${serviceId}?serviceName=${serviceName}&serviceImage=${serviceImage}`;
+      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model/${modelId}/modelcategory?modelName=${modelName}`;
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -78,11 +94,13 @@ const AddCategory = ({
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Add new</Button>
+        <Button>
+          <Pencil />
+        </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Category</DialogTitle>
+          <DialogTitle>Add Model Category</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
@@ -188,4 +206,4 @@ const AddCategory = ({
   );
 };
 
-export default AddCategory;
+export default EditModelCategory;

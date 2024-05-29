@@ -1,7 +1,7 @@
 "use client";
-import AddCategory from "@/components/AddCategory";
+import AddModelCategory from "@/components/AddModelCategory";
 import CustomContainer from "@/components/CustomContainer";
-import EditCategory from "@/components/EditCategory";
+import EditModelCategory from "@/components/EditModelCategory";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -12,8 +12,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCategory } from "@/lib/db/category";
-import { Category } from "@prisma/client";
+import { getModelCategory } from "@/lib/db/modelCategoryCrud";
+import { ModelCategory } from "@prisma/client";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useRouter } from "next/navigation";
@@ -22,17 +22,19 @@ import { useEffect, useState } from "react";
 interface Props {
   params: {
     id: string;
+    modelId: string;
+    seriesId: string;
   };
   searchParams: {
-    serviceName: string;
-    serviceImage: string;
+    modelName: string;
+    modelImage: string;
   };
 }
 
-const Service = ({ params, searchParams }: Props) => {
+const ModelCategoryPage = ({ params, searchParams }: Props) => {
   const router = useRouter();
   const { theme } = useTheme();
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [modelCategories, setModelCategories] = useState<ModelCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
 
@@ -40,8 +42,8 @@ const Service = ({ params, searchParams }: Props) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const response = await getCategory(parseInt(params.id));
-        setCategories(response);
+        const response = await getModelCategory(parseInt(params.modelId));
+        setModelCategories(response);
       } catch (error) {
         setError(true);
       } finally {
@@ -50,7 +52,7 @@ const Service = ({ params, searchParams }: Props) => {
     };
 
     fetchData();
-  }, [params.id]);
+  }, [params.modelId]);
 
   return (
     <CustomContainer>
@@ -58,17 +60,17 @@ const Service = ({ params, searchParams }: Props) => {
         <Card>
           <div className="flex justify-between p-5">
             <div className="flex items-center gap-4 ">
-              <img
-                src={searchParams.serviceImage}
-                alt={searchParams.serviceName}
-                width={100}
-                height={100}
-                className="rounded-full object-cover"
-              />
               <div className="flex flex-col gap-1">
+                <img
+                  src={searchParams.modelImage}
+                  alt={searchParams.modelName}
+                  width={100}
+                  height={100}
+                  className="rounded-full object-cover"
+                />
                 <div className="flex gap-4">
                   <h1 className="text-2xl font-semibold">
-                    {searchParams.serviceName}
+                    {searchParams.modelName}
                   </h1>
                 </div>
               </div>
@@ -84,10 +86,11 @@ const Service = ({ params, searchParams }: Props) => {
               >
                 <ArrowLeftIcon />
               </Button>
-              <AddCategory
-                serviceId={parseInt(params.id)}
-                serviceName={searchParams.serviceName}
-                serviceImage={searchParams.serviceImage}
+              <AddModelCategory
+                modelId={parseInt(params.modelId)}
+                modelName={searchParams.modelName}
+                brandId={parseInt(params.id)}
+                seriesId={parseInt(params.seriesId)}
               />
             </div>
           </div>
@@ -96,7 +99,9 @@ const Service = ({ params, searchParams }: Props) => {
           {loading ? (
             <div className="p-5">Loading...</div>
           ) : error ? (
-            <div className="p-5 text-red-500">Failed to load categories.</div>
+            <div className="p-5 text-red-500">
+              Failed to load model categories.
+            </div>
           ) : (
             <Table>
               <TableHeader>
@@ -112,44 +117,45 @@ const Service = ({ params, searchParams }: Props) => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {categories.map((category) => (
-                  <TableRow key={category.category_id}>
-                    <TableCell>{category.type_Of_Repair}</TableCell>
+                {modelCategories.map((modelCategory) => (
+                  <TableRow key={modelCategory.modelCategory_id}>
+                    <TableCell>{modelCategory.type_of_repair}</TableCell>
                     <TableCell className="font-medium">
-                      {category.raw}
+                      {modelCategory.raw}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category.tax}%
+                      {modelCategory.tax} %
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category.shipping}
+                      {modelCategory.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category?.labour}
+                      {modelCategory.labour}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category.timeFrame}
+                      {modelCategory.timeFrame}
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {category.raw +
-                        category.raw * category.tax +
-                        category.shipping +
-                        category.labour}
+                      {modelCategory.raw +
+                        modelCategory.raw * modelCategory.tax +
+                        modelCategory.shipping +
+                        modelCategory.labour}
                     </TableCell>
 
                     <TableCell className="font-medium">
-                      <EditCategory
-                        categoryId={category.category_id}
-                        serviceId={category.service_id}
-                        serviceName={category.type_Of_Repair}
-                        serviceImage={searchParams.serviceImage}
-                        tax={category.tax.toString()}
-                        labour={category.labour.toString()}
-                        shipping={category.shipping.toString()}
-                        raw={category.raw.toString()}
-                        timeFrame={category.timeFrame}
-                        typeOfRepair={category.type_Of_Repair.toString()}
+                      <EditModelCategory
+                        brandId={parseInt(params.id)}
+                        seriesId={parseInt(params.seriesId)}
+                        modelCategory_id={modelCategory.modelCategory_id}
+                        modelId={modelCategory.model_id}
+                        modelName={searchParams.modelName}
+                        tax={modelCategory.tax.toString()}
+                        labour={modelCategory.labour.toString()}
+                        shipping={modelCategory.shipping.toString()}
+                        raw={modelCategory.raw.toString()}
+                        timeFrame={modelCategory.timeFrame}
+                        typeOfRepair={modelCategory.type_of_repair.toString()}
                       />
                     </TableCell>
                   </TableRow>
@@ -163,4 +169,4 @@ const Service = ({ params, searchParams }: Props) => {
   );
 };
 
-export default Service;
+export default ModelCategoryPage;

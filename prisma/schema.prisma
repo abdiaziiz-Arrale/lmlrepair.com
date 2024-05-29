@@ -23,7 +23,6 @@ model Category {
   tax            Float
   shipping       Float
   timeFrame      String
-  total          Float
   service_id     Int
   labour         Int     @default(100)
   service        Service @relation(fields: [service_id], references: [service_id])
@@ -37,6 +36,17 @@ model Brand {
   brand_image String
   brand_desc  String
   series      Series[]
+}
+
+model Products {
+  product_id    Int    @id @default(autoincrement())
+  product_name  String
+  product_image String
+  product_desc  String
+  raw           Float
+  tax           Float
+  shipping      Float
+  markup        Float
 }
 
 model Series {
@@ -69,8 +79,8 @@ model ModelCategory {
   tax              Float
   shipping         Float
   timeFrame        String
-  total            Float
   model_id         Int
+  labour           Int    @default(100)
   model            Model  @relation(fields: [model_id], references: [model_id])
 
   @@index([model_id], map: "ModelCategory_model_id_fkey")
@@ -81,4 +91,123 @@ model Staff {
   staff_name    String
   mobile_number String
   email         String
+}
+
+model InternalTransfer {
+  internalTransferId                                 Int           @id @default(autoincrement())
+  inventoryItemId                                    Int
+  quantity                                           Int
+  fromLocationId                                     Int
+  toLocationId                                       Int
+  Location_InternalTransfer_fromLocationIdToLocation Location      @relation("InternalTransfer_fromLocationIdToLocation", fields: [fromLocationId], references: [locationId])
+  InventoryItem                                      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  Location_InternalTransfer_toLocationIdToLocation   Location      @relation("InternalTransfer_toLocationIdToLocation", fields: [toLocationId], references: [locationId])
+
+  @@index([fromLocationId], map: "InternalTransfer_fromLocationId_fkey")
+  @@index([inventoryItemId], map: "InternalTransfer_inventoryItemId_fkey")
+  @@index([toLocationId], map: "InternalTransfer_toLocationId_fkey")
+}
+
+model InventoryAge {
+  inventoryAgeId  Int           @id @default(autoincrement())
+  inventoryItemId Int
+  arrivalDate     DateTime
+  InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "InventoryAge_inventoryItemId_fkey")
+}
+
+model InventoryItem {
+  inventoryItemId    Int                @id @default(autoincrement())
+  name               String
+  description        String?
+  sku                String             @unique
+  stock              Int
+  cost               Float
+  itemsCategoryId    Int
+  itemsSubCategoryId Int?
+  vendorId           Int?
+  locationId         Int?
+  InternalTransfer   InternalTransfer[]
+  InventoryAge       InventoryAge[]
+  ItemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
+  ItemsSubCategory   ItemsSubCategory?  @relation(fields: [itemsSubCategoryId], references: [itemsSubCategoryId])
+  Location           Location?          @relation(fields: [locationId], references: [locationId])
+  Vendor             Vendor?            @relation(fields: [vendorId], references: [vendorId])
+  LowStockAlert      LowStockAlert[]
+  Sale               Sale[]
+  StockReturn        StockReturn[]
+  Variation          Variation[]
+
+  @@index([itemsCategoryId], map: "InventoryItem_itemsCategoryId_fkey")
+  @@index([itemsSubCategoryId], map: "InventoryItem_itemsSubCategoryId_fkey")
+  @@index([locationId], map: "InventoryItem_locationId_fkey")
+  @@index([vendorId], map: "InventoryItem_vendorId_fkey")
+}
+
+model ItemsCategory {
+  itemsCategoryId Int             @id @default(autoincrement())
+  name            String
+  InventoryItem   InventoryItem[]
+}
+
+model ItemsSubCategory {
+  itemsSubCategoryId Int             @id @default(autoincrement())
+  name               String
+  InventoryItem      InventoryItem[]
+}
+
+model Location {
+  locationId                                                 Int                @id @default(autoincrement())
+  name                                                       String
+  description                                                String?
+  InternalTransfer_InternalTransfer_fromLocationIdToLocation InternalTransfer[] @relation("InternalTransfer_fromLocationIdToLocation")
+  InternalTransfer_InternalTransfer_toLocationIdToLocation   InternalTransfer[] @relation("InternalTransfer_toLocationIdToLocation")
+  InventoryItem                                              InventoryItem[]
+}
+
+model LowStockAlert {
+  lowStockAlertId Int           @id @default(autoincrement())
+  inventoryItemId Int
+  threshold       Int
+  InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
+}
+
+model Sale {
+  saleId          Int           @id @default(autoincrement())
+  inventoryItemId Int
+  quantity        Int
+  revenue         Float
+  saleDate        DateTime
+  InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "Sale_inventoryItemId_fkey")
+}
+
+model StockReturn {
+  stockReturnId   Int           @id @default(autoincrement())
+  inventoryItemId Int
+  quantity        Int
+  reason          String
+  returnedAt      DateTime
+  InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "StockReturn_inventoryItemId_fkey")
+}
+
+model Variation {
+  variationId     Int           @id @default(autoincrement())
+  sku             String        @unique
+  inventoryItemId Int
+  InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
+}
+
+model Vendor {
+  vendorId      Int             @id @default(autoincrement())
+  name          String
+  InventoryItem InventoryItem[]
 }

@@ -27,11 +27,6 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
         title: "Products",
         path: "/dashboard/products",
         icon: <BsKanban size={20} />,
-        submenu: true,
-        subMenuItems: [
-          { title: "All", path: "/dashboard/products" },
-          { title: "New", path: "/dashboard/products/new" },
-        ],
       },
       {
         title: "Services",
