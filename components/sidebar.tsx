@@ -22,7 +22,7 @@ export const SideBar = () => {
 
    return (
       <aside className={asideStyle}>
-         <div className='relative flex flex-col h-full'>
+         <div className='relative flex flex-col h-full '>
             <div className='sidebar-top flex items-center px-3.5 py-2 fixed w-[inherit] z-[99998]'>
                {mounted && <SideBarLogo />}
                <h3
@@ -34,7 +34,7 @@ export const SideBar = () => {
                   LML
                </h3>
             </div>
-            <nav className='flex-1 overflow-y-auto overflow-x-hidden transition duration-300 ease-in-out mt-[80px]'>
+            <nav className='flex-1 overflow-y-auto overflow-x-hidden transition duration-300 ease-in-out mt-[80px] '>
                <div className='flex flex-col gap-2 px-4'>
                   {SIDENAV_ITEMS.map((item, idx) => {
                      return <SideBarMenuGroup key={idx} menuGroup={item} />;
