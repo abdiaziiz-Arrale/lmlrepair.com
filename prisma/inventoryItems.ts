@@ -1,47 +1,51 @@
 export const ItemsCategory = [
    {
+      itemsCategoryId: 1,
       name: 'Parts',
    },
    {
+      itemsCategoryId: 2,
       name: 'Equipments',
    },
    {
+      itemsCategoryId: 3,
       name: 'Accessories',
    },
    {
+      itemsCategoryId: 4,
       name: 'Devices',
    },
 ];
 
 export const ItemsSubCategory = [
-   // Todo: Parts Subcategories
-   { name: 'Screen' },
-   { name: 'Back Glass' },
-   { name: 'Battery' },
-   { name: 'Charging Port' },
-   { name: 'Back Camera' },
-   { name: 'Front Camera' },
-   { name: 'Back Camera Lens' },
-   { name: 'Loudspeaker' },
-   { name: 'Earpiece' },
-   { name: 'Proximity Sensor' },
-   { name: 'Taptic Engine' },
+   // Parts Subcategories
+   { itemsSubCategoryId: 1, name: 'Screen', categoryId: 1 },
+   { itemsSubCategoryId: 2, name: 'Back Glass', categoryId: 1 },
+   { itemsSubCategoryId: 3, name: 'Battery', categoryId: 1 },
+   { itemsSubCategoryId: 4, name: 'Charging Port', categoryId: 1 },
+   { itemsSubCategoryId: 5, name: 'Back Camera', categoryId: 1 },
+   { itemsSubCategoryId: 6, name: 'Front Camera', categoryId: 1 },
+   { itemsSubCategoryId: 7, name: 'Back Camera Lens', categoryId: 1 },
+   { itemsSubCategoryId: 8, name: 'Loudspeaker', categoryId: 1 },
+   { itemsSubCategoryId: 9, name: 'Earpiece', categoryId: 1 },
+   { itemsSubCategoryId: 10, name: 'Proximity Sensor', categoryId: 1 },
+   { itemsSubCategoryId: 11, name: 'Taptic Engine', categoryId: 1 },
 
-   // Todo: Equipments Subcategories
-   { name: 'Tools' },
-   { name: 'Supplies' },
+   // Equipments Subcategories
+   { itemsSubCategoryId: 12, name: 'Tools', categoryId: 2 },
+   { itemsSubCategoryId: 13, name: 'Supplies', categoryId: 2 },
 
-   // Todo: Accessories Subcategories
-   { name: 'Cases' },
-   { name: 'Chargers' },
-   { name: 'Screen Protectors' },
+   // Accessories Subcategories
+   { itemsSubCategoryId: 14, name: 'Cases', categoryId: 3 },
+   { itemsSubCategoryId: 15, name: 'Chargers', categoryId: 3 },
+   { itemsSubCategoryId: 16, name: 'Screen Protectors', categoryId: 3 },
 
-   // Todo: Devices Subcategories
-   { name: 'Phone' },
-   { name: 'Tablet' },
-   { name: 'Laptop' },
-   { name: 'Watch' },
-   { name: 'Computer' },
+   // Devices Subcategories
+   { itemsSubCategoryId: 17, name: 'Phone', categoryId: 4 },
+   { itemsSubCategoryId: 18, name: 'Tablet', categoryId: 4 },
+   { itemsSubCategoryId: 19, name: 'Laptop', categoryId: 4 },
+   { itemsSubCategoryId: 20, name: 'Watch', categoryId: 4 },
+   { itemsSubCategoryId: 21, name: 'Computer', categoryId: 4 },
 ];
 
 export const Vendor = [

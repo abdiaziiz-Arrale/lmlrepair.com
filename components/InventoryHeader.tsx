@@ -13,7 +13,7 @@ function InventoryHeader() {
                <Button className='w-24'>Items</Button>
             </Link>
 
-            <Link href={'/dashboard/inventory/category'}>
+            <Link href={'/dashboard/inventory/categories'}>
                <Button className='w-24'>Categories</Button>
             </Link>
             <Link href={'/dashboard/inventory/locations'}>

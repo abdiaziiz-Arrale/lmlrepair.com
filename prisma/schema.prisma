@@ -7,7 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Define the Service model
 model Service {
   service_id    Int        @id @default(autoincrement())
   service_name  String
@@ -17,7 +16,6 @@ model Service {
   categories    Category[]
 }
 
-// Define the Category model
 model Category {
   category_id    Int     @id @default(autoincrement())
   type_Of_Repair String
@@ -25,7 +23,6 @@ model Category {
   tax            Float
   shipping       Float
   timeFrame      String
-  total          Float
   service_id     Int
   labour         Int     @default(100)
   service        Service @relation(fields: [service_id], references: [service_id])
@@ -33,7 +30,6 @@ model Category {
   @@index([service_id], map: "Category_service_id_fkey")
 }
 
-// Define the Brand model
 model Brand {
   brand_id    Int      @id @default(autoincrement())
   brand_name  String
@@ -42,7 +38,6 @@ model Brand {
   series      Series[]
 }
 
-// Define the Series model
 model Series {
   series_id    Int     @id @default(autoincrement())
   series_name  String
@@ -55,7 +50,6 @@ model Series {
   @@index([brand_id], map: "Series_brand_id_fkey")
 }
 
-// Define the Model model
 model Model {
   model_id       Int             @id @default(autoincrement())
   model_name     String
@@ -67,7 +61,6 @@ model Model {
   @@index([series_id], map: "Model_series_id_fkey")
 }
 
-// Define the ModelCategory model
 model ModelCategory {
   modelCategory_id Int    @id @default(autoincrement())
   type_of_repair   String
@@ -75,14 +68,13 @@ model ModelCategory {
   tax              Float
   shipping         Float
   timeFrame        String
-  total            Float
   model_id         Int
+  labour           Int    @default(100)
   model            Model  @relation(fields: [model_id], references: [model_id])
 
   @@index([model_id], map: "ModelCategory_model_id_fkey")
 }
 
-// Define the Staff model
 model Staff {
   staff_id      Int    @id @default(autoincrement())
   staff_name    String
@@ -90,7 +82,6 @@ model Staff {
   email         String
 }
 
-// Define the InventoryItem model
 model InventoryItem {
   inventoryItemId    Int                @id @default(autoincrement())
   name               String
@@ -102,58 +93,63 @@ model InventoryItem {
   itemsSubCategoryId Int?
   vendorId           Int?
   locationId         Int?
+  internalTransfers  InternalTransfer[]
+  inventoryAge       InventoryAge[]
   itemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
   itemsSubCategory   ItemsSubCategory?  @relation(fields: [itemsSubCategoryId], references: [itemsSubCategoryId])
-  vendor             Vendor?            @relation(fields: [vendorId], references: [vendorId])
   location           Location?          @relation(fields: [locationId], references: [locationId])
-  variations         Variation[]
+  vendor             Vendor?            @relation(fields: [vendorId], references: [vendorId])
+  lowStockAlerts     LowStockAlert[]
   sales              Sale[]
   stockReturns       StockReturn[]
-  internalTransfers  InternalTransfer[]
-  inventoryAge       InventoryAge[] 
-  lowStockAlerts     LowStockAlert[] 
+  variations         Variation[]
+
+  @@index([itemsCategoryId], map: "InventoryItem_itemsCategoryId_fkey")
+  @@index([itemsSubCategoryId], map: "InventoryItem_itemsSubCategoryId_fkey")
+  @@index([locationId], map: "InventoryItem_locationId_fkey")
+  @@index([vendorId], map: "InventoryItem_vendorId_fkey")
 }
 
-// Define the ItemsCategory model (formerly MainCategory)
 model ItemsCategory {
   itemsCategoryId Int             @id @default(autoincrement())
   name            String
   items           InventoryItem[]
+  subCategories  ItemsSubCategory[]
 }
 
-// Define the ItemsSubCategory model (formerly SubCategory)
 model ItemsSubCategory {
   itemsSubCategoryId Int             @id @default(autoincrement())
   name               String
   items              InventoryItem[]
+  categoryId     Int
+  category       ItemsCategory     @relation(fields: [categoryId], references: [itemsCategoryId])
+
 }
 
-// Define the Vendor model
 model Vendor {
   vendorId Int             @id @default(autoincrement())
   name     String
   items    InventoryItem[]
 }
 
-// Define the Location model
 model Location {
   locationId    Int                @id @default(autoincrement())
   name          String
   description   String?
-  items         InventoryItem[]
-  transfersTo   InternalTransfer[] @relation("toLocation")
   transfersFrom InternalTransfer[] @relation("fromLocation")
+  transfersTo   InternalTransfer[] @relation("toLocation")
+  items         InventoryItem[]
 }
 
-// Define the Variation model
 model Variation {
   variationId     Int           @id @default(autoincrement())
   sku             String        @unique
   inventoryItemId Int
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
 }
 
-// Define the StockReturn model
 model StockReturn {
   stockReturnId   Int           @id @default(autoincrement())
   inventoryItemId Int
@@ -161,9 +157,10 @@ model StockReturn {
   reason          String
   returnedAt      DateTime
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "StockReturn_inventoryItemId_fkey")
 }
 
-// Define the InternalTransfer model
 model InternalTransfer {
   internalTransferId Int           @id @default(autoincrement())
   inventoryItemId    Int
@@ -171,11 +168,14 @@ model InternalTransfer {
   fromLocationId     Int
   toLocationId       Int
   fromLocation       Location      @relation("fromLocation", fields: [fromLocationId], references: [locationId])
-  toLocation         Location      @relation("toLocation", fields: [toLocationId], references: [locationId])
   inventoryItem      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  toLocation         Location      @relation("toLocation", fields: [toLocationId], references: [locationId])
+
+  @@index([fromLocationId], map: "InternalTransfer_fromLocationId_fkey")
+  @@index([inventoryItemId], map: "InternalTransfer_inventoryItemId_fkey")
+  @@index([toLocationId], map: "InternalTransfer_toLocationId_fkey")
 }
 
-// Define the Sale model
 model Sale {
   saleId          Int           @id @default(autoincrement())
   inventoryItemId Int
@@ -183,22 +183,35 @@ model Sale {
   revenue         Float
   saleDate        DateTime
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "Sale_inventoryItemId_fkey")
 }
 
-// Define the InventoryAge model
 model InventoryAge {
   inventoryAgeId  Int           @id @default(autoincrement())
   inventoryItemId Int
   arrivalDate     DateTime
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "InventoryAge_inventoryItemId_fkey")
 }
 
-// Define the LowStockAlert model
 model LowStockAlert {
   lowStockAlertId Int           @id @default(autoincrement())
   inventoryItemId Int
   threshold       Int
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
+  @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
 }
 
-
+model Products {
+  product_id    Int    @id @default(autoincrement())
+  product_name  String
+  product_image String
+  product_desc  String
+  raw           Float
+  tax           Float
+  shipping      Float
+  markup        Float
+}

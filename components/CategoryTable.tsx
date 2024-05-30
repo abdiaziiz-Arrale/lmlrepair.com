@@ -30,7 +30,7 @@ type InventoryItem = {
    location?: { name: string };
 };
 
-function ItemsTable() {
+function CategoryTable() {
    const [items, setItems] = useState<InventoryItem[] | undefined>(undefined);
    const [isPending, startTransition] = useTransition();
 
@@ -117,4 +117,4 @@ function ItemsTable() {
    );
 }
 
-export default ItemsTable;
+export default CategoryTable;
