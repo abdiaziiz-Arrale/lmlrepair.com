@@ -11,19 +11,21 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { createCategory } from "@/lib/db/category";
+import { createModelCategory } from "@/lib/db/modelCategoryCrud";
 
-interface AddCategoryProps {
-  serviceId: number;
-  serviceName: string;
-  serviceImage: string;
+interface AddModelCategoryProps {
+  modelId: number;
+  brandId: number;
+  seriesId: number;
+  modelName: string;
 }
 
-const AddCategory = ({
-  serviceId,
-  serviceName,
-  serviceImage,
-}: AddCategoryProps) => {
+const AddModelCategory = ({
+  modelId,
+  modelName,
+  brandId,
+  seriesId,
+}: AddModelCategoryProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     typeOfRepair: "",
@@ -56,10 +58,9 @@ const AddCategory = ({
     try {
       setLoading(true);
 
-      await createCategory({
-        category_id: undefined,
-        service_id: serviceId,
-        type_Of_Repair: formData.typeOfRepair,
+      await createModelCategory({
+        model_id: modelId,
+        type_of_repair: formData.typeOfRepair,
         raw: parseInt(formData.raw),
         tax: parseInt(formData.tax),
         shipping: parseInt(formData.shipping),
@@ -68,7 +69,7 @@ const AddCategory = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/services/${serviceId}?serviceName=${serviceName}&serviceImage=${serviceImage}`;
+      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model/${modelId}/modelcategory?modelName=${modelName}`;
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -188,4 +189,4 @@ const AddCategory = ({
   );
 };
 
-export default AddCategory;
+export default AddModelCategory;

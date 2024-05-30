@@ -38,6 +38,17 @@ model Brand {
   series      Series[]
 }
 
+model Products {
+  product_id    Int    @id @default(autoincrement())
+  product_name  String
+  product_image String
+  product_desc  String
+  raw           Float
+  tax           Float
+  shipping      Float
+  markup        Float
+}
+
 model Series {
   series_id    Int     @id @default(autoincrement())
   series_name  String
@@ -203,15 +214,4 @@ model LowStockAlert {
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
-}
-
-model Products {
-  product_id    Int    @id @default(autoincrement())
-  product_name  String
-  product_image String
-  product_desc  String
-  raw           Float
-  tax           Float
-  shipping      Float
-  markup        Float
 }
