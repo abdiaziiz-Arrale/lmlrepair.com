@@ -1,6 +1,6 @@
 'use client';
 
-import { getInventoryItems } from '@/lib/db/inventoryCrud';
+import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
 import { useEffect, useState, useTransition } from 'react';
 import { Card } from './ui/card';
 import {
@@ -77,7 +77,7 @@ function ItemsTable() {
                            <TableCell className='space-x-1'>
                               <span>{item.itemsCategory?.name}</span>
                               <span>-</span>
-                              <span className='text-green-500'>
+                              <span className='space-x-1 text-green-500 font-medium'>
                                  {item.itemsSubCategory?.name || 'N/A'}
                               </span>
                            </TableCell>
@@ -101,7 +101,7 @@ function ItemsTable() {
                               )}
                            </TableCell>
                            <TableCell>{item.stock}</TableCell>
-                           <TableCell className='text-green-500'>
+                           <TableCell className='text-green-500 font-medium'>
                               ${item.cost}
                            </TableCell>
                            <TableCell>{item.vendor?.name}</TableCell>

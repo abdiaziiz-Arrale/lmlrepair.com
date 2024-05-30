@@ -1,47 +1,48 @@
 export const services = [
    {
+      service_id: 1,
       service_name: 'BuyBacks',
       service_desc: 'This is a Buybacks service',
       service_image: '/buyBacks.png',
       service_type: 'general_service',
    },
    {
+      service_id: 2,
       service_name: 'Cleaning',
       service_desc: 'This is a cleaning service',
       service_image: '/cleaning.png',
       service_type: 'general_service',
    },
    {
+      service_id: 3,
       service_name: 'Customization',
       service_desc: 'This is a Customization service',
       service_image: '/customization.png',
       service_type: 'general_service',
    },
    {
+      service_id: 4,
       service_name: 'Diagnostics',
       service_desc: 'This is a Diagnostics service',
       service_image: '/Diagnostics.png',
       service_type: 'general_service',
    },
    {
+      service_id: 5,
       service_name: 'Software',
       service_desc: 'This is a software service',
       service_image: '/software.png',
       service_type: 'general_service',
    },
    {
-      service_name: 'Software',
-      service_desc: 'This is a software service',
-      service_image: '/software.png',
-      service_type: 'general_service',
-   },
-   {
+      service_id: 6,
       service_name: 'Unlocks',
       service_desc: 'This is a Unlocks service',
       service_image: '/Unlocks.png',
       service_type: 'general_service',
    },
    {
+      service_id: 7,
       service_name: 'Repairs',
       service_desc: 'This is a Repairs service',
       service_image: '/repairs.png',
@@ -51,46 +52,55 @@ export const services = [
 
 export const brands = [
    {
+      brand_id: 1,
       brand_name: 'Apple',
       brand_image: '/apple_logo.png',
       brand_desc: 'Apple products',
    },
    {
+      brand_id: 2,
       brand_name: 'Samsung',
       brand_image: '/samsung_logo.png',
       brand_desc: 'Samsung products',
    },
    {
+      brand_id: 3,
       brand_name: 'Microsoft',
       brand_image: '/microsoft_logo.png',
       brand_desc: 'Microsoft products',
    },
    {
+      brand_id: 4,
       brand_name: 'Google',
       brand_image: '/google_logo.png',
       brand_desc: 'Google products',
    },
    {
+      brand_id: 5,
       brand_name: 'Oneplus',
       brand_image: '/oneplus_logo.png',
       brand_desc: 'Oneplus products',
    },
    {
+      brand_id: 6,
       brand_name: 'LG',
       brand_image: '/lg_logo.png',
       brand_desc: 'LG products',
    },
    {
+      brand_id: 7,
       brand_name: 'Sony',
       brand_image: '/sony_logo.png',
       brand_desc: 'Sony products',
    },
    {
+      brand_id: 8,
       brand_name: 'Nintendo',
       brand_image: '/nintendo_logo.png',
       brand_desc: 'Nintendo products',
    },
    {
+      brand_id: 9,
       brand_name: 'Motorola',
       brand_image: '/motorola_logo.png',
       brand_desc: 'Motorola products',

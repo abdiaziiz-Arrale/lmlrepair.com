@@ -1,6 +1,6 @@
 'use client';
 
-import { getInventoryItems } from '@/lib/db/inventoryCrud';
+import { getCategory } from '@/lib/db/ItemCategoryCrud';
 import { useEffect, useState, useTransition } from 'react';
 import { Card } from './ui/card';
 import {
@@ -12,35 +12,25 @@ import {
    TableRow,
 } from './ui/table';
 
-type InventoryItem = {
-   inventoryItemId: number;
+type Categories = {
    name: string;
-   description: string | null;
-   sku: string;
-   stock: number;
-   cost: number;
-   itemsCategoryId: number | null;
-   itemsSubCategoryId: number | null;
-   vendorId: number | null;
-   locationId: number | null;
-   itemsCategory?: { name: string };
-   itemsSubCategory?: { name: string };
-   vendor?: { name: string };
-   variations?: { sku: string }[];
-   location?: { name: string };
+   itemsCategoryId: number;
+   subCategories?: { name: string }[];
 };
 
 function CategoryTable() {
-   const [items, setItems] = useState<InventoryItem[] | undefined>(undefined);
+   const [categories, setCategories] = useState<Categories[] | undefined>(
+      undefined
+   );
    const [isPending, startTransition] = useTransition();
 
    useEffect(() => {
       function fetchInventoryItems() {
          startTransition(async () => {
             try {
-               const inventoryItems = await getInventoryItems();
-               setItems(inventoryItems);
-               console.log(inventoryItems);
+               const categoryList = await getCategory();
+               setCategories(categoryList);
+               console.log(categoryList); // Corrected from inventoryItems
             } catch (error) {
                console.error('Error fetching inventory items:', error);
             }
@@ -57,57 +47,39 @@ function CategoryTable() {
             <Table>
                <TableHeader>
                   <TableRow>
-                     <TableHead>Item</TableHead>
-                     <TableHead>Category</TableHead>
-                     <TableHead>SKU</TableHead>
-                     <TableHead>Variation</TableHead>
-                     <TableHead>Stock</TableHead>
-                     <TableHead>Cost</TableHead>
-                     <TableHead>Vendor</TableHead>
-                     <TableHead>Location</TableHead>
-                     <TableHead>Date</TableHead>
-                     <TableHead>Actions</TableHead>
+                     <TableHead className='lg:w-80'>Category</TableHead>
+                     <TableHead>Sub-Category</TableHead>
+                     <TableHead>Date Added</TableHead>
+                     <TableHead>Acttions</TableHead>
                   </TableRow>
                </TableHeader>
                <TableBody>
-                  {items &&
-                     items.map((item) => (
-                        <TableRow key={item.inventoryItemId}>
-                           <TableCell>{item.name}</TableCell>
+                  {categories &&
+                     categories.map((cate) => (
+                        <TableRow key={cate.itemsCategoryId}>
+                           <TableCell className='lg;w-96'>
+                              {cate.name}
+                           </TableCell>
                            <TableCell className='space-x-1'>
-                              <span>{item.itemsCategory?.name}</span>
-                              <span>-</span>
-                              <span className='text-green-500'>
-                                 {item.itemsSubCategory?.name || 'N/A'}
-                              </span>
+                              <ul className='space-y-1'>
+                                 {cate.subCategories &&
+                                 cate.subCategories?.length > 0 ? (
+                                    cate.subCategories?.map(
+                                       (subCategory, index) => (
+                                          <li
+                                             key={index}
+                                             className='text-green-500 font-medium'
+                                          >
+                                             {subCategory?.name},
+                                          </li>
+                                       )
+                                    )
+                                 ) : (
+                                    <span>N/A</span>
+                                 )}
+                              </ul>
                            </TableCell>
-                           <TableCell>{item.sku}</TableCell>
-                           <TableCell className=''>
-                              {item.variations && item.variations.length > 0 ? (
-                                 <ul>
-                                    {item.variations.map((variation, index) => (
-                                       <li
-                                          key={index}
-                                          className='truncate hover:overflow-visible transition-all delay-75 hover:whitespace-normal'
-                                       >
-                                          <span className='hover:whitespace-normal tranisition-all'>
-                                             {variation.sku}
-                                          </span>
-                                       </li>
-                                    ))}
-                                 </ul>
-                              ) : (
-                                 'No variations'
-                              )}
-                           </TableCell>
-                           <TableCell>{item.stock}</TableCell>
-                           <TableCell className='text-green-500'>
-                              ${item.cost}
-                           </TableCell>
-                           <TableCell>{item.vendor?.name}</TableCell>
-                           <TableCell>{item.location?.name || 'N/A'}</TableCell>
-                           <TableCell className='w-24'>Oct, 2024</TableCell>
-                           <TableCell className='w-24'>Edit</TableCell>
+                           <TableCell>2021-09-12</TableCell>
                         </TableRow>
                      ))}
                </TableBody>
