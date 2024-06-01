@@ -21,13 +21,13 @@ interface EditBrandProps {
    brandDescription: string;
 }
 
-const EditBrand = ({ brandId }: EditBrandProps) => {
+const EditBrand = ({ brandId,brandName,brandDescription }: EditBrandProps) => {
    const inputFileRef = useRef<HTMLInputElement>(null);
 
    const [loading, setLoading] = useState(false);
    const [formData, setFormData] = useState({
-      brandName: '',
-      brandDescription: '',
+      brandName: brandName,
+      brandDescription: brandDescription,
    });
 
    const handleInputChange = (event: any) => {

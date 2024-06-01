@@ -6,7 +6,6 @@ import { Karla } from "next/font/google";
 import { SideBar } from "../../components/sidebar";
 import "../globals.css";
 
-const revalidate = 0;
 
 const karla = Karla({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
