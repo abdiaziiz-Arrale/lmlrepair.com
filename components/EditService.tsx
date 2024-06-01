@@ -18,7 +18,6 @@ import {
 } from '@/components/ui/select';
 import { updateService } from '@/lib/db/serviceCrud';
 import { Pencil } from 'lucide-react';
-import moment from 'moment';
 import React, { useRef, useState } from 'react';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -69,7 +68,7 @@ const EditService: React.FC<EditServiceProps> = ({
                   service_type: type,
                });
                setLoading(false);
-               window.location.href = '/dashboard/services';
+               window.location.reload()
                return;
             }
 
@@ -94,6 +93,7 @@ const EditService: React.FC<EditServiceProps> = ({
                service_type: type,
                service_image: imageUrl,
             });
+            window.location.reload()
          } else {
             throw new Error('Image upload failed. Please try again.');
          }
@@ -110,7 +110,7 @@ const EditService: React.FC<EditServiceProps> = ({
             </Button>
          </DialogTrigger>
 
-         <DialogContent className='w-full max-w-md bg-white rounded-lg p-6'>
+         <DialogContent className='w-full max-w-md  rounded-lg p-6'>
             <DialogHeader>
                <DialogTitle>Edit Task</DialogTitle>
             </DialogHeader>

@@ -13,6 +13,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import type { PutBlobResult } from '@vercel/blob';
 import { updateBrand } from '@/lib/db/brandCrud';
+import { Pencil } from 'lucide-react';
 
 interface EditBrandProps {
    brandId: number;
@@ -48,6 +49,18 @@ const EditBrand = ({ brandId }: EditBrandProps) => {
          if (inputFileRef.current?.files) {
             const file = inputFileRef.current.files[0];
 
+            if (!file) {
+               await updateBrand(brandId, {
+                  brand_id: brandId,
+                  brand_name: formData.brandName,
+                  brand_desc: formData.brandDescription,
+               });
+      
+               setLoading(false);
+               window.location.reload()
+               return;
+             }
+
             const response = await fetch(`/api/upload?filename=${file.name}`, {
                method: 'POST',
                body: file,
@@ -75,7 +88,7 @@ const EditBrand = ({ brandId }: EditBrandProps) => {
          });
 
          setLoading(false);
-         window.location.href = '/dashboard/brand';
+         window.location.reload()
       } catch (error) {
          console.error('An error occurred:', error);
          setLoading(false);
@@ -85,7 +98,7 @@ const EditBrand = ({ brandId }: EditBrandProps) => {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <Button variant='default'>Add new</Button>
+            <Button variant='default'><Pencil/></Button>
          </DialogTrigger>
          <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader>

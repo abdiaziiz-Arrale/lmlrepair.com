@@ -17,9 +17,6 @@ import { Pencil } from "lucide-react";
 interface EditModelCategoryProps {
   modelCategory_id: number;
   modelId: number;
-  brandId: number;
-  seriesId: number;
-  modelName: string;
   typeOfRepair: string;
   raw: string;
   tax: string;
@@ -31,9 +28,6 @@ interface EditModelCategoryProps {
 const EditModelCategory = ({
   modelCategory_id,
   modelId,
-  modelName,
-  brandId,
-  seriesId,
   typeOfRepair,
   raw,
   tax,
@@ -84,7 +78,7 @@ const EditModelCategory = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model/${modelId}/modelcategory?modelName=${modelName}`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

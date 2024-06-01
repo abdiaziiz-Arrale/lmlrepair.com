@@ -9,9 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-
-import { updateService } from "@/lib/db/serviceCrud";
-import moment from "moment";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Pencil } from "lucide-react";
@@ -73,7 +70,6 @@ const EditCategory: React.FC<EditCategoryProps> = ({
     }
     try {
       setLoading(true);
-      const formattedDate = moment().format("YYYY-MM-DD");
 
       await updateCategory(categoryId, {
         category_id: categoryId,
@@ -87,7 +83,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/services/${serviceId}?serviceName=${serviceName}&serviceImage=${serviceImage}`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

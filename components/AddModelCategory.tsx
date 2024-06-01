@@ -15,16 +15,10 @@ import { createModelCategory } from "@/lib/db/modelCategoryCrud";
 
 interface AddModelCategoryProps {
   modelId: number;
-  brandId: number;
-  seriesId: number;
-  modelName: string;
 }
 
 const AddModelCategory = ({
   modelId,
-  modelName,
-  brandId,
-  seriesId,
 }: AddModelCategoryProps) => {
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -69,7 +63,7 @@ const AddModelCategory = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model/${modelId}/modelcategory?modelName=${modelName}`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

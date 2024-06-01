@@ -17,13 +17,11 @@ import { updateModel } from "@/lib/db/modelCrud";
 interface EditModelProps {
   modelId: number;
   seriesId: number;
-  brandId: number;
   modelName: string;
 }
 
 const EditModel = ({
   seriesId,
-  brandId,
   modelName,
   modelId,
 }: EditModelProps) => {
@@ -57,7 +55,7 @@ const EditModel = ({
             model_name: formData.modelName,
           });
           setLoading(false);
-          window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model`;
+          window.location.reload()
           return;
         }
 
@@ -87,7 +85,7 @@ const EditModel = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

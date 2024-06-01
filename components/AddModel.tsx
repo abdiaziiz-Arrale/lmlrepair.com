@@ -16,10 +16,9 @@ import { createModel } from "@/lib/db/modelCrud";
 
 interface AddModelProps {
   seriesId: number;
-  brandId: number;
 }
 
-const AddModel = ({ seriesId, brandId }: AddModelProps) => {
+const AddModel = ({ seriesId }: AddModelProps) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -51,7 +50,7 @@ const AddModel = ({ seriesId, brandId }: AddModelProps) => {
             model_image: "/lml_logo.png",
           });
           setLoading(false);
-          window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model`;
+          window.location.reload()
           return;
         }
 
@@ -81,7 +80,7 @@ const AddModel = ({ seriesId, brandId }: AddModelProps) => {
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

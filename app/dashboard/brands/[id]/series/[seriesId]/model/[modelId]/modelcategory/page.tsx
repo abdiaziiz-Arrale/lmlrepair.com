@@ -80,9 +80,6 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
               </Button>
               <AddModelCategory
                 modelId={parseInt(params.modelId)}
-                modelName={searchParams.modelName}
-                brandId={parseInt(params.id)}
-                seriesId={parseInt(params.seriesId)}
               />
             </div>
           </div>
@@ -137,11 +134,8 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
 
                     <TableCell className="font-medium">
                       <EditModelCategory
-                        brandId={parseInt(params.id)}
-                        seriesId={parseInt(params.seriesId)}
                         modelCategory_id={modelCategory.modelCategory_id}
                         modelId={modelCategory.model_id}
-                        modelName={searchParams.modelName}
                         tax={modelCategory.tax.toString()}
                         labour={modelCategory.labour.toString()}
                         shipping={modelCategory.shipping.toString()}

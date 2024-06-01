@@ -60,7 +60,7 @@ const EditSeries = ({
             series_desc: formData.seriesDescription,
           });
           setLoading(false);
-          window.location.href = `/dashboard/brands/${brandId}/series`;
+          window.location.reload()
           return;
         }
 
@@ -92,7 +92,7 @@ const EditSeries = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series`;
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);

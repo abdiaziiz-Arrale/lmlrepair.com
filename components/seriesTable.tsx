@@ -1,9 +1,7 @@
 'use client';
 
 import { Search } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
-import AddService from './AddService';
 import CustomContainer from './CustomContainer';
 import { Card } from './ui/card';
 import { Input } from './ui/input';

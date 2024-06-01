@@ -83,7 +83,7 @@ const EditProduct = ({
             shipping: parseInt(formData.shipping),
           });
           setLoading(false);
-          window.location.href = "/dashboard/products";
+          window.location.reload()
           return;
         }
 
@@ -117,7 +117,7 @@ const EditProduct = ({
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/products";
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
