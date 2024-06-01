@@ -2,7 +2,7 @@ import { Plus } from 'lucide-react';
 import { DatePickerDemo } from './DatePicker';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { Download } from 'lucide-react';
+import Link from 'next/link';
 function InventoryItemsHeader() {
    return (
       <div className='space-y-3'>
@@ -15,10 +15,12 @@ function InventoryItemsHeader() {
                <div className='flex items-center gap-3'>
                   <DatePickerDemo />
                </div>
-               <Button className='space-x-2'>
-                  <Plus size={20} />
-                  <span>Add Category</span>
-               </Button>
+               <Link href={'/inventory/createCategory/new'}>
+                  <Button className='space-x-2'>
+                     <Plus size={20} />
+                     <span>Add Category</span>
+                  </Button>
+               </Link>
             </div>
          </div>
 

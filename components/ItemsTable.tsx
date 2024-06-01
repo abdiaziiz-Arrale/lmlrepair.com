@@ -1,7 +1,3 @@
-'use client';
-
-import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { useEffect, useState, useTransition } from 'react';
 import { Card } from './ui/card';
 import {
    Table,
@@ -12,7 +8,7 @@ import {
    TableRow,
 } from './ui/table';
 
-type InventoryItem = {
+interface InventoryItem {
    inventoryItemId: number;
    name: string;
    description: string | null;
@@ -28,29 +24,13 @@ type InventoryItem = {
    vendor?: { name: string };
    variations?: { sku: string }[];
    location?: { name: string };
-};
+}
 
-function ItemsTable() {
-   const [items, setItems] = useState<InventoryItem[] | undefined>(undefined);
-   const [isPending, startTransition] = useTransition();
+interface Props {
+   items: InventoryItem[];
+}
 
-   useEffect(() => {
-      function fetchInventoryItems() {
-         startTransition(async () => {
-            try {
-               const inventoryItems = await getInventoryItems();
-               setItems(inventoryItems);
-               console.log(inventoryItems);
-            } catch (error) {
-               console.error('Error fetching inventory items:', error);
-            }
-         });
-      }
-      fetchInventoryItems();
-   }, []);
-
-   if (isPending) return <div>Loading...</div>;
-
+async function ItemsTable({ items }: Props) {
    return (
       <div>
          <Card className='my-8'>
