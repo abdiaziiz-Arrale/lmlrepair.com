@@ -1,23 +1,22 @@
 import { DatePickerDemo } from '@/components/DatePicker';
-
 import ItemsTable from '@/components/ItemsTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { InventoryItem } from '@prisma/client';
 import { Download, Plus } from 'lucide-react';
 import Link from 'next/link';
 
-async function Items() {
-   let items: InventoryItem[] = [];
-   let error = '';
-
+export async function fetchItems() {
    try {
-      items = await getInventoryItems();
+      const items = await getInventoryItems();
+      return { items, error: null };
    } catch (err) {
-      error = 'Check your internet connection.';
+      return { items: [], error: 'Check your internet connection.' };
    }
+}
 
+async function Items() {
+   const { items, error } = await fetchItems();
    return (
       <div>
          <div className='space-y-3 '>
@@ -44,6 +43,7 @@ async function Items() {
                </div>
             </div>
          </div>
+
          {error ? (
             <p className='text-red-500 text-center mt-10'>{error}</p>
          ) : (

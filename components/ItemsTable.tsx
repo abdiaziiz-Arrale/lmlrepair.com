@@ -1,3 +1,4 @@
+import { Delete, Edit, Edit2, Trash } from 'lucide-react';
 import { Card } from './ui/card';
 import {
    Table,
@@ -7,6 +8,7 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
+import { Button } from './ui/button';
 
 interface InventoryItem {
    inventoryItemId: number;
@@ -87,7 +89,19 @@ async function ItemsTable({ items }: Props) {
                            <TableCell>{item.vendor?.name}</TableCell>
                            <TableCell>{item.location?.name || 'N/A'}</TableCell>
                            <TableCell className='w-24'>Oct, 2024</TableCell>
-                           <TableCell className='w-24'>Edit</TableCell>
+                           <TableCell>
+                              <div className='flex items-center gap-3'>
+                                 <Edit2
+                                    size={20}
+                                    className='text-blue-500 cursor-pointer'
+                                 />
+
+                                 <Trash
+                                    size={20}
+                                    className='text-red-500 cursor-pointer'
+                                 />
+                              </div>
+                           </TableCell>
                         </TableRow>
                      ))}
                </TableBody>

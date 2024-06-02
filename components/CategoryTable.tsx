@@ -1,7 +1,4 @@
-'use client';
-
-import { getCategory } from '@/lib/db/ItemCategoryCrud';
-import { useEffect, useState, useTransition } from 'react';
+import { Edit2, Trash } from 'lucide-react';
 import { Card } from './ui/card';
 import {
    Table,
@@ -18,29 +15,11 @@ type Categories = {
    subCategories?: { name: string }[];
 };
 
-function CategoryTable() {
-   const [categories, setCategories] = useState<Categories[] | undefined>(
-      undefined
-   );
-   const [isPending, startTransition] = useTransition();
+interface Props {
+   categories: Categories[];
+}
 
-   useEffect(() => {
-      function fetchInventoryItems() {
-         startTransition(async () => {
-            try {
-               const categoryList = await getCategory();
-               setCategories(categoryList);
-               console.log(categoryList); // Corrected from inventoryItems
-            } catch (error) {
-               console.error('Error fetching inventory items:', error);
-            }
-         });
-      }
-      fetchInventoryItems();
-   }, []);
-
-   if (isPending) return <div>Loading...</div>;
-
+function CategoryTable({ categories }: Props) {
    return (
       <div>
          <Card className='my-8'>
@@ -80,6 +59,19 @@ function CategoryTable() {
                               </ul>
                            </TableCell>
                            <TableCell>2021-09-12</TableCell>
+                           <TableCell>
+                              <div className='flex items-center gap-3'>
+                                 <Edit2
+                                    size={20}
+                                    className='text-blue-500 cursor-pointer'
+                                 />
+
+                                 <Trash
+                                    size={20}
+                                    className='text-red-500 cursor-pointer'
+                                 />
+                              </div>
+                           </TableCell>
                         </TableRow>
                      ))}
                </TableBody>

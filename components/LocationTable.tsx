@@ -1,6 +1,4 @@
-'use client';
-import { getLocations } from '@/lib/db/ItemLocationCrud';
-import { useEffect, useState, useTransition } from 'react';
+import { Edit2, Trash } from 'lucide-react';
 import { Card } from './ui/card';
 import {
    Table,
@@ -17,29 +15,11 @@ type Locations = {
    description?: string | null;
 };
 
-function CategoryTable() {
-   const [locations, setLocations] = useState<Locations[] | undefined>(
-      undefined
-   );
-   const [isPending, startTransition] = useTransition();
+interface Props {
+   locations: Locations[];
+}
 
-   useEffect(() => {
-      function fetchInventoryItems() {
-         startTransition(async () => {
-            try {
-               const locationsList = await getLocations();
-               setLocations(locationsList);
-               console.log(locationsList);
-            } catch (error) {
-               console.error('Error fetching  locations:', error);
-            }
-         });
-      }
-      fetchInventoryItems();
-   }, []);
-
-   if (isPending) return <div>Loading...</div>;
-
+function CategoryTable({ locations }: Props) {
    return (
       <div>
          <Card className='my-8'>
@@ -63,6 +43,19 @@ function CategoryTable() {
                               {locate.description}
                            </TableCell>
                            <TableCell>2021-09-12</TableCell>
+                           <TableCell>
+                              <div className='flex items-center gap-3'>
+                                 <Edit2
+                                    size={20}
+                                    className='text-blue-500 cursor-pointer'
+                                 />
+
+                                 <Trash
+                                    size={20}
+                                    className='text-red-500 cursor-pointer'
+                                 />
+                              </div>
+                           </TableCell>
                         </TableRow>
                      ))}
                </TableBody>
