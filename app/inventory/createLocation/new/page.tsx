@@ -3,25 +3,50 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { X } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { createLocation } from '@/lib/db/ItemLocationCrud';
+import { CircleDashedIcon, X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 type Inputs = {
-   location: string;
+   name: string;
    description: string;
 };
 
-function CreateNewItem() {
+function CreateNewLocation() {
+   const router = useRouter();
+   const { toast } = useToast();
+   const [isPending, startTransition] = useTransition();
+
    const {
       register,
       handleSubmit,
-      watch,
       formState: { errors },
    } = useForm<Inputs>();
 
    const onSubmit: SubmitHandler<Inputs> = (data) => {
-      console.log(data);
+      startTransition(async () => {
+         try {
+            const res = await createLocation(data);
+            if (res.status === 'success') {
+               toast({
+                  title: 'Created: Location ',
+                  description: `${res.location.name} has been created.`,
+               });
+
+               router.push('/dashboard/inventory/locations');
+            }
+         } catch (error) {
+            console.log(error);
+            toast({
+               title: 'Error',
+               description: 'Failed to create location.',
+            });
+         }
+      });
    };
 
    return (
@@ -33,8 +58,16 @@ function CreateNewItem() {
                </Button>
             </Link>
             <h1 className='text-xl font-medium'>Create Location</h1>
+
             <Button type='submit' onClick={handleSubmit(onSubmit)}>
-               Save
+               {isPending ? (
+                  <>
+                     <CircleDashedIcon size={20} className='animate-spin' />
+                     <span className='ml-2'>Saving</span>
+                  </>
+               ) : (
+                  'Save'
+               )}
             </Button>
          </div>
          <div className='flex flex-col items-center p-6 space-y-4'>
@@ -48,7 +81,7 @@ function CreateNewItem() {
                   <Input
                      placeholder='e.g seattle Warehouse A'
                      className='w-full'
-                     {...(register('location'), { required: true })}
+                     {...register('name', { required: true })}
                   />
                </div>
                <div>
@@ -56,13 +89,19 @@ function CreateNewItem() {
                   <Input
                      placeholder='e.g Main warehouse for storing inventory items.'
                      className='w-full'
-                     {...(register('description'), { required: true })}
+                     {...register('description', { required: true })}
                   />
                </div>
+               {errors.name && (
+                  <p className='text-red-500'>Location name is required.</p>
+               )}
+               {errors.description && (
+                  <p className='text-red-500'>Description is required.</p>
+               )}
             </form>
          </div>
       </div>
    );
 }
 
-export default CreateNewItem;
+export default CreateNewLocation;

@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { Karla } from 'next/font/google';
 import './globals.css';
+import { Toaster } from '@/components/ui/toaster';
 
 const karla = Karla({
    weight: ['200', '300', '400', '500', '600', '700', '800'],
@@ -21,6 +22,7 @@ export default function RootLayout({
       <html lang='en' suppressHydrationWarning>
          <body className={karla.className}>
             <main>{children}</main>
+            <Toaster />
          </body>
       </html>
    );
