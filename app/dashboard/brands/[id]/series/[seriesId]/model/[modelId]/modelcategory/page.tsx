@@ -126,10 +126,10 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {modelCategory.raw +
-                        modelCategory.raw * modelCategory.tax +
+                      {Math.ceil(modelCategory.raw +
+                        modelCategory.raw * (modelCategory.tax / 100) +
                         modelCategory.shipping +
-                        modelCategory.labour}
+                        modelCategory.labour)}
                     </TableCell>
 
                     <TableCell className="font-medium">

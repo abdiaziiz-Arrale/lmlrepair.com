@@ -132,10 +132,10 @@ const Service = ({ params, searchParams }: Props) => {
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {category.raw +
+                      {Math.ceil(category.raw +
                         category.raw * (category.tax / 100) +
                         category.shipping +
-                        category.labour}
+                        category.labour)}
                     </TableCell>
 
                     <TableCell className="font-medium">

@@ -86,7 +86,7 @@ function ProductsTable({ products }: ProductsTableProps) {
               <TableCell>{product.tax}%</TableCell>
               <TableCell>{product.shipping}</TableCell>
               <TableCell>
-                            ${(
+                            ${Math.round((
                   product.raw +
                   product.raw * (product.tax / 100) +
                   product.shipping +
@@ -94,11 +94,11 @@ function ProductsTable({ products }: ProductsTableProps) {
                     product.raw * (product.tax / 100) +
                     product.shipping) *
                     (1 + product.markup / 100)
-                ).toFixed(2)}
+                ))}
               </TableCell>
               <TableCell>{product.markup}%</TableCell>
               <TableCell>
-              ${(product.raw + product.raw * (product.tax / 100) + product.shipping).toFixed(2)}
+              ${Math.ceil((product.raw + product.raw * (product.tax / 100) + product.shipping))}
               </TableCell>
               <TableCell>
                 <EditProduct
