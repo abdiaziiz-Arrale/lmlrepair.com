@@ -112,7 +112,7 @@ const EditProduct = ({
       } else {
         throw new Error("Please provide an image for the brand.");
       }
-
+Add
       if (!imageUrl) {
         throw new Error("Image upload failed. Please try again.");
       }
@@ -145,7 +145,7 @@ const EditProduct = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Product</DialogTitle>
+          <DialogTitle>Edit Product</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">
