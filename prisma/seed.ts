@@ -37,14 +37,15 @@ async function main() {
    await prisma.series.createMany({
       data: series,
    });
+   
+   await prisma.model.createMany({
+      data: model,
+   });
 
    await prisma.modelCategory.createMany({
       data: modelCategory,
    });
 
-   await prisma.model.createMany({
-      data: model,
-   });
 
    await prisma.category.createMany({
       data: categories,
