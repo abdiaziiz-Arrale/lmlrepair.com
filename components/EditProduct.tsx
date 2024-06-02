@@ -89,8 +89,8 @@ const EditProduct = ({
             product_desc: formData.productDescription,
             product_category:selectedCategory,
             raw: parseInt(formData.raw),
-            markup: parseInt(formData.markup),
-            tax: parseInt(formData.tax),
+            markup: parseFloat(formData.markup),
+            tax: parseFloat(formData.tax),
             shipping: parseInt(formData.shipping),
           });
           setLoading(false);
@@ -112,7 +112,7 @@ const EditProduct = ({
       } else {
         throw new Error("Please provide an image for the brand.");
       }
-Add
+
       if (!imageUrl) {
         throw new Error("Image upload failed. Please try again.");
       }
@@ -123,8 +123,8 @@ Add
         product_image: imageUrl,
         product_category:selectedCategory,
         raw: parseInt(formData.raw),
-        markup: parseInt(formData.markup),
-        tax: parseInt(formData.tax),
+        markup: parseFloat(formData.markup),
+        tax: parseFloat(formData.tax),
         shipping: parseInt(formData.shipping),
       });
 

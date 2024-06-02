@@ -74,8 +74,8 @@ const AddProduct = () => {
             product_image: "/lml_logo.png",
             product_category:selectedCategory,
             raw: parseInt(formData.raw),
-            markup: parseInt(formData.markup),
-            tax: parseInt(formData.tax),
+            markup: parseFloat(formData.markup),
+            tax: parseFloat(formData.tax),
             shipping: parseInt(formData.shipping),
           });
           setLoading(false);
@@ -108,8 +108,8 @@ const AddProduct = () => {
         product_image: imageUrl,
         product_category:selectedCategory,
         raw: parseInt(formData.raw),
-        markup: parseInt(formData.markup),
-        tax: parseInt(formData.tax),
+        markup: parseFloat(formData.markup),
+        tax: parseFloat(formData.tax),
         shipping: parseInt(formData.shipping),
       });
 

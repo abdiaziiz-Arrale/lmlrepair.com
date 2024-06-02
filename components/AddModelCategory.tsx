@@ -56,7 +56,7 @@ const AddModelCategory = ({
         model_id: modelId,
         type_of_repair: formData.typeOfRepair,
         raw: parseInt(formData.raw),
-        tax: parseInt(formData.tax),
+        tax: parseFloat(formData.tax),
         shipping: parseInt(formData.shipping),
         labour: parseInt(formData.labour),
         timeFrame: formData.timeFrame,

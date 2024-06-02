@@ -72,7 +72,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({
         service_id: serviceId,
         type_Of_Repair: formData.typeOfRepair,
         raw: parseInt(formData.raw),
-        tax: parseInt(formData.tax),
+        tax: parseFloat(formData.tax),
         shipping: parseInt(formData.shipping),
         labour: parseInt(formData.labour),
         timeFrame: formData.timeFrame,
