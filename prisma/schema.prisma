@@ -39,14 +39,15 @@ model Brand {
 }
 
 model Products {
-  product_id    Int    @id @default(autoincrement())
-  product_name  String
-  product_image String
-  product_desc  String
-  raw           Float
-  tax           Float
-  shipping      Float
-  markup        Float
+  product_id       Int    @id @default(autoincrement())
+  product_name     String
+  product_image    String
+  product_desc     String
+  raw              Float
+  tax              Float
+  shipping         Float
+  markup           Float
+  product_category String @db.VarChar(50)
 }
 
 model Series {
@@ -122,19 +123,20 @@ model InventoryItem {
 }
 
 model ItemsCategory {
-  itemsCategoryId Int             @id @default(autoincrement())
+  itemsCategoryId Int                @id @default(autoincrement())
   name            String
   items           InventoryItem[]
-  subCategories  ItemsSubCategory[]
+  subCategories   ItemsSubCategory[]
 }
 
 model ItemsSubCategory {
   itemsSubCategoryId Int             @id @default(autoincrement())
   name               String
+  categoryId         Int
   items              InventoryItem[]
-  categoryId     Int
-  category       ItemsCategory     @relation(fields: [categoryId], references: [itemsCategoryId])
+  category           ItemsCategory   @relation(fields: [categoryId], references: [itemsCategoryId])
 
+  @@index([categoryId], map: "ItemsSubCategory_categoryId_fkey")
 }
 
 model Vendor {

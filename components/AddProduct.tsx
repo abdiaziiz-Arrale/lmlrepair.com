@@ -13,6 +13,15 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
 import { createProduct } from "@/lib/db/productCrud";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 const AddProduct = () => {
   const inputFileRef = useRef<HTMLInputElement>(null);
@@ -21,12 +30,12 @@ const AddProduct = () => {
   const [formData, setFormData] = useState({
     productName: "",
     productDescription: "",
-    markup: 0,
-
-    shipping: 0,
-    raw: 0,
-    tax: 0,
+    markup: '0',
+    shipping: '0',
+    raw: '0',
+    tax: '0',
   });
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const handleInputChange = (event: any) => {
     const { name, value } = event.target;
@@ -37,8 +46,12 @@ const AddProduct = () => {
   };
 
   async function onSubmit() {
+
+
+  
     if (
       !formData.productName ||
+      !selectedCategory||
       !formData.productDescription ||
       !formData.markup ||
       !formData.shipping ||
@@ -59,13 +72,14 @@ const AddProduct = () => {
             product_name: formData.productName,
             product_desc: formData.productDescription,
             product_image: "/lml_logo.png",
-            raw: formData.raw,
-            markup: formData.markup,
-            tax: formData.tax,
-            shipping: formData.shipping,
+            product_category:selectedCategory,
+            raw: parseInt(formData.raw),
+            markup: parseInt(formData.markup),
+            tax: parseInt(formData.tax),
+            shipping: parseInt(formData.shipping),
           });
           setLoading(false);
-          window.location.href = "/dashboard/products";
+          window.location.reload();
           return;
         }
 
@@ -92,14 +106,15 @@ const AddProduct = () => {
         product_name: formData.productName,
         product_desc: formData.productDescription,
         product_image: imageUrl,
-        raw: formData.raw,
-        markup: formData.markup,
-        tax: formData.tax,
-        shipping: formData.shipping,
+        product_category:selectedCategory,
+        raw: parseInt(formData.raw),
+        markup: parseInt(formData.markup),
+        tax: parseInt(formData.tax),
+        shipping: parseInt(formData.shipping),
       });
 
       setLoading(false);
-      window.location.href = "/dashboard/products";
+      window.location.reload()
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -129,6 +144,21 @@ const AddProduct = () => {
               placeholder="product Name"
             />
           </div>
+
+          <Select required onValueChange={(value) => setSelectedCategory(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Categories:</SelectLabel>
+              <SelectItem value="accessories">Accessories</SelectItem>
+              <SelectItem value="devices">Devices</SelectItem>
+              <SelectItem value="dyi">Dyi</SelectItem>
+              <SelectItem value="insurance">Insurance</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="productDescription" className="text-right">
               Description
@@ -156,6 +186,20 @@ const AddProduct = () => {
           </div>
         </div>
 
+
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="raw" className="text-right">
+            Raw
+          </Label>
+          <Input
+            name="raw"
+            value={formData.raw}
+            onChange={handleInputChange}
+            className="col-span-3"
+            placeholder="raw"
+          />
+        </div>
+
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="shipping" className="text-right">
             shipping
@@ -171,7 +215,7 @@ const AddProduct = () => {
 
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="tax" className="text-right">
-            tax
+            tax %
           </Label>
           <Input
             name="tax"
@@ -184,7 +228,7 @@ const AddProduct = () => {
 
         <div className="grid grid-cols-4 items-center gap-4">
           <Label htmlFor="markup" className="text-right">
-            Markup
+            Markup %
           </Label>
           <Input
             name="markup"

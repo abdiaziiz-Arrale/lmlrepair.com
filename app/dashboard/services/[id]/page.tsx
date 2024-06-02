@@ -125,7 +125,7 @@ const Service = ({ params, searchParams }: Props) => {
                       {category.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category?.labour}
+                      {category.labour}
                     </TableCell>
                     <TableCell className="font-medium">
                       {category.timeFrame}
@@ -133,7 +133,7 @@ const Service = ({ params, searchParams }: Props) => {
                     <TableCell className="font-medium">
                       $
                       {category.raw +
-                        category.raw * category.tax +
+                        category.raw * (category.tax / 100) +
                         category.shipping +
                         category.labour}
                     </TableCell>
@@ -142,8 +142,6 @@ const Service = ({ params, searchParams }: Props) => {
                       <EditCategory
                         categoryId={category.category_id}
                         serviceId={category.service_id}
-                        serviceName={category.type_Of_Repair}
-                        serviceImage={searchParams.serviceImage}
                         tax={category.tax.toString()}
                         labour={category.labour.toString()}
                         shipping={category.shipping.toString()}

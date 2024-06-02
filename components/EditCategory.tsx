@@ -17,8 +17,6 @@ import { updateCategory } from "@/lib/db/category";
 interface EditCategoryProps {
   categoryId: number;
   serviceId: number;
-  serviceName: string;
-  serviceImage: string;
   typeOfRepair: string;
   raw: string;
   tax: string;
@@ -30,8 +28,6 @@ interface EditCategoryProps {
 const EditCategory: React.FC<EditCategoryProps> = ({
   categoryId,
   serviceId,
-  serviceName,
-  serviceImage,
   typeOfRepair,
   raw,
   tax,
@@ -134,7 +130,7 @@ const EditCategory: React.FC<EditCategoryProps> = ({
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="tax" className="text-right">
-              Tax
+              Tax %
             </Label>
             <Input
               name="tax"

@@ -12,7 +12,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
-import { createProduct, updateProduct } from "@/lib/db/productCrud";
+import { updateProduct } from "@/lib/db/productCrud";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Pencil } from "lucide-react";
 
 interface EditProduct {
@@ -35,7 +44,7 @@ const EditProduct = ({
   markup,
 }: EditProduct) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
-
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     productName: product_name,
@@ -59,6 +68,7 @@ const EditProduct = ({
     if (
       !formData.productName ||
       !formData.productDescription ||
+      !selectedCategory||
       !formData.markup ||
       !formData.shipping ||
       !formData.raw ||
@@ -77,6 +87,7 @@ const EditProduct = ({
           await updateProduct(product_id, {
             product_name: formData.productName,
             product_desc: formData.productDescription,
+            product_category:selectedCategory,
             raw: parseInt(formData.raw),
             markup: parseInt(formData.markup),
             tax: parseInt(formData.tax),
@@ -110,6 +121,7 @@ const EditProduct = ({
         product_name: formData.productName,
         product_desc: formData.productDescription,
         product_image: imageUrl,
+        product_category:selectedCategory,
         raw: parseInt(formData.raw),
         markup: parseInt(formData.markup),
         tax: parseInt(formData.tax),
@@ -174,6 +186,34 @@ const EditProduct = ({
               ref={inputFileRef}
             />
           </div>
+
+          <Select required onValueChange={(value) => setSelectedCategory(value)}>
+          <SelectTrigger className="w-full">
+            <SelectValue placeholder="Select category" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Categories:</SelectLabel>
+              <SelectItem value="accessories">Accessories</SelectItem>
+              <SelectItem value="devices">Devices</SelectItem>
+              <SelectItem value="dyi">Dyi</SelectItem>
+              <SelectItem value="insurance">Insurance</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+        </div>
+
+        <div className="grid grid-cols-4 items-center gap-4">
+          <Label htmlFor="raw" className="text-right">
+            raw
+          </Label>
+          <Input
+            name="raw"
+            value={formData.raw}
+            onChange={handleInputChange}
+            className="col-span-3"
+            placeholder="raw"
+          />
         </div>
 
         <div className="grid grid-cols-4 items-center gap-4">

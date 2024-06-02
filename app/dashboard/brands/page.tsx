@@ -1,7 +1,6 @@
 import CustomContainer from '@/components/CustomContainer';
 import BrandsTable from '../../../components/BrandsTable';
 import { getBrands } from '@/lib/db/brandCrud';
-import { revalidatePath } from 'next/cache';
 
 async function Brands() {
    let brands: any = [];

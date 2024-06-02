@@ -56,11 +56,12 @@ function ProductsTable({ products }: ProductsTableProps) {
             <TableHead className="w-72">Prodct name</TableHead>
             <TableHead>Image</TableHead>
             <TableHead className="w-80">Description</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Raw</TableHead>
-            <TableHead>Tax</TableHead>
+            <TableHead>Tax %</TableHead>
             <TableHead>Shipping</TableHead>
             <TableHead>Price</TableHead>
-            <TableHead>Markup</TableHead>
+            <TableHead>Markup %</TableHead>
             <TableHead>Cost</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
@@ -80,22 +81,24 @@ function ProductsTable({ products }: ProductsTableProps) {
                 />
               </TableCell>
               <TableCell>{product.product_desc}</TableCell>
+              <TableCell>{product.product_category}</TableCell>
               <TableCell>{product.raw}</TableCell>
               <TableCell>{product.tax}%</TableCell>
               <TableCell>{product.shipping}</TableCell>
               <TableCell>
-                $
-                {product.raw +
-                  product.raw * product.tax +
+                            ${(
+                  product.raw +
+                  product.raw * (product.tax / 100) +
                   product.shipping +
                   (product.raw +
-                    product.raw * product.tax +
-                    product.shipping +
-                    product.markup)}
+                    product.raw * (product.tax / 100) +
+                    product.shipping) *
+                    (1 + product.markup / 100)
+                ).toFixed(2)}
               </TableCell>
               <TableCell>{product.markup}%</TableCell>
               <TableCell>
-                $ {product.raw + product.raw * product.tax + product.shipping}
+              ${(product.raw + product.raw * (product.tax / 100) + product.shipping).toFixed(2)}
               </TableCell>
               <TableCell>
                 <EditProduct
