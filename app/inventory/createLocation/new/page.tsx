@@ -72,10 +72,7 @@ function CreateNewLocation() {
          </div>
          <div className='flex flex-col items-center p-6 space-y-4'>
             <h1 className='font-bold text-lg'>Details</h1>
-            <form
-               onSubmit={handleSubmit(onSubmit)}
-               className='space-y-4 w-full max-w-lg'
-            >
+            <form className='space-y-4 w-full max-w-lg'>
                <div>
                   <Label className='block mb-1'>Location</Label>
                   <Input

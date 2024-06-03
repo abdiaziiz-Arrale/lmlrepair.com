@@ -2,13 +2,13 @@ import CategoryTable from '@/components/CategoryTable';
 import { DatePickerDemo } from '@/components/DatePicker';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { getCategory } from '@/lib/db/ItemCategoryCrud';
+import { getCategoryWithSubCategory } from '@/lib/db/ItemCategoryCrud';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 
 export async function fetchCategories() {
    try {
-      const categories = await getCategory();
+      const categories = await getCategoryWithSubCategory();
       return { categories, error: null };
    } catch (err) {
       return { categories: [], error: 'Check your internet connection.' };

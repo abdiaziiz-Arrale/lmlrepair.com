@@ -3,16 +3,23 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { PlusIcon, X } from 'lucide-react';
+import { useToast } from '@/components/ui/use-toast';
+import { createCategory } from '@/lib/db/ItemCategoryCrud';
+import { CircleDashedIcon, PlusIcon, X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
 type Inputs = {
-   category: string;
-   subCategories: { value: string }[];
+   name: string;
+   subCategories: { name: string }[];
 };
 
 function CreateNewCategory() {
+   const router = useRouter();
+   const { toast } = useToast();
+   const [isPending, startTransition] = useTransition();
    //Todo: Add sub category
    const {
       register,
@@ -29,12 +36,30 @@ function CreateNewCategory() {
 
    //Todo: Add sub category
    const handleAddSubCategory = () => {
-      append({ value: '' });
+      append({ name: '' });
    };
 
    //Todo: Handle submitting the form
-   const onSubmit: SubmitHandler<Inputs> = (data) => {
-      console.log(data);
+   const onSubmit: SubmitHandler<Inputs> = async (data) => {
+      startTransition(async () => {
+         try {
+            const res = await createCategory(data);
+            if (res.status === 'success') {
+               toast({
+                  title: 'Created: Category',
+                  description: `${res.category.name} has been created.`,
+               });
+
+               router.push('/dashboard/inventory/categories');
+            }
+         } catch (error) {
+            console.log(error);
+            toast({
+               title: 'Error',
+               description: 'Failed to create category.',
+            });
+         }
+      });
    };
 
    return (
@@ -47,7 +72,14 @@ function CreateNewCategory() {
             </Link>
             <h1 className='text-xl font-medium'>Create Category</h1>
             <Button type='submit' onClick={handleSubmit(onSubmit)}>
-               Save
+               {isPending ? (
+                  <>
+                     <CircleDashedIcon size={20} className='animate-spin' />
+                     <span className='ml-2'>Saving</span>
+                  </>
+               ) : (
+                  'Save'
+               )}
             </Button>
          </div>
          <div className='flex flex-col items-center p-6 space-y-4'>
@@ -61,9 +93,9 @@ function CreateNewCategory() {
                   <Input
                      placeholder='e.g Parts'
                      className='w-full'
-                     {...register('category', { required: true })}
+                     {...register('name', { required: true })}
                   />
-                  {errors.category && (
+                  {errors.name && (
                      <span className='text-red-500'>
                         This field is required
                      </span>
@@ -77,7 +109,7 @@ function CreateNewCategory() {
                      <Input
                         key={field.id}
                         placeholder='e.g Screen, Battery, etc'
-                        {...register(`subCategories.${index}.value`)}
+                        {...register(`subCategories.${index}.name`)}
                      />
                   ))}
                   <Button

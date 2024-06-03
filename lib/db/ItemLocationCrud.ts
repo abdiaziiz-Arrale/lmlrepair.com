@@ -2,7 +2,6 @@
 
 import prisma from '@/lib/prisma';
 import { Location } from '@prisma/client';
-import { PartialBy } from '../type';
 
 export const getLocations = async (): Promise<Location[]> => {
    try {
