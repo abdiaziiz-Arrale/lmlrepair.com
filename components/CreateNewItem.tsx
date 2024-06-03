@@ -10,13 +10,18 @@ import {
    SelectTrigger,
    SelectValue,
 } from '@/components/ui/select';
+import { createInventoryItem } from '@/lib/db/InventoryItemCrud';
 import { ItemsCategory, ItemsSubCategory, Location } from '@prisma/client';
-import { X } from 'lucide-react';
+import { CircleDashedIcon, X } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { useToast } from './ui/use-toast';
 
 type Inputs = {
    item: string;
+   description: string;
    sku: string;
    variations: string;
    vendor: string;
@@ -38,6 +43,9 @@ function CreateNewItem({
    subCategories,
    locations,
 }: CreateNewItemProps) {
+   const router = useRouter();
+   const { toast } = useToast();
+   const [isPending, startTransition] = useTransition();
    //Todo: Form hook for handling form inputs
    const {
       register,
@@ -47,8 +55,35 @@ function CreateNewItem({
    } = useForm<Inputs>();
 
    //Todo: Handle form submission
-   const onSubmit: SubmitHandler<Inputs> = (data) => console.log(data);
-
+   const onSubmit: SubmitHandler<Inputs> = (data) => {
+      console.log(data.description);
+      startTransition(async () => {
+         try {
+            const res = await createInventoryItem({
+               name: data.item,
+               description: data.description,
+               sku: data.sku,
+               variations: data.variations,
+               vendor: data.vendor,
+               stock: data.stock,
+               cost: data.cost,
+               category: data.category,
+               subCategory: data.subCategory,
+               location: data.location,
+            });
+            toast({
+               title: res.status,
+               description: `Item ${res.item.name} created successfully`,
+            });
+            router.push('/dashboard/inventory/items');
+         } catch (error) {
+            toast({
+               title: 'Failed to create item',
+               description: 'An error occurred while creating the item',
+            });
+         }
+      });
+   };
    return (
       <div className='flex flex-col'>
          <div className='flex items-center justify-between p-6 bg-white '>
@@ -59,7 +94,13 @@ function CreateNewItem({
             </Link>
             <h1 className='text-xl font-medium'>Create Item</h1>
             <Button type='submit' onClick={handleSubmit(onSubmit)}>
-               Save
+               {isPending ? (
+                  <>
+                     <CircleDashedIcon size={20} className='animate-spin' />
+                  </>
+               ) : (
+                  'Save'
+               )}
             </Button>
          </div>
          <div className='flex flex-col items-center p-6 space-y-4'>
@@ -74,6 +115,19 @@ function CreateNewItem({
                      placeholder='e.g Iphone 12'
                      className='w-full'
                      {...register('item', { required: true })}
+                  />
+                  {errors.item && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+               <div>
+                  <Label className='block mb-1'>Description</Label>
+                  <Input
+                     placeholder='e.g This Iphone 12 is the latest model from Apple.'
+                     className='w-full'
+                     {...register('description', { required: true })}
                   />
                   {errors.item && (
                      <span className='text-red-500'>
@@ -159,7 +213,7 @@ function CreateNewItem({
                                  {categories.map((category) => (
                                     <SelectItem
                                        key={category.itemsCategoryId}
-                                       value={category.name}
+                                       value={String(category.itemsCategoryId)}
                                     >
                                        {category.name}
                                     </SelectItem>
@@ -194,7 +248,9 @@ function CreateNewItem({
                                  {subCategories.map((subCategory, index) => (
                                     <SelectItem
                                        key={subCategory.itemsSubCategoryId}
-                                       value={subCategory.name}
+                                       value={String(
+                                          subCategory.itemsSubCategoryId
+                                       )}
                                     >
                                        {subCategory.name}
                                     </SelectItem>
@@ -229,7 +285,7 @@ function CreateNewItem({
                               {locations.map((location) => (
                                  <SelectItem
                                     key={location.locationId}
-                                    value={location.name}
+                                    value={String(location.locationId)}
                                  >
                                     {location.name}
                                  </SelectItem>
