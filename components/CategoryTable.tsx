@@ -8,6 +8,7 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
+import Link from 'next/link';
 
 type Categories = {
    name: string;
@@ -61,10 +62,14 @@ function CategoryTable({ categories }: Props) {
                            <TableCell>2021-09-12</TableCell>
                            <TableCell>
                               <div className='flex items-center gap-3'>
-                                 <Edit2
-                                    size={20}
-                                    className='text-blue-500 cursor-pointer'
-                                 />
+                                 <Link
+                                    href={`/inventory/editCategory/${cate.itemsCategoryId}`}
+                                 >
+                                    <Edit2
+                                       size={20}
+                                       className='text-blue-500 cursor-pointer'
+                                    />
+                                 </Link>
 
                                  <Trash
                                     size={20}

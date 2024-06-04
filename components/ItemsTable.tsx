@@ -9,6 +9,7 @@ import {
    TableRow,
 } from './ui/table';
 import { Button } from './ui/button';
+import Link from 'next/link';
 
 interface InventoryItem {
    inventoryItemId: number;
@@ -91,10 +92,14 @@ async function ItemsTable({ items }: Props) {
                            <TableCell className='w-24'>Oct, 2024</TableCell>
                            <TableCell>
                               <div className='flex items-center gap-3'>
-                                 <Edit2
-                                    size={20}
-                                    className='text-blue-500 cursor-pointer'
-                                 />
+                                 <Link
+                                    href={`/inventory/editItem/${item.inventoryItemId}`}
+                                 >
+                                    <Edit2
+                                       size={20}
+                                       className='text-blue-500 cursor-pointer'
+                                    />
+                                 </Link>
 
                                  <Trash
                                     size={20}
