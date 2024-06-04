@@ -94,7 +94,7 @@ const EditModelCategory = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Model Category</DialogTitle>
+          <DialogTitle>Edit Model Category</DialogTitle>
         </DialogHeader>
 
         <div className="grid gap-4 py-4">

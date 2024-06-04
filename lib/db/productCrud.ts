@@ -3,12 +3,19 @@
 import prisma from "@/lib/prisma";
 import { Products } from "@prisma/client";
 import { PartialBy } from "../type";
-
-export const getProducts = async (): Promise<Products[]> => {
+export const getProducts = async (
+  productCategoryId: number
+): Promise<Products[]> => {
   try {
-    return await prisma.products.findMany({
+    const products = await prisma.products.findMany({
+      where: { product_category_id: productCategoryId },
+      include: {
+        product_category: true,
+      },
       orderBy: { product_name: "asc" },
     });
+
+    return products;
   } catch (error) {
     console.error("Error fetching products:", error);
     throw new Error("Failed to fetch products");

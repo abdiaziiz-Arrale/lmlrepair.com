@@ -9,20 +9,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { createService } from "@/lib/db/serviceCrud";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
-import { useForm, FieldValues, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -32,13 +21,14 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import { createProductCatgeory } from "@/lib/db/productCategoryCrud";
 
-// Define the schema using zod
 const schema = z.object({
-  serviceName: z.string().min(1, "Service name is required"),
-  serviceDescription: z.string().min(1, "Service description is required"),
-  serviceCategory: z.string().min(1, "Service category is required"),
-  serviceImage: z
+  productCategoryName: z.string().min(1, "category name is required"),
+  productCategoryDescription: z
+    .string()
+    .min(1, "category description is required"),
+  productCategoryImage: z
     .any()
     .optional()
     .refine(
@@ -50,10 +40,9 @@ const schema = z.object({
     ),
 });
 
-// Define the type of the form data based on the schema
 type FormData = z.infer<typeof schema>;
 
-const AddService = () => {
+const AddProductCategory = () => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -67,19 +56,17 @@ const AddService = () => {
     formState: { errors },
   } = methods;
 
-  async function onSubmit(formData: FieldValues) {
+  async function onSubmit(formData: FormData) {
     try {
       setLoading(true);
       let imageUrl: string | null = null;
-      const file = formData.serviceImage?.[0];
+      const file = formData.productCategoryImage?.[0];
 
       if (!file) {
-        await createService({
-          service_id: undefined,
-          service_name: formData.serviceName,
-          service_desc: formData.serviceDescription,
-          service_type: formData.serviceCategory,
-          service_image: "/lml_logo.png",
+        await createProductCatgeory({
+          product_category_name: formData.productCategoryName,
+          product_category_desc: formData.productCategoryDescription,
+          product_category_image: "/lml_logo.png",
         });
         setLoading(false);
         window.location.reload();
@@ -98,12 +85,10 @@ const AddService = () => {
       const newBlob = (await response.json()) as PutBlobResult;
       imageUrl = newBlob.url;
 
-      await createService({
-        service_id: undefined,
-        service_name: formData.serviceName,
-        service_desc: formData.serviceDescription,
-        service_type: formData.serviceCategory,
-        service_image: imageUrl,
+      await createProductCatgeory({
+        product_category_name: formData.productCategoryName,
+        product_category_desc: formData.productCategoryDescription,
+        product_category_image: imageUrl,
       });
 
       setLoading(false);
@@ -121,36 +106,22 @@ const AddService = () => {
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Service</DialogTitle>
+          <DialogTitle>Add Category</DialogTitle>
         </DialogHeader>
 
         <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
             <FormField
               control={control}
-              name="serviceName"
+              name="productCategoryName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Service Name</FormLabel>
+                  <FormLabel>Category Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Service Name" {...field} />
+                    <Input placeholder="category Name" {...field} />
                   </FormControl>
-                  {errors.serviceName && <p>{errors.serviceName.message}</p>}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="serviceDescription"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Description</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Service Description" {...field} />
-                  </FormControl>
-                  {errors.serviceDescription && (
-                    <p>{errors.serviceDescription.message}</p>
+                  {errors.productCategoryName && (
+                    <p>{errors.productCategoryName.message}</p>
                   )}
                 </FormItem>
               )}
@@ -158,30 +129,18 @@ const AddService = () => {
 
             <FormField
               control={control}
-              name="serviceCategory"
+              name="productCategoryDescription"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Service Category</FormLabel>
+                  <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger className="w-max">
-                        <SelectValue placeholder="Select Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Type:</SelectLabel>
-                          <SelectItem value="repair_service">
-                            Repair service
-                          </SelectItem>
-                          <SelectItem value="general_service">
-                            General services
-                          </SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
+                    <Input
+                      placeholder="productCategory Description"
+                      {...field}
+                    />
                   </FormControl>
-                  {errors.serviceCategory && (
-                    <p>{errors.serviceCategory.message}</p>
+                  {errors.productCategoryDescription && (
+                    <p>{errors.productCategoryDescription.message}</p>
                   )}
                 </FormItem>
               )}
@@ -189,10 +148,13 @@ const AddService = () => {
 
             <FormField
               control={control}
-              name="serviceImage"
+              name="productCategoryImage"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel htmlFor="serviceImage" className="text-right mb-2">
+                  <FormLabel
+                    htmlFor="productCategoryImage"
+                    className="text-right mb-2"
+                  >
                     Image
                   </FormLabel>
                   <FormControl>
@@ -200,7 +162,7 @@ const AddService = () => {
                       type="file"
                       accept="image/*"
                       ref={inputFileRef}
-                      id="serviceImage"
+                      id="productCategoryImage"
                       className="col-span-3"
                       onChange={(e) => field.onChange(e.target.files)}
                     />
@@ -221,4 +183,4 @@ const AddService = () => {
   );
 };
 
-export default AddService;
+export default AddProductCategory;

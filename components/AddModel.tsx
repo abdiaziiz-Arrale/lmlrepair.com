@@ -13,65 +13,81 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
 import { createModel } from "@/lib/db/modelCrud";
+import { useForm, FormProvider, Controller } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+} from "@/components/ui/form";
 
 interface AddModelProps {
   seriesId: number;
 }
 
+// Define the schema using zod
+const schema = z.object({
+  modelName: z.string().min(1, "Model name is required"),
+  modelImage: z
+    .any()
+    .optional()
+    .refine(
+      (files) =>
+        !files ||
+        (files.length > 0 &&
+          ["image/jpeg", "image/png", "image/jpg"].includes(files[0]?.type)),
+      "Only jpg, jpeg, and png files are allowed"
+    ),
+});
+
+// Define the type of the form data based on the schema
+type FormData = z.infer<typeof schema>;
+
 const AddModel = ({ seriesId }: AddModelProps) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    modelName: "",
+
+  const methods = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = methods;
 
-  async function onSubmit() {
-    if (!formData.modelName) {
-      alert("missing info");
-      return 0;
-    }
+  async function onSubmit(formData: FormData) {
     try {
       setLoading(true);
       let imageUrl: string | null = null;
-      if (inputFileRef.current?.files) {
-        const file = inputFileRef.current.files[0];
-        if (!file) {
-          await createModel({
-            series_id: seriesId,
-            model_name: formData.modelName,
-            model_image: "/lml_logo.png",
-          });
-          setLoading(false);
-          window.location.reload()
-          return;
-        }
+      const file = formData.modelImage?.[0];
 
-        const response = await fetch(`/api/upload?filename=${file.name}`, {
-          method: "POST",
-          body: file,
+      if (!file) {
+        await createModel({
+          series_id: seriesId,
+          model_name: formData.modelName,
+          model_image: "/lml_logo.png",
         });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload file.");
-        }
-
-        const newBlob = (await response.json()) as PutBlobResult;
-        imageUrl = newBlob.url;
-      } else {
-        throw new Error("Please provide an image for the series.");
+        setLoading(false);
+        window.location.reload();
+        return;
       }
 
-      if (!imageUrl) {
-        throw new Error("Image upload failed. Please try again.");
+      const response = await fetch(`/api/upload?filename=${file.name}`, {
+        method: "POST",
+        body: file,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload file.");
       }
+
+      const newBlob = (await response.json()) as PutBlobResult;
+      imageUrl = newBlob.url;
 
       await createModel({
         series_id: seriesId,
@@ -80,7 +96,7 @@ const AddModel = ({ seriesId }: AddModelProps) => {
       });
 
       setLoading(false);
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -97,44 +113,51 @@ const AddModel = ({ seriesId }: AddModelProps) => {
           <DialogTitle>Add model</DialogTitle>
         </DialogHeader>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="modelName" className="text-right">
-              model name
-            </Label>
-            <Input
+        <FormProvider {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+            <FormField
+              control={control}
               name="modelName"
-              value={formData.modelName}
-              onChange={handleInputChange}
-              className="col-span-3"
-              placeholder="model Name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Model Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Model Name" {...field} />
+                  </FormControl>
+                  {errors.modelName && <p>{errors.modelName.message}</p>}
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="modelImage" className="text-right">
-              Image
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="modelImage"
-              className="col-span-3"
-              type="file"
-              accept="image/*"
-              ref={inputFileRef}
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="modelImage" className="text-right mb-2">
+                    Image
+                  </FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      ref={inputFileRef}
+                      id="modelImage"
+                      className="col-span-3"
+                      onChange={(e) => field.onChange(e.target.files)}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
 
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            disabled={loading}
-            variant="default"
-          >
-            {loading ? "Loading" : "Save"}
-          </Button>
-        </DialogFooter>
+            <DialogFooter>
+              <Button type="submit" disabled={loading} variant="default">
+                {loading ? "Loading" : "Save"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

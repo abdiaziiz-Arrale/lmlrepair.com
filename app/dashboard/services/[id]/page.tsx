@@ -84,11 +84,7 @@ const Service = ({ params, searchParams }: Props) => {
               >
                 <ArrowLeftIcon />
               </Button>
-              <AddCategory
-                serviceId={parseInt(params.id)}
-                serviceName={searchParams.serviceName}
-                serviceImage={searchParams.serviceImage}
-              />
+              <AddCategory serviceId={parseInt(params.id)} />
             </div>
           </div>
         </Card>
@@ -132,10 +128,12 @@ const Service = ({ params, searchParams }: Props) => {
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {Math.ceil(category.raw +
-                        category.raw * (category.tax / 100) +
-                        category.shipping +
-                        category.labour)}
+                      {Math.ceil(
+                        category.raw +
+                          category.raw * (category.tax / 100) +
+                          category.shipping +
+                          category.labour
+                      )}
                     </TableCell>
 
                     <TableCell className="font-medium">
