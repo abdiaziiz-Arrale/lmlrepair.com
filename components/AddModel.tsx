@@ -10,10 +10,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
-import { createModel } from "@/lib/db/modelCrud";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -23,14 +21,10 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import { createModel } from "@/lib/db/modelCrud";
 
-interface AddModelProps {
-  seriesId: number;
-}
-
-// Define the schema using zod
 const schema = z.object({
-  modelName: z.string().min(1, "Model name is required"),
+  modelName: z.string().min(1, "model name is required"),
   modelImage: z
     .any()
     .optional()
@@ -43,10 +37,9 @@ const schema = z.object({
     ),
 });
 
-// Define the type of the form data based on the schema
 type FormData = z.infer<typeof schema>;
 
-const AddModel = ({ seriesId }: AddModelProps) => {
+const AddModel = ({ seriesId }: { seriesId: number }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -106,23 +99,23 @@ const AddModel = ({ seriesId }: AddModelProps) => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="default">Add model</Button>
+        <Button variant="default">Add new</Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add model</DialogTitle>
+          <DialogTitle>Add Model</DialogTitle>
         </DialogHeader>
 
-        <FormProvider {...methods}>
+        <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
             <FormField
               control={control}
               name="modelName"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Model Name</FormLabel>
+                  <FormLabel>model Name</FormLabel>
                   <FormControl>
-                    <Input placeholder="Model Name" {...field} />
+                    <Input placeholder="model Name" {...field} />
                   </FormControl>
                   {errors.modelName && <p>{errors.modelName.message}</p>}
                 </FormItem>
@@ -157,7 +150,7 @@ const AddModel = ({ seriesId }: AddModelProps) => {
               </Button>
             </DialogFooter>
           </form>
-        </FormProvider>
+        </Form>
       </DialogContent>
     </Dialog>
   );

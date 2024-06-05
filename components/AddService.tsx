@@ -20,9 +20,8 @@ import {
 } from "@/components/ui/select";
 import { createService } from "@/lib/db/serviceCrud";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
-import { useForm, FieldValues, Controller } from "react-hook-form";
+import { useForm, FieldValues } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -33,7 +32,6 @@ import {
   FormControl,
 } from "@/components/ui/form";
 
-// Define the schema using zod
 const schema = z.object({
   serviceName: z.string().min(1, "Service name is required"),
   serviceDescription: z.string().min(1, "Service description is required"),
@@ -50,7 +48,6 @@ const schema = z.object({
     ),
 });
 
-// Define the type of the form data based on the schema
 type FormData = z.infer<typeof schema>;
 
 const AddService = () => {
@@ -75,7 +72,6 @@ const AddService = () => {
 
       if (!file) {
         await createService({
-          service_id: undefined,
           service_name: formData.serviceName,
           service_desc: formData.serviceDescription,
           service_type: formData.serviceCategory,
@@ -99,7 +95,6 @@ const AddService = () => {
       imageUrl = newBlob.url;
 
       await createService({
-        service_id: undefined,
         service_name: formData.serviceName,
         service_desc: formData.serviceDescription,
         service_type: formData.serviceCategory,

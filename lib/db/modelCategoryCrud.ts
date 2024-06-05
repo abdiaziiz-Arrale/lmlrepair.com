@@ -33,7 +33,7 @@ export const createModelCategory = async (
 
 export const updateModelCategory = async (
   modelCategory: number,
-  updatedData: PartialBy<ModelCategory, "modelCategory_id">
+  updatedData: PartialBy<ModelCategory, "modelCategory_id" | "model_id">
 ) => {
   try {
     return await prisma.modelCategory.update({

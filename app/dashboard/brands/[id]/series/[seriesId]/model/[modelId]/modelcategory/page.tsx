@@ -78,9 +78,7 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
               >
                 <ArrowLeftIcon />
               </Button>
-              <AddModelCategory
-                modelId={parseInt(params.modelId)}
-              />
+              <AddModelCategory modelId={parseInt(params.modelId)} />
             </div>
           </div>
         </Card>
@@ -116,7 +114,7 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
                       {modelCategory.tax} %
                     </TableCell>
                     <TableCell className="font-medium">
-                      {modelCategory.shipping}
+                      $ {modelCategory.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
                       {modelCategory.labour}
@@ -126,16 +124,17 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {Math.ceil(modelCategory.raw +
-                        modelCategory.raw * (modelCategory.tax / 100) +
-                        modelCategory.shipping +
-                        modelCategory.labour)}
+                      {Math.ceil(
+                        modelCategory.raw +
+                          modelCategory.raw * (modelCategory.tax / 100) +
+                          modelCategory.shipping +
+                          modelCategory.labour
+                      )}
                     </TableCell>
 
                     <TableCell className="font-medium">
                       <EditModelCategory
-                        modelCategory_id={modelCategory.modelCategory_id}
-                        modelId={modelCategory.model_id}
+                        modelCategoryId={modelCategory.modelCategory_id}
                         tax={modelCategory.tax.toString()}
                         labour={modelCategory.labour.toString()}
                         shipping={modelCategory.shipping.toString()}

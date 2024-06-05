@@ -21,14 +21,13 @@ import {
   FormControl,
 } from "@/components/ui/form";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 
 const schema = z.object({
   typeOfRepair: z.string().min(1, "Type of repair is required"),
-  raw: z.number().min(1, "Raw value is required"),
-  tax: z.number().min(1, "Tax value is required"),
-  shipping: z.number().min(1, "Shipping value is required"),
-  labour: z.number().min(1, "Labour value is required"),
+  raw: z.string().min(1, "Raw value is required"),
+  tax: z.string().min(1, "Tax value is required"),
+  shipping: z.string().min(1, "Shipping value is required"),
+  labour: z.string().min(1, "Labour value is required"),
   timeFrame: z.string().min(1, "Time frame is required"),
 });
 
@@ -58,10 +57,10 @@ const AddModelCategory = ({ modelId }: AddModelCategoryProps) => {
       await createModelCategory({
         model_id: modelId,
         type_of_repair: formData.typeOfRepair,
-        raw: formData.raw,
-        tax: formData.tax,
-        shipping: formData.shipping,
-        labour: formData.labour,
+        raw: parseInt(formData.raw),
+        tax: parseInt(formData.tax),
+        shipping: parseInt(formData.shipping),
+        labour: parseInt(formData.labour),
         timeFrame: formData.timeFrame,
       });
 

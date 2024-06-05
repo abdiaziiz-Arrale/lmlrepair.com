@@ -12,7 +12,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { getCategory } from "@/lib/db/category";
+import { getCategory } from "@/lib/db/categoryCrud";
 import { Category } from "@prisma/client";
 import { ArrowLeftIcon } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -118,7 +118,7 @@ const Service = ({ params, searchParams }: Props) => {
                       {category.tax}%
                     </TableCell>
                     <TableCell className="font-medium">
-                      {category.shipping}
+                      $ {category.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
                       {category.labour}
@@ -139,7 +139,6 @@ const Service = ({ params, searchParams }: Props) => {
                     <TableCell className="font-medium">
                       <EditCategory
                         categoryId={category.category_id}
-                        serviceId={category.service_id}
                         tax={category.tax.toString()}
                         labour={category.labour.toString()}
                         shipping={category.shipping.toString()}

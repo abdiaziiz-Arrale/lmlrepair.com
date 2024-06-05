@@ -58,8 +58,8 @@ const EditProductCategory = ({
   const methods = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      productCategoryName,
-      productCategoryDescription,
+      productCategoryName: productCategoryName,
+      productCategoryDescription: productCategoryDescription,
     },
   });
 

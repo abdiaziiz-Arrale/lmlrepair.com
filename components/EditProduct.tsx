@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,9 +10,17 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import type { PutBlobResult } from "@vercel/blob";
-import { updateProduct } from "@/lib/db/productCrud";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+} from "@/components/ui/form";
 import {
   Select,
   SelectContent,
@@ -22,106 +30,135 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { updateProduct } from "@/lib/db/productCrud";
+import { getProductCategories } from "@/lib/db/productCategoryCrud";
+import { ProductCategories } from "@prisma/client";
 import { Pencil } from "lucide-react";
 
-interface EditProduct {
+const schema = z.object({
+  productName: z.string().min(1, "Product name is required"),
+  productDescription: z.string().min(1, "Product description is required"),
+  productCategory: z.string().min(1, "product category is required"),
+  productImage: z
+    .any()
+    .optional()
+    .refine(
+      (files) =>
+        !files ||
+        (files.length > 0 &&
+          ["image/jpeg", "image/png", "image/jpg"].includes(files[0]?.type)),
+      "Only jpg, jpeg, and png files are allowed"
+    ),
+  raw: z.string().min(1, "Raw is required"),
+  shipping: z.string().min(1, "Shipping is required"),
+  tax: z.string().min(1, "Tax is required"),
+  markup: z.string().min(1, "Markup is required"),
+});
+
+type FormData = z.infer<typeof schema>;
+
+interface EditProductProps {
   product_id: number;
   product_name: string;
   product_desc: string;
-  raw: string;
   tax: string;
-  shipping: string;
   markup: string;
+  raw: string;
+  shipping: string;
+  product_category_id: string;
 }
 
 const EditProduct = ({
   product_id,
+  product_category_id,
   product_name,
   product_desc,
-  raw,
   tax,
-  shipping,
   markup,
-}: EditProduct) => {
+  raw,
+  shipping,
+}: EditProductProps) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
-  const [selectedCategory, setSelectedCategory] = useState("");
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    productName: product_name,
-    productDescription: product_desc,
-    markup: markup,
 
-    shipping: shipping,
-    raw: raw,
-    tax: tax,
+  const [categories, setCategories] = useState<ProductCategories[]>([]);
+  const [categoriesLoading, setCategoriesLoading] = useState(false);
+  const [error, setError] = useState<null | string>(null);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      setCategoriesLoading(true);
+      setError(null);
+      try {
+        const data = await getProductCategories();
+        setCategories(data);
+      } catch (err) {
+        setError("Failed to fetch categories");
+      } finally {
+        setCategoriesLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  const methods = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      markup: markup,
+      productDescription: product_desc,
+      productName: product_name,
+      raw: raw,
+      shipping: shipping,
+      tax: tax,
+      productCategory: product_category_id,
+    },
   });
 
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = methods;
 
-  async function onSubmit() {
-    if (
-      !formData.productName ||
-      !formData.productDescription ||
-      !selectedCategory||
-      !formData.markup ||
-      !formData.shipping ||
-      !formData.raw ||
-      !formData.tax
-    ) {
-      alert("missing info");
-      return 0;
-    }
+  async function onSubmit(formData: FormData) {
     try {
       setLoading(true);
       let imageUrl: string | null = null;
-      if (inputFileRef.current?.files) {
-        const file = inputFileRef.current.files[0];
+      const file = formData.productImage?.[0];
 
-        if (!file) {
-          await updateProduct(product_id, {
-            product_name: formData.productName,
-            product_desc: formData.productDescription,
-            product_category:selectedCategory,
-            raw: parseInt(formData.raw),
-            markup: parseFloat(formData.markup),
-            tax: parseFloat(formData.tax),
-            shipping: parseInt(formData.shipping),
-          });
-          setLoading(false);
-          window.location.reload()
-          return;
-        }
-
-        const response = await fetch(`/api/upload?filename=${file.name}`, {
-          method: "POST",
-          body: file,
+      if (!file) {
+        await updateProduct(product_id, {
+          product_name: formData.productName,
+          product_desc: formData.productDescription,
+          product_category_id: parseInt(formData.productCategory),
+          raw: parseInt(formData.raw),
+          markup: parseFloat(formData.markup),
+          tax: parseFloat(formData.tax),
+          shipping: parseInt(formData.shipping),
         });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload file.");
-        }
-
-        const newBlob = (await response.json()) as PutBlobResult;
-        imageUrl = newBlob.url;
-      } else {
-        throw new Error("Please provide an image for the brand.");
+        setLoading(false);
+        window.location.reload();
+        return;
       }
 
-      if (!imageUrl) {
-        throw new Error("Image upload failed. Please try again.");
+      const response = await fetch(`/api/upload?filename=${file.name}`, {
+        method: "POST",
+        body: file,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload file.");
       }
+
+      const newBlob = (await response.json()) as PutBlobResult;
+      imageUrl = newBlob.url;
 
       await updateProduct(product_id, {
         product_name: formData.productName,
         product_desc: formData.productDescription,
         product_image: imageUrl,
-        product_category:selectedCategory,
+        product_category_id: parseInt(formData.productCategory),
         raw: parseInt(formData.raw),
         markup: parseFloat(formData.markup),
         tax: parseFloat(formData.tax),
@@ -129,7 +166,7 @@ const EditProduct = ({
       });
 
       setLoading(false);
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -145,126 +182,153 @@ const EditProduct = ({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Edit Product</DialogTitle>
+          <DialogTitle>Edit {product_name}</DialogTitle>
         </DialogHeader>
-
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="productName" className="text-right">
-              product name
-            </Label>
-            <Input
+        <Form {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+            <FormField
+              control={control}
               name="productName"
-              value={formData.productName}
-              onChange={handleInputChange}
-              className="col-span-3"
-              placeholder="product Name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Product Name</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Product Name" {...field} />
+                  </FormControl>
+                  {errors.productName && <p>{errors.productName.message}</p>}
+                </FormItem>
+              )}
             />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="productDescription" className="text-right">
-              Description
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="productDescription"
-              value={formData.productDescription}
-              onChange={handleInputChange}
-              className="col-span-3"
-              placeholder="productDescription"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Description" {...field} />
+                  </FormControl>
+                  {errors.productDescription && (
+                    <p>{errors.productDescription.message}</p>
+                  )}
+                </FormItem>
+              )}
             />
-          </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceImage" className="text-right">
-              Image
-            </Label>
-            <Input
-              name="serviceImage"
-              className="col-span-3"
-              type="file"
-              accept="image/*"
-              ref={inputFileRef}
+            <FormField
+              control={control}
+              name="productCategory"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Change Category</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-max">
+                        <SelectValue placeholder="Select category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Change Category:</SelectLabel>
+                          {categoriesLoading ? (
+                            <div>Loading...</div>
+                          ) : error ? (
+                            <div>Error: {error}</div>
+                          ) : (
+                            categories.map((category) => (
+                              <SelectItem
+                                key={category.product_category_id}
+                                value={category.product_category_id.toString()}
+                              >
+                                {category.product_category_name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {errors.productCategory && (
+                    <p>{errors.productCategory.message}</p>
+                  )}
+                </FormItem>
+              )}
             />
-          </div>
-
-          <Select required onValueChange={(value) => setSelectedCategory(value)}>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select category" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Categories:</SelectLabel>
-              <SelectItem value="accessories">Accessories</SelectItem>
-              <SelectItem value="devices">Devices</SelectItem>
-              <SelectItem value="dyi">Dyi</SelectItem>
-              <SelectItem value="insurance">Insurance</SelectItem>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="raw" className="text-right">
-            raw
-          </Label>
-          <Input
-            name="raw"
-            value={formData.raw}
-            onChange={handleInputChange}
-            className="col-span-3"
-            placeholder="raw"
-          />
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="shipping" className="text-right">
-            shipping
-          </Label>
-          <Input
-            name="shipping"
-            value={formData.shipping}
-            onChange={handleInputChange}
-            className="col-span-3"
-            placeholder="shipping"
-          />
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="tax" className="text-right">
-            tax
-          </Label>
-          <Input
-            name="tax"
-            value={formData.tax}
-            onChange={handleInputChange}
-            className="col-span-3"
-            placeholder="tax"
-          />
-        </div>
-
-        <div className="grid grid-cols-4 items-center gap-4">
-          <Label htmlFor="markup" className="text-right">
-            Markup
-          </Label>
-          <Input
-            name="markup"
-            value={formData.markup}
-            onChange={handleInputChange}
-            className="col-span-3"
-            placeholder="markup"
-          />
-        </div>
-
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            disabled={loading}
-            variant="default"
-          >
-            {loading ? "Loading" : "Save"}
-          </Button>
-        </DialogFooter>
+            <FormField
+              control={control}
+              name="productImage"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Image</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      ref={inputFileRef}
+                      onChange={(e) => field.onChange(e.target.files)}
+                    />
+                  </FormControl>
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="raw"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Raw</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Raw" {...field} />
+                  </FormControl>
+                  {errors.raw && <p>{errors.raw.message}</p>}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="shipping"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Shipping</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Shipping" {...field} />
+                  </FormControl>
+                  {errors.shipping && <p>{errors.shipping.message}</p>}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="tax"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Tax %</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Tax" {...field} />
+                  </FormControl>
+                  {errors.tax && <p>{errors.tax.message}</p>}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={control}
+              name="markup"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Markup %</FormLabel>
+                  <FormControl>
+                    <Input type="number" placeholder="Markup" {...field} />
+                  </FormControl>
+                  {errors.markup && <p>{errors.markup.message}</p>}
+                </FormItem>
+              )}
+            />
+            <DialogFooter>
+              <Button type="submit" disabled={loading} variant="default">
+                {loading ? "Loading" : "Save"}
+              </Button>
+            </DialogFooter>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   );

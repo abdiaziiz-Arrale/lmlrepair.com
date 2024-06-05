@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
-import { createCategory } from "@/lib/db/category";
+import { createCategory } from "@/lib/db/categoryCrud";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,10 +23,10 @@ import {
 
 const schema = z.object({
   typeOfRepair: z.string().min(1, "Type of repair is required"),
-  raw: z.number().min(1, "Raw value is required"),
-  tax: z.number().min(1, "Tax value is required"),
-  shipping: z.number().min(1, "Shipping value is required"),
-  labour: z.number().min(1, "Labour value is required"),
+  raw: z.string().min(1, "Raw value is required"),
+  tax: z.string().min(1, "Tax value is required"),
+  shipping: z.string().min(1, "Shipping value is required"),
+  labour: z.string().min(1, "Labour value is required"),
   timeFrame: z.string().min(1, "Time frame is required"),
 });
 
@@ -54,13 +54,12 @@ const AddCategory = ({ serviceId }: AddCategoryProps) => {
       setLoading(true);
 
       await createCategory({
-        category_id: undefined,
         service_id: serviceId,
         type_Of_Repair: formData.typeOfRepair,
-        raw: formData.raw,
-        tax: formData.tax,
-        shipping: formData.shipping,
-        labour: formData.labour,
+        raw: parseInt(formData.raw),
+        tax: parseInt(formData.tax),
+        shipping: parseInt(formData.shipping),
+        labour: parseInt(formData.labour),
         timeFrame: formData.timeFrame,
       });
 

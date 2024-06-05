@@ -64,7 +64,7 @@ function ModalTable({ models, seriesId, brandId }: ModalTableProps) {
             />
           </div>
 
-          <AddModel seriesId={seriesId}/>
+          <AddModel seriesId={seriesId} />
         </div>
       </Card>
       <Table>
@@ -100,6 +100,7 @@ function ModalTable({ models, seriesId, brandId }: ModalTableProps) {
                   seriesId={model.series_id}
                   modelId={model.model_id}
                   modelName={model.model_name}
+                  brandId={brandId}
                 />
               </TableCell>
             </TableRow>

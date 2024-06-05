@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import type { PutBlobResult } from "@vercel/blob";
 import { createSeries } from "@/lib/db/seriesCrud";
 import { useForm, FieldValues } from "react-hook-form";
@@ -47,7 +46,9 @@ const AddSeries = ({ brandId }: AddSeriesProps) => {
       ),
   });
 
-  const methods = useForm({
+  type FormData = z.infer<typeof schema>;
+
+  const methods = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
@@ -123,6 +124,7 @@ const AddSeries = ({ brandId }: AddSeriesProps) => {
                   <FormControl>
                     <Input placeholder="Series Name" {...field} />
                   </FormControl>
+                  {errors.seriesName && <p>{errors.seriesName.message}</p>}
                 </FormItem>
               )}
             />
@@ -136,6 +138,9 @@ const AddSeries = ({ brandId }: AddSeriesProps) => {
                   <FormControl>
                     <Input placeholder="Series Description" {...field} />
                   </FormControl>
+                  {errors.seriesDescription && (
+                    <p>{errors.seriesDescription.message}</p>
+                  )}
                 </FormItem>
               )}
             />

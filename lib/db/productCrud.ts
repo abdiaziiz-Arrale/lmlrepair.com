@@ -10,7 +10,11 @@ export const getProducts = async (
     const products = await prisma.products.findMany({
       where: { product_category_id: productCategoryId },
       include: {
-        product_category: true,
+        ProductCategories: {
+          select: {
+            product_category_name: true,
+          },
+        },
       },
       orderBy: { product_name: "asc" },
     });

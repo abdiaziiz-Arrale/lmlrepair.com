@@ -107,6 +107,7 @@ function ProductsTable({ products, productCategoryId }: ProductsTableProps) {
               </TableCell>
               <TableCell>
                 <EditProduct
+                  product_category_id={product.product_category_id.toString()}
                   product_id={product.product_id}
                   product_name={product.product_name}
                   product_desc={product.product_desc}
