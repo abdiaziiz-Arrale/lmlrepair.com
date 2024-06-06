@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "./ui/input";
 import { updateCategory } from "@/lib/db/categoryCrud";
@@ -94,16 +94,16 @@ const EditCategory = ({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Sheet>
+      <SheetTrigger asChild>
         <Button>
           <Pencil />
         </Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Edit {typeOfRepair}</DialogTitle>
-        </DialogHeader>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-[425px]">
+        <SheetHeader>
+          <SheetTitle>Edit {typeOfRepair}</SheetTitle>
+        </SheetHeader>
 
         <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
@@ -203,15 +203,15 @@ const EditCategory = ({
             />
             {errors.timeFrame && <p>{errors.timeFrame.message}</p>}
 
-            <DialogFooter>
+            <SheetFooter>
               <Button type="submit" disabled={loading} variant="default">
                 {loading ? "Loading" : "Save"}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 

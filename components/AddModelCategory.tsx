@@ -1,13 +1,13 @@
 "use client";
 import React, { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { createModelCategory } from "@/lib/db/modelCategoryCrud";
 import { useForm } from "react-hook-form";
@@ -73,14 +73,14 @@ const AddModelCategory = ({ modelId }: AddModelCategoryProps) => {
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Sheet>
+      <SheetTrigger asChild>
         <Button>Add new</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Category</DialogTitle>
-        </DialogHeader>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-[425px]">
+        <SheetHeader>
+          <SheetTitle>Add Category</SheetTitle>
+        </SheetHeader>
 
         <Form {...methods}>
           <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
@@ -180,15 +180,15 @@ const AddModelCategory = ({ modelId }: AddModelCategoryProps) => {
             />
             {errors.timeFrame && <p>{errors.timeFrame.message}</p>}
 
-            <DialogFooter>
+            <SheetFooter>
               <Button type="submit" disabled={loading} variant="default">
                 {loading ? "Loading" : "Save"}
               </Button>
-            </DialogFooter>
+            </SheetFooter>
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      </SheetContent>
+    </Sheet>
   );
 };
 
