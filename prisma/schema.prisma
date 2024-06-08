@@ -95,6 +95,7 @@ model Staff {
   staff_name    String
   mobile_number String
   email         String
+  location      String 
 }
 
 model InventoryItem {
@@ -103,11 +104,13 @@ model InventoryItem {
   description        String?
   sku                String
   stock              Int
-  cost               Float
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
   locationId         Int?
+  rawCost            Float              @default(0)
+  shippingCost       Float              @default(10)
+  taxRate            Float              @default(10.25)
   internalTransfers  InternalTransfer[]
   inventoryAge       InventoryAge[]
   itemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
