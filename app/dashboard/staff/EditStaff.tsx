@@ -20,6 +20,15 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
 
@@ -28,6 +37,7 @@ const schema = z.object({
   mobileNumber: z.string().min(1, "Staff  is required"),
   email: z.string().min(1, "Staff email is required"),
   location: z.string().min(1, "Staff location is required"),
+  role: z.string().min(1, "Staff role is required"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -38,6 +48,7 @@ interface EditStaffProps {
   mobileNumber: string;
   email: string;
   location: string;
+  role: string;
 }
 
 const EditStaff = ({
@@ -45,6 +56,7 @@ const EditStaff = ({
   staffName,
   mobileNumber,
   email,
+  role,
   location,
 }: EditStaffProps) => {
   const [loading, setLoading] = useState(false);
@@ -56,6 +68,7 @@ const EditStaff = ({
       mobileNumber,
       email,
       location,
+      role,
     },
   });
 
@@ -74,6 +87,7 @@ const EditStaff = ({
         mobile_number: formData.mobileNumber,
         email: formData.email,
         location: formData.location,
+        role: formData.role,
       });
 
       setLoading(false);
@@ -154,6 +168,31 @@ const EditStaff = ({
                     <Input placeholder="Location" {...field} />
                   </FormControl>
                   {errors.location && <p>{errors.location.message}</p>}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Change role</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-max">
+                        <SelectValue placeholder="Select role" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Roles:</SelectLabel>
+                          <SelectItem value="admin">Admin</SelectItem>
+                          <SelectItem value="user">User</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {errors.role && <p>{errors.role.message}</p>}
                 </FormItem>
               )}
             />

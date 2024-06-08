@@ -15,6 +15,23 @@ export const getStaffs = async (): Promise<Staff[]> => {
   }
 };
 
+export const getStaff = async (email: string): Promise<Staff> => {
+  try {
+    const staff = await prisma.staff.findFirst({
+      where: { email: email },
+      orderBy: { staff_name: "asc" },
+    });
+
+    if (!staff) {
+      throw new Error("Staff not found");
+    }
+    return staff;
+  } catch (error) {
+    console.error("Error fetching staff:", error);
+    throw new Error("Failed to fetch staff");
+  }
+};
+
 export const createStaff = async (staffData: PartialBy<Staff, "staff_id">) => {
   try {
     return await prisma.staff.create({

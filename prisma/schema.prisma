@@ -94,8 +94,10 @@ model Staff {
   staff_id      Int    @id @default(autoincrement())
   staff_name    String
   mobile_number String
-  email         String
-  location      String 
+  email         String @unique
+  location      String
+  role          String @default("admin")
+  password      String @db.VarChar(255)
 }
 
 model InventoryItem {

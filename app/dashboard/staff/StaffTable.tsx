@@ -59,17 +59,18 @@ function StaffTable({ staff }: StaffTableProps) {
             <TableHead>Mobile #</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Location</TableHead>
+            <TableHead>Role</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {filteredStaff.map((staff) => (
-            <TableRow>
+            <TableRow key={staff.staff_id}>
               <TableCell>{staff.staff_name}</TableCell>
               <TableCell>{staff.mobile_number}</TableCell>
               <TableCell>{staff.email}</TableCell>
               <TableCell>{staff.location}</TableCell>
-
+              <TableCell>{staff.role}</TableCell>
               <TableCell>
                 <EditStaff
                   staffId={staff.staff_id}
@@ -77,6 +78,7 @@ function StaffTable({ staff }: StaffTableProps) {
                   mobileNumber={staff.mobile_number}
                   email={staff.email}
                   location={staff.location}
+                  role={staff.role}
                 />
               </TableCell>
             </TableRow>
