@@ -51,9 +51,12 @@ export default function EditCategories({
          try {
             const res = await updateCategory(categoryId as string, {
                name: data.category,
-               subCategories: data.subCategory.map((subCategory: string) => ({
-                  name: subCategory,
-               })),
+               subCategories: subCategoriesSelected.map(
+                  (subCategory, index) => ({
+                     itemsSubCategoryId: subCategory.itemsSubCategoryId,
+                     name: data.subCategory[index],
+                  })
+               ),
             });
 
             if (res.status === 'success') {
@@ -74,7 +77,7 @@ export default function EditCategories({
 
    return (
       <div className='flex h-screen'>
-         <div className='m-auto  p-8 rounded-lg  w-1/2'>
+         <div className='m-auto p-8 rounded-lg w-1/2'>
             <div className='flex justify-between items-center mb-8'>
                <Link href={'/dashboard/inventory/categories'}>
                   <Button variant={'ghost'}>
@@ -87,9 +90,7 @@ export default function EditCategories({
                   className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded'
                >
                   {isPending ? (
-                     <>
-                        <CircleDashedIcon size={20} className='animate-spin' />
-                     </>
+                     <CircleDashedIcon size={20} className='animate-spin' />
                   ) : (
                      'Edit'
                   )}
@@ -131,6 +132,26 @@ export default function EditCategories({
                         </div>
                      ))}
                   </div>
+                  {subCategories.map((subCategory, index) => (
+                     <div key={index} className='mb-2'>
+                        <Input
+                           id={`new-sub-category-${index}`}
+                           value={subCategory}
+                           onChange={(e) =>
+                              handleSubCategoryChange(index, e.target.value)
+                           }
+                           placeholder='New Subcategory'
+                           className='shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline'
+                        />
+                     </div>
+                  ))}
+                  <Button
+                     type='button'
+                     onClick={handleAddSubCategory}
+                     className='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded '
+                  >
+                     Add
+                  </Button>
                </div>
             </form>
          </div>

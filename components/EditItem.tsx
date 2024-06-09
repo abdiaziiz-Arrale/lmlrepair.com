@@ -19,6 +19,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useToast } from './ui/use-toast';
+import Link from 'next/link';
 
 type Inputs = {
    item: string;
@@ -95,9 +96,11 @@ function EditItem({ categories, subCategories, locations }: EditItemProps) {
       <div className='flex flex-col items-center justify-center min-h-screen  p-6'>
          <div className='w-full max-w-4xl bg-white p-8'>
             <div className='flex items-start justify-between border-b pb-4'>
-               <Button variant={'ghost'}>
-                  <X size={20} />
-               </Button>
+               <Link href={'/dashboard/inventory/items'}>
+                  <Button variant={'ghost'}>
+                     <X size={20} />
+                  </Button>
+               </Link>
                <h1 className='text-2xl font-semibold'>Edit Item</h1>
                <Button
                   className='bg-blue-500 text-white'

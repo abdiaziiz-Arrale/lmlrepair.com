@@ -7,11 +7,12 @@ import {
    Location,
    InventoryItem,
    Variation,
-   StockReturn,
+   ItemReturn,
    InternalTransfer,
    Sale,
    InventoryAge,
    LowStockAlert,
+   Comment,
 } from './inventoryItems';
 
 import {
@@ -55,13 +56,14 @@ async function main() {
    await prisma.inventoryAge.deleteMany({});
    await prisma.sale.deleteMany({});
    await prisma.internalTransfer.deleteMany({});
-   await prisma.stockReturn.deleteMany({});
+   await prisma.itemReturn.deleteMany({});
    await prisma.variation.deleteMany({});
    await prisma.inventoryItem.deleteMany({});
    await prisma.location.deleteMany({});
    await prisma.vendor.deleteMany({});
    await prisma.itemsSubCategory.deleteMany({});
    await prisma.itemsCategory.deleteMany({});
+   await prisma.comment.deleteMany({});
 
    // Insert new records
    await prisma.itemsCategory.createMany({
@@ -88,8 +90,12 @@ async function main() {
       data: Variation,
    });
 
-   await prisma.stockReturn.createMany({
-      data: StockReturn,
+   await prisma.itemReturn.createMany({
+      data: ItemReturn,
+   });
+
+   await prisma.comment.createMany({
+      data: Comment,
    });
 
    await prisma.internalTransfer.createMany({

@@ -165,27 +165,78 @@ export const Variation = [
    { variationId: 7, sku: 'APPLE-AIRPODS-PRO-WHITE', inventoryItemId: 4 },
 ];
 
-export const StockReturn = [
+export const ItemReturn = [
    {
       stockReturnId: 1,
-      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
-      quantity: 1,
-      reason: 'Defective product',
+      returningParty: 'Customer',
+      locationId: 2, // Retail Store 1 (Seattle)
       returnedAt: new Date('2024-05-27T10:00:00Z'),
+      status: 'Complete',
+      reason: 'Defective product',
+      request: 'Refund',
+      result: 'Success',
+      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
    },
    {
       stockReturnId: 2,
-      inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
-      quantity: 2,
-      reason: 'Customer return',
+      returningParty: 'Store',
+      locationId: 1, // Warehouse A
       returnedAt: new Date('2024-05-25T15:30:00Z'),
+      status: 'Complete',
+      reason: 'Customer return',
+      request: 'Credit',
+      result: 'Success',
+      inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
    },
    {
       stockReturnId: 3,
-      inventoryItemId: 4, // Apple AirPods Pro
-      quantity: 3,
-      reason: 'Change of mind',
+      returningParty: 'Customer',
+      locationId: 2, // Retail Store 1 (Seattle)
       returnedAt: new Date('2024-05-26T12:45:00Z'),
+      status: 'Pending',
+      reason: 'Change of mind',
+      request: 'Refund',
+      result: 'Rejected',
+      inventoryItemId: 4, // Apple AirPods Pro
+   },
+];
+
+export const Comment = [
+   {
+      commentId: 1,
+      stockReturnId: 1,
+      text: 'Screen was cracked on arrival.',
+      createdAt: new Date('2024-05-27T10:05:00Z'),
+   },
+   {
+      commentId: 2,
+      stockReturnId: 1,
+      text: 'Customer requested a refund.',
+      createdAt: new Date('2024-05-27T10:10:00Z'),
+   },
+   {
+      commentId: 3,
+      stockReturnId: 2,
+      text: 'Customer returned due to personal preference.',
+      createdAt: new Date('2024-05-25T15:35:00Z'),
+   },
+   {
+      commentId: 4,
+      stockReturnId: 2,
+      text: 'Issued store credit.',
+      createdAt: new Date('2024-05-25T15:40:00Z'),
+   },
+   {
+      commentId: 5,
+      stockReturnId: 3,
+      text: 'Customer decided they no longer wanted the item.',
+      createdAt: new Date('2024-05-26T12:50:00Z'),
+   },
+   {
+      commentId: 6,
+      stockReturnId: 3,
+      text: 'Processing refund request.',
+      createdAt: new Date('2024-05-26T12:55:00Z'),
    },
 ];
 
@@ -195,13 +246,13 @@ export const InternalTransfer = [
       inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
       quantity: 2,
       fromLocationId: 1, // Warehouse A
-      toLocationId: 2, // Store B
+      toLocationId: 2, // Retail Store 1 (Seattle)
    },
    {
       internalTransferId: 2,
       inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
       quantity: 1,
-      fromLocationId: 2, // Store B
+      fromLocationId: 2, // Retail Store 1 (Seattle)
       toLocationId: 1, // Warehouse A
    },
    {
@@ -209,7 +260,7 @@ export const InternalTransfer = [
       inventoryItemId: 4, // Apple AirPods Pro
       quantity: 4,
       fromLocationId: 1, // Warehouse A
-      toLocationId: 3, // Store C
+      toLocationId: 3, // Warehouse B
    },
 ];
 

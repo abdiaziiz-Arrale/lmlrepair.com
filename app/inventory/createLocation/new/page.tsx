@@ -63,7 +63,6 @@ function CreateNewLocation() {
                {isPending ? (
                   <>
                      <CircleDashedIcon size={20} className='animate-spin' />
-                     <span className='ml-2'>Saving</span>
                   </>
                ) : (
                   'Save'

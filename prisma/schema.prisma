@@ -94,7 +94,10 @@ model Staff {
   staff_id      Int    @id @default(autoincrement())
   staff_name    String
   mobile_number String
-  email         String
+  email         String @unique
+  location      String
+  role          String @default("admin")
+  password      String @db.VarChar(255)
 }
 
 model InventoryItem {
@@ -103,22 +106,22 @@ model InventoryItem {
   description        String?
   sku                String
   stock              Int
-  rawCost           Float  @default(0.0)
-  taxRate           Float  @default(10.25)
-  shippingCost      Float  @default(10.0)
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
   locationId         Int?
+  rawCost            Float              @default(0)
+  shippingCost       Float              @default(10)
+  taxRate            Float              @default(10.25)
   internalTransfers  InternalTransfer[]
   inventoryAge       InventoryAge[]
   itemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
   itemsSubCategory   ItemsSubCategory?  @relation(fields: [itemsSubCategoryId], references: [itemsSubCategoryId])
   location           Location?          @relation(fields: [locationId], references: [locationId])
   vendor             Vendor?            @relation(fields: [vendorId], references: [vendorId])
+  itemReturns        ItemReturn[]
   lowStockAlerts     LowStockAlert[]
   sales              Sale[]
-  stockReturns       StockReturn[]
   variations         Variation[]
 
   @@index([itemsCategoryId], map: "InventoryItem_itemsCategoryId_fkey")
@@ -157,6 +160,7 @@ model Location {
   transfersFrom InternalTransfer[] @relation("fromLocation")
   transfersTo   InternalTransfer[] @relation("toLocation")
   items         InventoryItem[]
+  stockReturns  ItemReturn[]
 }
 
 model Variation {
@@ -166,17 +170,6 @@ model Variation {
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
-}
-
-model StockReturn {
-  stockReturnId   Int           @id @default(autoincrement())
-  inventoryItemId Int
-  quantity        Int
-  reason          String
-  returnedAt      DateTime
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
-
-  @@index([inventoryItemId], map: "StockReturn_inventoryItemId_fkey")
 }
 
 model InternalTransfer {
@@ -229,4 +222,32 @@ model ProductCategories {
   product_category_desc  String
   product_category_image String
   Products               Products[]
+}
+
+model ItemReturn {
+  stockReturnId   Int           @id @default(autoincrement())
+  inventoryItemId Int
+  locationId      Int
+  reason          String
+  returningParty      String  @default("Customer")
+  returnedAt      DateTime
+  status          String
+  request         String
+  result          String
+  comments        Comment[]
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  location        Location      @relation(fields: [locationId], references: [locationId])
+
+  @@index([inventoryItemId], map: "ItemReturn_inventoryItemId_fkey")
+  @@index([locationId], map: "ItemReturn_locationId_fkey")
+}
+
+model Comment {
+  commentId     Int        @id @default(autoincrement())
+  stockReturnId Int
+  text          String
+  createdAt     DateTime   @default(now())
+  stockReturn   ItemReturn @relation(fields: [stockReturnId], references: [stockReturnId])
+
+  @@index([stockReturnId], map: "Comment_stockReturnId_fkey")
 }

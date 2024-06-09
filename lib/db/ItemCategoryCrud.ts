@@ -104,7 +104,6 @@ export const updateCategory = async (
    categoryId: string,
    data: UpdateCategoryInput
 ): Promise<UpdateCategoryResponse> => {
-   console.log(data.subCategories);
    try {
       const existingCategory = await prisma.itemsCategory.findUnique({
          where: {
@@ -123,9 +122,16 @@ export const updateCategory = async (
          name: data.name ? data.name : existingCategory.name,
       };
 
+      await prisma.itemsCategory.update({
+         where: {
+            itemsCategoryId: Number(categoryId),
+         },
+         data: valueToUpdate,
+      });
+
       if (data.subCategories) {
          const subCategoryPromises = data.subCategories.map((subCategory) => {
-            if (subCategory.name) {
+            if (subCategory.itemsSubCategoryId) {
                return prisma.itemsSubCategory.update({
                   where: {
                      itemsSubCategoryId: subCategory.itemsSubCategoryId,
@@ -135,18 +141,10 @@ export const updateCategory = async (
                   },
                });
             }
-
-            throw new Error('Subcategory name is required');
          });
+
          await Promise.all(subCategoryPromises);
       }
-
-      await prisma.itemsCategory.update({
-         where: {
-            itemsCategoryId: Number(categoryId),
-         },
-         data: valueToUpdate,
-      });
 
       return { status: 'success' };
    } catch (error) {
