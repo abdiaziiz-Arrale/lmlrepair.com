@@ -46,6 +46,7 @@ export default async function EditItemPage() {
             </p>
          ) : (
             <EditItem
+               //   itemID={ItemID}
                categories={categories}
                subCategories={subCategories}
                locations={locations}

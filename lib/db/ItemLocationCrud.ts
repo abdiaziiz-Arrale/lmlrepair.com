@@ -42,3 +42,48 @@ export const createLocation = async (data: {
       throw new Error('Failed to create inventory location');
    }
 };
+
+type UpdateLocationInput = {
+   name: string;
+   description: string;
+};
+
+type UpdateLocationResponse = {
+   status: string;
+};
+
+export const updateLocation = async (
+   locationId: string,
+   data: UpdateLocationInput
+): Promise<UpdateLocationResponse> => {
+   try {
+      const existingLocation = await prisma.location.findUnique({
+         where: {
+            locationId: Number(locationId),
+         },
+      });
+
+      if (!existingLocation) {
+         throw new Error('Location not found');
+      }
+
+      const valueToUpdate = {
+         name: data.name ? data.name : existingLocation.name,
+         description: data.description
+            ? data.description
+            : existingLocation.description,
+      };
+
+      await prisma.location.update({
+         where: {
+            locationId: Number(locationId),
+         },
+         data: valueToUpdate,
+      });
+
+      return { status: 'success' };
+   } catch (error) {
+      console.log(error);
+      return { status: 'error' };
+   }
+};

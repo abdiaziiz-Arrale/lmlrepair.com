@@ -1,4 +1,5 @@
-import { Delete, Edit, Edit2, Trash } from 'lucide-react';
+import { Edit2, Trash } from 'lucide-react';
+import Link from 'next/link';
 import { Card } from './ui/card';
 import {
    Table,
@@ -8,8 +9,6 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import { Button } from './ui/button';
-import Link from 'next/link';
 
 interface InventoryItem {
    inventoryItemId: number;
@@ -17,16 +16,17 @@ interface InventoryItem {
    description: string | null;
    sku: string;
    stock: number;
-   cost: number;
+   rawCost: number;
+   shippingCost: number;
+   taxRate: number;
    itemsCategoryId: number | null;
    itemsSubCategoryId: number | null;
    vendorId: number | null;
    locationId: number | null;
    itemsCategory?: { name: string };
    itemsSubCategory?: { name: string };
-   vendor?: { name: string };
-   variations?: { sku: string }[];
    location?: { name: string };
+   variations?: { sku: string }[];
 }
 
 interface Props {
@@ -43,12 +43,13 @@ async function ItemsTable({ items }: Props) {
                      <TableHead>Item</TableHead>
                      <TableHead>Category</TableHead>
                      <TableHead>SKU</TableHead>
-                     <TableHead>Variation</TableHead>
+                     <TableHead>Variations</TableHead>
                      <TableHead>Stock</TableHead>
+                     <TableHead>Raw</TableHead>
+                     <TableHead>Tax</TableHead>
+                     <TableHead>Shipping</TableHead>
                      <TableHead>Cost</TableHead>
-                     <TableHead>Vendor</TableHead>
                      <TableHead>Location</TableHead>
-                     <TableHead>Date</TableHead>
                      <TableHead>Actions</TableHead>
                   </TableRow>
                </TableHeader>
@@ -57,11 +58,11 @@ async function ItemsTable({ items }: Props) {
                      items.map((item) => (
                         <TableRow key={item.inventoryItemId}>
                            <TableCell>{item.name}</TableCell>
+
                            <TableCell className='space-x-1'>
-                              <span>{item.itemsCategory?.name}</span>
-                              <span>-</span>
-                              <span className='space-x-1 text-green-500 font-medium'>
-                                 {item.itemsSubCategory?.name || 'N/A'}
+                              <span>
+                                 {item.itemsCategory?.name} -{' '}
+                                 {item.itemsSubCategory?.name}
                               </span>
                            </TableCell>
                            <TableCell>{item.sku}</TableCell>
@@ -84,12 +85,28 @@ async function ItemsTable({ items }: Props) {
                               )}
                            </TableCell>
                            <TableCell>{item.stock}</TableCell>
-                           <TableCell className='text-green-500 font-medium'>
-                              ${item.cost}
+
+                           <TableCell className='text-green-500 font-semibol'>
+                              ${item.rawCost}
                            </TableCell>
-                           <TableCell>{item.vendor?.name}</TableCell>
+
+                           <TableCell className='text-green-500 font-semibol'>
+                              {item.taxRate}%
+                           </TableCell>
+                           <TableCell className='text-green-500 font-semibold '>
+                              ${item.shippingCost}
+                           </TableCell>
+                           <TableCell className='text-green-500 font-bold'>
+                              $
+                              {Math.round(
+                                 +item.rawCost +
+                                    +item.rawCost * (+item.taxRate / 100) +
+                                    +item.shippingCost
+                              )}
+                           </TableCell>
+
                            <TableCell>{item.location?.name || 'N/A'}</TableCell>
-                           <TableCell className='w-24'>Oct, 2024</TableCell>
+
                            <TableCell>
                               <div className='flex items-center gap-3'>
                                  <Link

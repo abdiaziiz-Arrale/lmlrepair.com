@@ -39,15 +39,18 @@ model Brand {
 }
 
 model Products {
-  product_id       Int    @id @default(autoincrement())
-  product_name     String
-  product_image    String
-  product_desc     String
-  raw              Float
-  tax              Float
-  shipping         Float
-  markup           Float
-  product_category String @db.VarChar(50)
+  product_id          Int               @id @default(autoincrement())
+  product_name        String
+  product_image       String
+  product_desc        String
+  raw                 Float
+  tax                 Float
+  shipping            Float
+  markup              Float
+  product_category_id Int
+  ProductCategories   ProductCategories @relation(fields: [product_category_id], references: [product_category_id])
+
+  @@index([product_category_id], map: "idx_product_category_id")
 }
 
 model Series {
@@ -98,9 +101,11 @@ model InventoryItem {
   inventoryItemId    Int                @id @default(autoincrement())
   name               String
   description        String?
-  sku                String            
+  sku                String
   stock              Int
-  cost               Float
+  rawCost           Float  @default(0.0)
+  taxRate           Float  @default(10.25)
+  shippingCost      Float  @default(10.0)
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
@@ -123,19 +128,20 @@ model InventoryItem {
 }
 
 model ItemsCategory {
-  itemsCategoryId Int             @id @default(autoincrement())
+  itemsCategoryId Int                @id @default(autoincrement())
   name            String
   items           InventoryItem[]
-  subCategories  ItemsSubCategory[]
+  subCategories   ItemsSubCategory[]
 }
 
 model ItemsSubCategory {
   itemsSubCategoryId Int             @id @default(autoincrement())
   name               String
+  categoryId         Int
   items              InventoryItem[]
-  categoryId     Int
-  category       ItemsCategory     @relation(fields: [categoryId], references: [itemsCategoryId])
+  category           ItemsCategory   @relation(fields: [categoryId], references: [itemsCategoryId])
 
+  @@index([categoryId], map: "ItemsSubCategory_categoryId_fkey")
 }
 
 model Vendor {
@@ -215,4 +221,12 @@ model LowStockAlert {
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
+}
+
+model ProductCategories {
+  product_category_id    Int        @id @default(autoincrement())
+  product_category_name  String
+  product_category_desc  String
+  product_category_image String
+  Products               Products[]
 }

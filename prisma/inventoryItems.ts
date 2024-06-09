@@ -86,7 +86,9 @@ export const InventoryItem = [
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM',
       itemsCategoryId: 1, // Parts
       stock: 3,
-      cost: 14,
+      rawCost: 12.0,
+      taxRate: 10.25,
+      shippingCost: 10.0,
       vendorId: 1, // TechParts Co.
       itemsSubCategoryId: 1, // Screen
       locationId: 1, // Warehouse A
@@ -99,7 +101,9 @@ export const InventoryItem = [
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR',
       itemsCategoryId: 3, // Accessories
       stock: 10,
-      cost: 8.99,
+      rawCost: 7.5,
+      taxRate: 10.25,
+      shippingCost: 10.0,
       vendorId: 2, // ScreenGuard Inc.
       itemsSubCategoryId: 16, // Screen Protectors
       locationId: 2, // Retail Store 1
@@ -112,7 +116,9 @@ export const InventoryItem = [
       sku: 'LOGITECH-G502-HERO',
       itemsCategoryId: 2, // Equipments
       stock: 5,
-      cost: 49.99,
+      rawCost: 40.0,
+      taxRate: 10.25,
+      shippingCost: 10.0,
       vendorId: 3, // Logitech Official
       itemsSubCategoryId: 12, // Tools
       locationId: 3, // Warehouse B
@@ -124,7 +130,9 @@ export const InventoryItem = [
       sku: 'APPLE-AIRPODS-PRO',
       itemsCategoryId: 4, // Devices
       stock: 20,
-      cost: 199.99,
+      rawCost: 180.0,
+      taxRate: 10.25,
+      shippingCost: 10.0,
       vendorId: 4, // Apple Store
       itemsSubCategoryId: 20, // Watch
       locationId: 4, // Retail Store 2

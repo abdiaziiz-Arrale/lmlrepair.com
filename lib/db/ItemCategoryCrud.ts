@@ -2,6 +2,7 @@
 
 import prisma from '@/lib/prisma';
 import { ItemsCategory, ItemsSubCategory } from '@prisma/client';
+import { sub } from 'date-fns';
 
 export const getCategoryWithSubCategory = async (): Promise<
    ItemsCategory[]
@@ -87,5 +88,68 @@ export const createCategory = async (
    } catch (error) {
       console.error('Error creating inventory category:', error);
       throw new Error('Failed to create inventory category');
+   }
+};
+
+type UpdateCategoryInput = {
+   name: string;
+   subCategories?: { itemsSubCategoryId: number; name: string }[];
+};
+
+type UpdateCategoryResponse = {
+   status: string;
+};
+
+export const updateCategory = async (
+   categoryId: string,
+   data: UpdateCategoryInput
+): Promise<UpdateCategoryResponse> => {
+   console.log(data.subCategories);
+   try {
+      const existingCategory = await prisma.itemsCategory.findUnique({
+         where: {
+            itemsCategoryId: Number(categoryId),
+         },
+         include: {
+            subCategories: true,
+         },
+      });
+
+      if (!existingCategory) {
+         return { status: 'error' };
+      }
+
+      const valueToUpdate = {
+         name: data.name ? data.name : existingCategory.name,
+      };
+
+      if (data.subCategories) {
+         const subCategoryPromises = data.subCategories.map((subCategory) => {
+            if (subCategory.name) {
+               return prisma.itemsSubCategory.update({
+                  where: {
+                     itemsSubCategoryId: subCategory.itemsSubCategoryId,
+                  },
+                  data: {
+                     name: subCategory.name,
+                  },
+               });
+            }
+
+            throw new Error('Subcategory name is required');
+         });
+         await Promise.all(subCategoryPromises);
+      }
+
+      await prisma.itemsCategory.update({
+         where: {
+            itemsCategoryId: Number(categoryId),
+         },
+         data: valueToUpdate,
+      });
+
+      return { status: 'success' };
+   } catch (error) {
+      return { status: 'error' };
    }
 };

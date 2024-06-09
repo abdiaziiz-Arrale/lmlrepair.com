@@ -26,7 +26,9 @@ type Inputs = {
    variations: string;
    vendor: string;
    stock: number;
-   cost: number;
+   rawCost: number;
+   taxRate: number;
+   shippingCost: number;
    category: string;
    subCategory: string;
    location: string;
@@ -66,16 +68,21 @@ function CreateNewItem({
                variations: data.variations,
                vendor: data.vendor,
                stock: data.stock,
-               cost: data.cost,
+               rawCost: data.rawCost,
+               taxRate: data.taxRate,
+               shippingCost: data.shippingCost,
                category: data.category,
                subCategory: data.subCategory,
                location: data.location,
             });
-            toast({
-               title: res.status,
-               description: `Item ${res.item.name} created successfully`,
-            });
-            router.push('/dashboard/inventory/items');
+
+            if (res.status === 'success') {
+               toast({
+                  title: res.status,
+                  description: `Item ${res.item.name} created successfully`,
+               });
+               router.push('/dashboard/inventory/items');
+            }
          } catch (error) {
             toast({
                title: 'Failed to create item',
@@ -165,28 +172,56 @@ function CreateNewItem({
                   )}
                </div>
 
+               <div>
+                  <Label className='block mb-1'>Stock</Label>
+                  <Input
+                     placeholder='e.g 20'
+                     className='w-full'
+                     {...register('stock', { required: true })}
+                  />
+                  {errors.stock && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+               <div>
+                  <Label className='block mb-1 '>Raw</Label>
+                  <Input
+                     placeholder='e.g $10'
+                     className='w-full'
+                     {...register('rawCost', { required: true })}
+                  />
+                  {errors.rawCost && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+
                <div className='flex items-center  justify-between'>
                   <div>
-                     <Label className='block mb-1'>Stock</Label>
+                     <Label className='block mb-1 '>Tax</Label>
                      <Input
-                        placeholder='e.g 20'
+                        placeholder='e.g $10'
                         className='w-full'
-                        {...register('stock', { required: true })}
+                        {...register('taxRate', { required: true })}
                      />
-                     {errors.stock && (
+                     {errors.taxRate && (
                         <span className='text-red-500'>
                            This field is required
                         </span>
                      )}
                   </div>
+
                   <div>
-                     <Label className='block mb-1 text-right'>Cost</Label>
+                     <Label className='block mb-1 text-right'>Shipping</Label>
                      <Input
                         placeholder='e.g $10'
                         className='w-full'
-                        {...register('cost', { required: true })}
+                        {...register('shippingCost', { required: true })}
                      />
-                     {errors.cost && (
+                     {errors.shippingCost && (
                         <span className='text-red-500'>
                            This field is required
                         </span>

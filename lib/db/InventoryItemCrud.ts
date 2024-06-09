@@ -28,7 +28,9 @@ type CreateItemInput = {
    variations: string;
    vendor: string;
    stock: number;
-   cost: number;
+   rawCost: number;
+   taxRate: number;
+   shippingCost: number;
    category: string;
    subCategory?: string;
    location?: string;
@@ -49,7 +51,9 @@ export const createInventoryItem = async (
       variations,
       vendor,
       stock,
-      cost,
+      rawCost,
+      taxRate,
+      shippingCost,
       category,
       subCategory,
       location,
@@ -69,7 +73,9 @@ export const createInventoryItem = async (
                description,
                sku,
                stock: Number(stock),
-               cost: Number(cost),
+               rawCost: Number(rawCost),
+               taxRate: Number(taxRate),
+               shippingCost: Number(shippingCost),
                itemsCategoryId: Number(category),
                itemsSubCategoryId: subCategory ? Number(subCategory) : null,
                vendorId: vendorRecord.vendorId,
@@ -92,5 +98,84 @@ export const createInventoryItem = async (
    } catch (error) {
       console.error('Error creating inventory item:', error);
       throw new Error('Failed to create inventory item');
+   }
+};
+
+type UpdateItemInput = {
+   name?: string;
+   description?: string;
+   sku?: string;
+   variations: string;
+   vendor?: string;
+   stock?: string;
+   rawCost?: string;
+   taxRate?: string;
+   shippingCost?: string;
+   category?: string;
+   subCategory?: string;
+   location?: string;
+};
+
+type UpdateItemResponse = {
+   status: string;
+};
+
+export const updateInventoryItem = async (
+   itemId: string,
+   data: UpdateItemInput
+): Promise<UpdateItemResponse> => {
+   try {
+      const existingItem = await prisma.inventoryItem.findUnique({
+         where: { inventoryItemId: Number(itemId) },
+         include: {
+            variations: true,
+         },
+      });
+
+      if (!existingItem) {
+         throw new Error('Item not found');
+      }
+
+      const valueToUpdate = {
+         name: data.name || existingItem.name,
+         description: data.description || existingItem.description,
+         sku: data.sku || existingItem.sku,
+         stock: data.stock ? Number(data.stock) : existingItem.stock,
+         rawCost: data.rawCost ? Number(data.rawCost) : existingItem.rawCost,
+         taxRate: data.taxRate ? Number(data.taxRate) : existingItem.taxRate,
+         shippingCost: data.shippingCost
+            ? Number(data.shippingCost)
+            : existingItem.shippingCost,
+         itemsCategoryId: data.category
+            ? Number(data.category)
+            : existingItem.itemsCategoryId,
+         itemsSubCategoryId: data.subCategory
+            ? Number(data.subCategory)
+            : existingItem.itemsSubCategoryId,
+         vendorId: data.vendor
+            ? (await prisma.vendor.create({ data: { name: data.vendor } }))
+                 .vendorId
+            : existingItem.vendorId,
+         locationId: data.location
+            ? Number(data.location)
+            : existingItem.locationId,
+      };
+
+      if (data.variations) {
+         await prisma.variation.update({
+            where: { variationId: existingItem.variations[0].variationId },
+            data: { sku: data.variations },
+         });
+      }
+
+      await prisma.inventoryItem.update({
+         where: { inventoryItemId: Number(itemId) },
+         data: valueToUpdate,
+      });
+
+      return { status: 'success' };
+   } catch (error) {
+      console.error('Error updating inventory item:', error);
+      throw new Error('Failed to update inventory item');
    }
 };
