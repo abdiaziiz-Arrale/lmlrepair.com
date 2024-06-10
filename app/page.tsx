@@ -1,5 +1,11 @@
+import { AddReturnItemDialog } from '@/components/AddReturnItem';
+
 function Home() {
-   return <div>LandingPage</div>;
+   return (
+      <div>
+         <AddReturnItemDialog />
+      </div>
+   );
 }
 
 export default Home;

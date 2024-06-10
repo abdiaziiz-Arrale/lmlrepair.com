@@ -1,7 +1,8 @@
+import { Toaster } from '@/components/ui/toaster';
 import { Metadata } from 'next';
 import { Karla } from 'next/font/google';
 import './globals.css';
-import { Toaster } from '@/components/ui/toaster';
+import ModalProvider from '@/providers/model-provider';
 
 const karla = Karla({
    weight: ['200', '300', '400', '500', '600', '700', '800'],
@@ -21,8 +22,10 @@ export default function RootLayout({
    return (
       <html lang='en' suppressHydrationWarning>
          <body className={karla.className}>
-            <main>{children}</main>
-            <Toaster />
+            <ModalProvider>
+               <main>{children}</main>
+               <Toaster />
+            </ModalProvider>
          </body>
       </html>
    );

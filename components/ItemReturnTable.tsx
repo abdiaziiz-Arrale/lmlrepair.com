@@ -1,4 +1,6 @@
 import { ItemReturn } from '@prisma/client';
+import { Pencil, Trash2 } from 'lucide-react';
+import Link from 'next/link';
 import { Card } from './ui/card';
 import {
    Table,
@@ -8,7 +10,6 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import Link from 'next/link';
 
 type Vendor = {
    vendorId: number;
@@ -48,7 +49,6 @@ type returnedItemProps = {
 };
 
 function ItemReturnTable({ returnedItems }: returnedItemProps) {
-   console.log(returnedItems);
    return (
       <div>
          <Card className='my-8'>
@@ -93,8 +93,14 @@ function ItemReturnTable({ returnedItems }: returnedItemProps) {
                         )}
                         <TableCell>
                            <div className='flex gap-2'>
-                              <button className='text-blue-500'>Edit</button>
-                              <button className='text-red-500'>Delete</button>
+                              <Link href={'/inventory/return/edit'}>
+                                 <Pencil
+                                    size={20}
+                                    className='text-blue-600 hover:text-blue-500'
+                                 />
+                              </Link>
+
+                              <Trash2 size={20} className='text-red-600' />
                            </div>
                         </TableCell>
                      </TableRow>

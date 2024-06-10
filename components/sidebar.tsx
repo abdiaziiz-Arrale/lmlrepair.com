@@ -11,7 +11,7 @@ export const SideBar = () => {
    const { toggleCollapse } = useSideBarToggle();
 
    const asideStyle = classNames(
-      'sidebar fixed bg-sidebar h-full shadow-sm shadow-slate-500/40 transition duration-400 ease-in-out z-[99999]',
+      'sidebar fixed bg-sidebar h-full shadow-sm shadow-slate-500/40 transition duration-400 ease-in-out ',
       {
          ['w-[20rem]']: !toggleCollapse,
          ['sm:w-[5.4rem] sm:left-0 left-[-100%]']: toggleCollapse,
