@@ -1,11 +1,23 @@
 import ItemReturnTable from '@/components/ItemReturnTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { getReturnedItems } from '@/lib/db/returnItemCrud';
 import { Plus } from 'lucide-react';
 import Link from 'next/link';
 import React from 'react';
 
-function ReturnsPage() {
+export async function fetchReturnedItems() {
+   try {
+      const returnedItems = await getReturnedItems();
+      return { returnedItems, error: null };
+   } catch (err) {
+      return { returnedItems: [], error: 'Check your internet connection.' };
+   }
+}
+
+async function ReturnsPage() {
+   const { returnedItems, error } = await fetchReturnedItems();
+
    return (
       <div className='space-y-3'>
          <div className='flex items-center justify-between'>
@@ -21,7 +33,11 @@ function ReturnsPage() {
             </Link>
          </div>
          <Input placeholder='Search Item Return...' className='max-w-96 ' />
-         <ItemReturnTable />
+         {error ? (
+            <p className='text-red-500 text-center mt-10'>{error}</p>
+         ) : (
+            <ItemReturnTable returnedItems={returnedItems} />
+         )}
       </div>
    );
 }
