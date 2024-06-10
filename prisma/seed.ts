@@ -1,18 +1,18 @@
 import { PrismaClient } from '@prisma/client';
 
 import {
+   Comment,
+   InternalTransfer,
+   InventoryAge,
+   InventoryItem,
+   ItemReturn,
    ItemsCategory,
    ItemsSubCategory,
-   Vendor,
    Location,
-   InventoryItem,
-   Variation,
-   ItemReturn,
-   InternalTransfer,
-   Sale,
-   InventoryAge,
    LowStockAlert,
-   Comment,
+   Sale,
+   Variation,
+   Vendor,
 } from './inventoryItems';
 
 import {
@@ -27,29 +27,29 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-   // await prisma.brand.createMany({
-   //    data: brands,
-   // });
+   await prisma.brand.createMany({
+      data: brands,
+   });
 
-   // await prisma.service.createMany({
-   //    data: services,
-   // });
+   await prisma.service.createMany({
+      data: services,
+   });
 
-   // await prisma.series.createMany({
-   //    data: series,
-   // });
+   await prisma.series.createMany({
+      data: series,
+   });
 
-   // await prisma.modelCategory.createMany({
-   //    data: modelCategory,
-   // });
+   await prisma.modelCategory.createMany({
+      data: modelCategory,
+   });
 
-   // await prisma.model.createMany({
-   //    data: model,
-   // });
+   await prisma.model.createMany({
+      data: model,
+   });
 
-   // await prisma.category.createMany({
-   //    data: categories,
-   // });
+   await prisma.category.createMany({
+      data: categories,
+   });
 
    // Delete existing records
    await prisma.lowStockAlert.deleteMany({});

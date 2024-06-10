@@ -1,3 +1,9 @@
+import {
+   DropdownMenu,
+   DropdownMenuContent,
+   DropdownMenuItem,
+   DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Button } from './ui/button';
 
@@ -19,6 +25,21 @@ function InventoryHeader() {
             <Link href={'/dashboard/inventory/locations'}>
                <Button className='w-24'>Locations</Button>
             </Link>
+            <DropdownMenu>
+               <DropdownMenuTrigger>
+                  <Button>Item Activity</Button>
+               </DropdownMenuTrigger>
+               <DropdownMenuContent>
+                  <DropdownMenuItem>
+                     <Link href={'/dashboard/inventory/returns'}>Returns</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                     <Link href={'/dashboard/inventory/transfers'}>
+                        Internal Transfers
+                     </Link>
+                  </DropdownMenuItem>
+               </DropdownMenuContent>
+            </DropdownMenu>
          </div>
       </div>
    );
