@@ -2,7 +2,6 @@
 
 import prisma from '@/lib/prisma';
 import { ItemReturnExtended } from '@/lib/type';
-import { ItemReturn } from '@prisma/client';
 
 export const getReturnedItems = async (): Promise<ItemReturnExtended[]> => {
    try {
@@ -71,33 +70,55 @@ export const getReturnedItemById = async (
 };
 
 type dataToSave = {
-   inventoryItemId: number;
-   locationId: number;
+   inventoryItemId: string;
+   locationId: string;
    reason: string;
    returningParty: string;
-   returnedAt: Date;
+   returnedAt?: Date;
    status: string;
    request: string;
    result: string;
+   comments?: string[];
+};
+
+type createItemReturnResponse = {
+   message: string;
+   status: string;
 };
 
 export const createReturnedItem = async (
    data: dataToSave
-): Promise<ItemReturn> => {
+): Promise<createItemReturnResponse> => {
    try {
-      return await prisma.itemReturn.create({
+      //Todo: Save the returned item to the database
+      const returnedItem = await prisma.itemReturn.create({
          data: {
-            inventoryItemId: data.inventoryItemId,
-            locationId: data.locationId,
+            inventoryItemId: parseInt(data.inventoryItemId),
+            locationId: parseInt(data.locationId),
             reason: data.reason,
             returningParty: data.returningParty,
-            returnedAt: data.returnedAt,
+            returnedAt: data.returnedAt ? data.returnedAt : new Date(),
             status: data.status,
             request: data.request,
             result: data.result,
          },
       });
-   } catch (error) {
+
+      //Todo: Add comments to the returned item
+      if (data.comments && data.comments.length > 0) {
+         await prisma.comment.createMany({
+            data: data.comments.map((comment) => ({
+               stockReturnId: returnedItem.stockReturnId,
+               text: comment,
+            })),
+         });
+      }
+
+      return {
+         message: 'Returned item created successfully',
+         status: 'success',
+      };
+   } catch (error: any) {
       throw new Error('Failed to create returned item');
    }
 };

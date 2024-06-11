@@ -4,7 +4,7 @@ import { SideBar } from '@/components/sidebar';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Metadata } from 'next';
 import { Karla } from 'next/font/google';
-// import '../global.css';
+import '../globals.css';
 
 export const revalidate = 0;
 

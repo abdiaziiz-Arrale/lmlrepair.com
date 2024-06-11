@@ -9,11 +9,10 @@ export const getLocations = async (): Promise<Location[]> => {
          orderBy: { name: 'asc' },
       });
    } catch (error) {
-      console.error('Error fetching inventory locatinos:', error);
+      console.error('Error fetching inventory locations:', error);
       throw new Error('Failed to fetch inventory locations');
    }
 };
-
 type CreateLocationResponse = {
    location: Location;
    status: string;
@@ -38,7 +37,7 @@ export const createLocation = async (data: {
       return { status: 'success', location: createdLocation };
       //Todo: Return the created location
    } catch (error) {
-      console.error('Error creating inventory location:', error);
+      console.error('Error creating inventory location:');
       throw new Error('Failed to create inventory location');
    }
 };

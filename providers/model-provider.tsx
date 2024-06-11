@@ -1,5 +1,5 @@
 'use client';
-import CustomModal from '@/components/ui/CustomModel';
+import CustomModal from '@/components/ui/custom/CustomModel';
 import {
    createContext,
    useContext,

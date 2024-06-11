@@ -1,24 +1,16 @@
 'use client';
 
+import CreateReturnItemForm from '@/forms/CreateReturnItemForm';
+import { useModal } from '@/providers/model-provider';
 import { Plus } from 'lucide-react';
 import { Button } from './ui/button';
-import { useModal } from '@/providers/model-provider';
 
 export function AddReturnItemDialog() {
    const { setOpen } = useModal();
 
    const handleOpen = () => {
       setOpen({
-         title: 'Add Return Item',
-         subheading: 'Provide the details below',
-         content: (
-            <div>
-               <p className='text-red-800'>
-                  This is where the form or content for adding a return item
-                  will go.
-               </p>
-            </div>
-         ),
+         content: <CreateReturnItemForm />,
       });
    };
 

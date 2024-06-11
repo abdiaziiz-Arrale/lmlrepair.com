@@ -47,7 +47,7 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
                      </div>
                      <div className='flex justify-between'>
                         <span className='font-medium'>Result:</span>
-                        {returnedItem.result === 'Success' ? (
+                        {returnedItem.result === 'success' ? (
                            <span className='text-green-500 font-semibold'>
                               {returnedItem.result}
                            </span>
