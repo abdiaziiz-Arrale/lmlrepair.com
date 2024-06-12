@@ -6,6 +6,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import Link from 'next/link';
 import { Button } from './ui/button';
+import { ChevronDown } from 'lucide-react';
 
 function InventoryHeader() {
    return (
@@ -27,7 +28,10 @@ function InventoryHeader() {
             </Link>
             <DropdownMenu>
                <DropdownMenuTrigger>
-                  <Button>Item Activity</Button>
+                  <Button className='space-x-1'>
+                     <span>Item Activity</span>
+                     <ChevronDown size={20} />
+                  </Button>
                </DropdownMenuTrigger>
                <DropdownMenuContent>
                   <DropdownMenuItem>

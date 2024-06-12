@@ -21,7 +21,7 @@ export async function fetchOneReturnedItem(
 
 export default async function ReturnItemsPage({ params }: PageProps) {
    const { returnedItem, error } = await fetchOneReturnedItem(
-      params.returnedItemId
+      +params.returnedItemId
    );
 
    return (

@@ -10,6 +10,7 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
+import { EditReturnItemDialog } from './EditReturnItem';
 
 type Vendor = {
    vendorId: number;
@@ -93,12 +94,9 @@ function ItemReturnTable({ returnedItems }: returnedItemProps) {
                         )}
                         <TableCell>
                            <div className='flex gap-2'>
-                              <Link href={'/inventory/return/edit'}>
-                                 <Pencil
-                                    size={20}
-                                    className='text-blue-600 hover:text-blue-500'
-                                 />
-                              </Link>
+                              <EditReturnItemDialog
+                                 stockReturnId={item.stockReturnId}
+                              />
 
                               <Trash2 size={20} className='text-red-600' />
                            </div>

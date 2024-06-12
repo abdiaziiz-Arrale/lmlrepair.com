@@ -35,12 +35,12 @@ export const getReturnedItems = async (): Promise<ItemReturnExtended[]> => {
 };
 
 export const getReturnedItemById = async (
-   returnedItemId: string
+   returnedItemId: number
 ): Promise<ItemReturnExtended | null> => {
    try {
       const item = await prisma.itemReturn.findUnique({
          where: {
-            stockReturnId: parseInt(returnedItemId),
+            stockReturnId: returnedItemId,
          },
          include: {
             inventoryItem: {
@@ -63,6 +63,7 @@ export const getReturnedItemById = async (
          },
       });
 
+      console.log(item);
       return item as ItemReturnExtended | null;
    } catch (error) {
       throw new Error('Failed to fetch returned item');
@@ -120,5 +121,91 @@ export const createReturnedItem = async (
       };
    } catch (error: any) {
       throw new Error('Failed to create returned item');
+   }
+};
+
+type dataToUpdate = {
+   inventoryItemId?: string;
+   locationId?: string;
+   reason?: string;
+   returningParty?: string;
+   returnedAt?: Date;
+   status?: string;
+   request?: string;
+   result?: string;
+   comments?: string[];
+};
+
+type updateItemReturnResponse = {
+   message: string;
+   status: string;
+};
+
+export const updateReturnedItem = async (
+   stockReturnId: number,
+   data: dataToUpdate
+): Promise<updateItemReturnResponse> => {
+   try {
+      const returnedItem = await prisma.itemReturn.findUnique({
+         where: {
+            stockReturnId,
+         },
+         include: {
+            comments: true,
+         },
+      });
+
+      if (!returnedItem) {
+         throw new Error('Returned item not found');
+      }
+
+      const updated = await prisma.itemReturn.update({
+         where: {
+            stockReturnId,
+         },
+         data: {
+            inventoryItemId: data.inventoryItemId
+               ? parseInt(data.inventoryItemId)
+               : returnedItem.inventoryItemId,
+            locationId: data.locationId
+               ? parseInt(data.locationId)
+               : returnedItem.locationId,
+            reason: data.reason ? data.reason : returnedItem.reason,
+            returningParty: data.returningParty
+               ? data.returningParty
+               : returnedItem.returningParty,
+            returnedAt: data.returnedAt
+               ? data.returnedAt
+               : returnedItem.returnedAt,
+            status: data.status ? data.status : returnedItem.status,
+            request: data.request ? data.request : returnedItem.request,
+            result: data.result ? data.result : returnedItem.result,
+         },
+      });
+
+      if (data.comments && data.comments.length > 0) {
+         await prisma.comment.deleteMany({
+            where: {
+               commentId: {
+                  in: returnedItem.comments.map((comment) => comment.commentId),
+               },
+            },
+         });
+
+         await prisma.comment.createMany({
+            data: data.comments.map((comment) => ({
+               stockReturnId,
+               text: comment,
+            })),
+         });
+      }
+
+      return {
+         message: 'Returned item updated successfully',
+         status: 'success',
+      };
+   } catch (error: any) {
+      console.log(error);
+      throw new Error('Failed to update returned item');
    }
 };
