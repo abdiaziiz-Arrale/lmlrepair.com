@@ -1,106 +1,125 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from "@prisma/client";
 
 import {
-   ItemsCategory,
-   ItemsSubCategory,
-   Vendor,
-   Location,
-   InventoryItem,
-   Variation,
-   StockReturn,
-   InternalTransfer,
-   Sale,
-   InventoryAge,
-   LowStockAlert,
-} from './inventoryItems';
+  Comment,
+  InternalTransfer,
+  InventoryAge,
+  InventoryItem,
+  ItemReturn,
+  ItemsCategory,
+  ItemsSubCategory,
+  Location,
+  LowStockAlert,
+  Sale,
+  Variation,
+  Vendor,
+} from "./inventoryItems";
 
 import {
-   brands,
-   categories,
-   model,
-   modelCategory,
-   series,
-   services,
-} from './serviceItems';
+  brands,
+  categories,
+  model,
+  modelCategory,
+  series,
+  services,
+} from "./serviceItems";
 
 const prisma = new PrismaClient();
 
 async function main() {
-   await prisma.brand.createMany({
-      data: brands,
-   });
+  await prisma.brand.createMany({
+    data: brands,
+  });
 
-   await prisma.service.createMany({
-      data: services,
-   });
+  await prisma.service.createMany({
+    data: services,
+  });
 
-   await prisma.series.createMany({
-      data: series,
-   });
-   
-   await prisma.model.createMany({
-      data: model,
-   });
+  await prisma.series.createMany({
+    data: series,
+  });
 
-   await prisma.modelCategory.createMany({
-      data: modelCategory,
-   });
+  await prisma.modelCategory.createMany({
+    data: modelCategory,
+  });
 
+  await prisma.model.createMany({
+    data: model,
+  });
 
-   await prisma.category.createMany({
-      data: categories,
-   });
+  await prisma.category.createMany({
+    data: categories,
+  });
 
-   await prisma.itemsCategory.createMany({
-      data: ItemsCategory,
-   });
+  // Delete existing records
+  await prisma.lowStockAlert.deleteMany({});
+  await prisma.inventoryAge.deleteMany({});
+  await prisma.sale.deleteMany({});
+  await prisma.internalTransfer.deleteMany({});
+  await prisma.itemReturn.deleteMany({});
+  await prisma.variation.deleteMany({});
+  await prisma.inventoryItem.deleteMany({});
+  await prisma.location.deleteMany({});
+  await prisma.vendor.deleteMany({});
+  await prisma.itemsSubCategory.deleteMany({});
+  await prisma.itemsCategory.deleteMany({});
+  await prisma.comment.deleteMany({});
 
-   await prisma.itemsSubCategory.createMany({
-      data: ItemsSubCategory,
-   });
+  // Insert new records
+  await prisma.itemsCategory.createMany({
+    data: ItemsCategory,
+  });
 
-   await prisma.vendor.createMany({
-      data: Vendor,
-   });
+  await prisma.itemsSubCategory.createMany({
+    data: ItemsSubCategory,
+  });
 
-   await prisma.location.createMany({
-      data: Location,
-   });
+  await prisma.vendor.createMany({
+    data: Vendor,
+  });
 
-   await prisma.inventoryItem.createMany({
-      data: InventoryItem,
-   });
+  await prisma.location.createMany({
+    data: Location,
+  });
 
-   await prisma.variation.createMany({
-      data: Variation,
-   });
+  await prisma.inventoryItem.createMany({
+    data: InventoryItem,
+  });
 
-   await prisma.stockReturn.createMany({
-      data: StockReturn,
-   });
+  await prisma.variation.createMany({
+    data: Variation,
+  });
 
-   await prisma.internalTransfer.createMany({
-      data: InternalTransfer,
-   });
+  await prisma.itemReturn.createMany({
+    data: ItemReturn,
+  });
 
-   await prisma.sale.createMany({
-      data: Sale,
-   });
+  await prisma.comment.createMany({
+    data: Comment,
+  });
 
-   await prisma.inventoryAge.createMany({
-      data: InventoryAge,
-   });
+  await prisma.internalTransfer.createMany({
+    data: InternalTransfer,
+  });
 
-   await prisma.lowStockAlert.createMany({
-      data: LowStockAlert,
-   });
+  await prisma.sale.createMany({
+    data: Sale,
+  });
+
+  await prisma.inventoryAge.createMany({
+    data: InventoryAge,
+  });
+
+  await prisma.lowStockAlert.createMany({
+    data: LowStockAlert,
+  });
 }
 
 main()
-   .catch((error) => {
-      console.error(error);
-      process.exit(1);
-   })
-   .finally(async () => {
-      await prisma.$disconnect();
-   });
+  .catch((error) => {
+    console.error(error);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

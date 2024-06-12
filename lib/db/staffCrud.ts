@@ -45,7 +45,7 @@ export const createStaff = async (staffData: PartialBy<Staff, "staff_id">) => {
 
 export const updateStaff = async (
   staffId: number,
-  updatedData: PartialBy<Staff, "staff_id">
+  updatedData: PartialBy<Staff, "staff_id" | "password">
 ) => {
   try {
     return await prisma.staff.update({

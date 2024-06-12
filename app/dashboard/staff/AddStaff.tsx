@@ -110,9 +110,9 @@ const AddStaff = () => {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Staff Description</FormLabel>
+                  <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Staff Description" {...field} />
+                    <Input placeholder="email" {...field} />
                   </FormControl>
                   {errors.email && <p>{errors.email.message}</p>}
                 </FormItem>
