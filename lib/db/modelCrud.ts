@@ -10,7 +10,7 @@ export const getModel = async (seriesId: number): Promise<Model[]> => {
       where: { series_id: seriesId },
       orderBy: { model_name: "asc" },
       include: {
-        series: {
+        Series: {
           select: {
             series_name: true,
             brand_id: true,

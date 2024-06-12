@@ -10,7 +10,7 @@ export const getSeries = async (brandId: number): Promise<Series[]> => {
       where: { brand_id: brandId },
       orderBy: { series_name: "asc" },
       include: {
-        brand: {
+        Brand: {
           select: {
             brand_name: true,
           },
