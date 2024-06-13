@@ -9,7 +9,6 @@ async function Products() {
    try {
       products = await getProducts();
    } catch (err) {
-      console.error('Error fetching products:', err);
       error = 'Check your internet connection.';
    }
    return (

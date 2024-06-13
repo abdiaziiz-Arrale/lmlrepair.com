@@ -45,6 +45,8 @@ export default function CreateTransferItemForm() {
    const [isPending, startTransition] = useTransition();
    const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
    const [locations, setLocations] = useState<Location[]>([]);
+   const [inventoryError, setInventoryError] = useState<string | null>(null);
+   const [locationError, setLocationError] = useState<string | null>(null);
 
    useEffect(() => {
       const fetchInventoryItems = async () => {
@@ -52,7 +54,7 @@ export default function CreateTransferItemForm() {
             const items: InventoryItem[] = await getInventoryItems();
             setInventoryItems(items);
          } catch (error) {
-            console.error('Error fetching inventory items:', error);
+            setInventoryError('Error fetching inventory items');
          }
       };
 
@@ -61,7 +63,7 @@ export default function CreateTransferItemForm() {
             const locs: Location[] = await getLocations();
             setLocations(locs);
          } catch (error) {
-            console.error('Error fetching locations:', error);
+            setLocationError('Error fetching locations');
          }
       };
 
@@ -95,7 +97,6 @@ export default function CreateTransferItemForm() {
                toLocationId: data.toLocationId,
             });
 
-            console.log(res);
             if (res.status === 'success') {
                toast({
                   title: `Item transferred successfully`,
@@ -106,7 +107,10 @@ export default function CreateTransferItemForm() {
                setClose();
             }
          } catch (error) {
-            console.error('Error creating transfer:', error);
+            toast({
+               title: 'Error',
+               description: 'Error creating transfer',
+            });
          }
       });
    };

@@ -23,7 +23,6 @@ async function OneTransferedItem({ params }: TransferedItemId) {
    const { transferId } = params;
    const { transfer, error } = await fetchOneTransferedId(transferId);
 
-   console.log(transfer);
    return (
       <div>
          {error ? (

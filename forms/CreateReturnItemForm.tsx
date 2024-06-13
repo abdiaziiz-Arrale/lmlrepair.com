@@ -11,12 +11,13 @@ import {
    SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
 import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
 import { getLocations } from '@/lib/db/ItemLocationCrud';
 import { createReturnedItem } from '@/lib/db/returnItemCrud';
 import { useModal } from '@/providers/model-provider';
 import { InventoryItem, Location } from '@prisma/client';
-import { CircleDashedIcon, Router, X } from 'lucide-react';
+import { CircleDashedIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -35,6 +36,7 @@ type FormData = {
 
 export default function CreateReturnItemForm() {
    const { setClose } = useModal();
+   const { toast } = useToast();
    const router = useRouter();
    const {
       register,
@@ -113,11 +115,18 @@ export default function CreateReturnItemForm() {
                comments: data.comments,
             });
             if (res.status === 'success') {
+               toast({
+                  title: 'Item Returned',
+                  description: 'The Item has been returned successfully',
+               });
                router.push('/dashboard/inventory/returns');
                setClose();
             }
          } catch (error) {
-            console.log(error);
+            toast({
+               title: 'Error',
+               description: 'An error occurred while returning the item',
+            });
          }
       });
    };
