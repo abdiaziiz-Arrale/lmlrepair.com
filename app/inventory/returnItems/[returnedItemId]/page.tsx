@@ -9,7 +9,7 @@ type PageProps = {
 };
 
 export async function fetchOneReturnedItem(
-   id: string
+   id: number
 ): Promise<{ returnedItem: ItemReturnExtended | null; error: string | null }> {
    try {
       const returnedItem = await getReturnedItemById(id);

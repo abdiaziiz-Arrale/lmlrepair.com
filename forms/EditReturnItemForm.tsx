@@ -173,10 +173,10 @@ export default function EditReturnItemForm({
                                  <SelectValue placeholder='Select Party' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='customer'>
+                                 <SelectItem value='Customer'>
                                     Customer
                                  </SelectItem>
-                                 <SelectItem value='shop'>Shop</SelectItem>
+                                 <SelectItem value='Shop'>Shop</SelectItem>
                               </SelectContent>
                            </Select>
                         )}
@@ -204,8 +204,8 @@ export default function EditReturnItemForm({
                                  <SelectValue placeholder='Select a request type' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='refund'>Refund</SelectItem>
-                                 <SelectItem value='credit'>Credit</SelectItem>
+                                 <SelectItem value='Refund'>Refund</SelectItem>
+                                 <SelectItem value='Credit'>Credit</SelectItem>
                               </SelectContent>
                            </Select>
                         )}
@@ -225,10 +225,10 @@ export default function EditReturnItemForm({
                                  <SelectValue placeholder='Select a request type' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='pending'>
+                                 <SelectItem value='Pending'>
                                     Pending
                                  </SelectItem>
-                                 <SelectItem value='complete'>
+                                 <SelectItem value='Complete'>
                                     Complete
                                  </SelectItem>
                               </SelectContent>
@@ -250,10 +250,10 @@ export default function EditReturnItemForm({
                                  <SelectValue placeholder='Select a request type' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='success'>
+                                 <SelectItem value='Success'>
                                     Success
                                  </SelectItem>
-                                 <SelectItem value='rejected'>
+                                 <SelectItem value='Rejected'>
                                     Rejected
                                  </SelectItem>
                               </SelectContent>

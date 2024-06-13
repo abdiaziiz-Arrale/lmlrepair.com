@@ -143,26 +143,47 @@ export const Variation = [
    {
       variationId: 1,
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-RED',
+
       inventoryItemId: 1,
+      stockQuantity: 1,
    },
    {
       variationId: 2,
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-BLUE',
+
       inventoryItemId: 1,
+      stockQuantity: 2,
    },
    {
       variationId: 3,
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-GLASS',
+      stockQuantity: 5,
       inventoryItemId: 2,
    },
    {
       variationId: 4,
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-PLASTIC',
       inventoryItemId: 2,
+      stockQuantity: 5,
    },
-   { variationId: 5, sku: 'LOGITECH-G502-HERO-WIRED', inventoryItemId: 3 },
-   { variationId: 6, sku: 'LOGITECH-G502-HERO-WIRELESS', inventoryItemId: 3 },
-   { variationId: 7, sku: 'APPLE-AIRPODS-PRO-WHITE', inventoryItemId: 4 },
+   {
+      variationId: 5,
+      sku: 'LOGITECH-G502-HERO-WIRED',
+      inventoryItemId: 3,
+      stockQuantity: 2,
+   },
+   {
+      variationId: 6,
+      sku: 'LOGITECH-G502-HERO-WIRELESS',
+      inventoryItemId: 3,
+      stockQuantity: 3,
+   },
+   {
+      variationId: 7,
+      sku: 'APPLE-AIRPODS-PRO-WHITE',
+      inventoryItemId: 4,
+      stockQuantity: 20,
+   },
 ];
 
 export const ItemReturn = [
@@ -240,27 +261,46 @@ export const Comment = [
    },
 ];
 
-export const InternalTransfer = [
+export const InternalTransfers = [
    {
       internalTransferId: 1,
-      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
-      quantity: 2,
       fromLocationId: 1, // Warehouse A
-      toLocationId: 2, // Retail Store 1 (Seattle)
+      toLocationId: 2, // Retail Store 1
+      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
+
+      quantity: 1,
+      transferDate: new Date('2024-05-20T09:00:00Z'),
+      status: 'Completed',
    },
    {
       internalTransferId: 2,
+      fromLocationId: 3, // Warehouse B
+      toLocationId: 4, // Retail Store 2
       inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
+
       quantity: 1,
-      fromLocationId: 2, // Retail Store 1 (Seattle)
-      toLocationId: 1, // Warehouse A
+      transferDate: new Date('2024-05-21T10:00:00Z'),
+      status: 'Pending',
    },
    {
       internalTransferId: 3,
-      inventoryItemId: 4, // Apple AirPods Pro
-      quantity: 4,
-      fromLocationId: 1, // Warehouse A
+      fromLocationId: 2, // Retail Store 1
+      toLocationId: 1, // Warehouse A
+      inventoryItemId: 2, // Samsung Galaxy S20 Ultra Screen Protector
+
+      quantity: 2,
+      transferDate: new Date('2024-05-22T11:00:00Z'),
+      status: 'Pending',
+   },
+   {
+      internalTransferId: 4,
+      fromLocationId: 4, // Retail Store 2
       toLocationId: 3, // Warehouse B
+      inventoryItemId: 4, // Apple AirPods Pro
+
+      quantity: 5,
+      transferDate: new Date('2024-05-23T12:00:00Z'),
+      status: 'In Transit',
    },
 ];
 

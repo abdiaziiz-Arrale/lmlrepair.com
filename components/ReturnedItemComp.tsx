@@ -1,23 +1,29 @@
+'use client';
+
 import { Button } from '@/components/ui/button';
 import { Download, Printer } from 'lucide-react';
 import { ItemReturnExtended } from '@/lib/type';
-
+import { useRouter } from 'next/navigation';
 export type ReturnedItemProps = {
    returnedItem: ItemReturnExtended;
 };
 
 function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
+   const router = useRouter();
    return (
       <div className='container mx-auto px-4 py-8 max-w-3xl'>
          <div className='dark:bg-gray-950 rounded-lg p-6 space-y-6'>
             <div className='flex items-center justify-between'>
                <h1 className='text-2xl font-bold'>Item Return Details</h1>
                <div className='flex items-center space-x-2'>
-                  <Button size='sm'>
-                     <Download className='w-4 h-4 mr-2' />
-                     Download
+                  <Button size='sm' onClick={() => router.back()}>
+                     Go Back
                   </Button>
-                  <Button variant='outline' size='sm'>
+                  <Button
+                     variant='outline'
+                     size='sm'
+                     onClick={() => window.print()}
+                  >
                      <Printer className='w-4 h-4 mr-2' />
                      Print
                   </Button>
@@ -25,7 +31,9 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
             </div>
             <div className='grid grid-cols-2 gap-6'>
                <div>
-                  <h2 className='text-lg font-medium mb-4'>Item Information</h2>
+                  <h2 className='text-lg font-medium mb-4'>
+                     Transfer Item Information
+                  </h2>
                   <div className='space-y-6'>
                      <div className='flex justify-between'>
                         <span className='font-medium'>Item Name:</span>
@@ -47,7 +55,7 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
                      </div>
                      <div className='flex justify-between'>
                         <span className='font-medium'>Result:</span>
-                        {returnedItem.result === 'success' ? (
+                        {returnedItem.result === 'Success' ? (
                            <span className='text-green-500 font-semibold'>
                               {returnedItem.result}
                            </span>
@@ -86,18 +94,20 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
                      </div>
                      <div className='flex justify-between'>
                         <span className='font-medium'>Raw:</span>
-                        <span>
+                        <span className='text-green-500 font-medium'>
                            ${returnedItem.inventoryItem.rawCost.toFixed(2)}
                         </span>
-                     </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Tax:</span>
-                        <span>{returnedItem.inventoryItem.taxRate}%</span>
                      </div>
                      <div className='flex justify-between'>
                         <span className='font-medium'>Shipping:</span>
                         <span>
                            ${returnedItem.inventoryItem.shippingCost.toFixed(2)}
+                        </span>
+                     </div>
+                     <div className='flex justify-between'>
+                        <span className='font-medium'>Tax:</span>
+                        <span className='text-blue-500 font-medium'>
+                           {returnedItem.inventoryItem.taxRate}%
                         </span>
                      </div>
                   </div>

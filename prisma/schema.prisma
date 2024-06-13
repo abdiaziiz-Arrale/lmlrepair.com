@@ -3,43 +3,42 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  // Add this
+  relationMode = "prisma"
 }
 
 model Service {
-  service_id    Int        @id @default(autoincrement())
+  service_id    Int    @id @default(autoincrement())
   service_name  String
   service_desc  String
   service_image String
   service_type  String
-  categories    Category[]
 }
 
 model Category {
-  category_id    Int     @id @default(autoincrement())
+  category_id    Int    @id @default(autoincrement())
   type_Of_Repair String
   raw            Float
   tax            Float
   shipping       Float
   timeFrame      String
   service_id     Int
-  labour         Int     @default(100)
-  service        Service @relation(fields: [service_id], references: [service_id])
+  labour         Int    @default(100)
 
   @@index([service_id], map: "Category_service_id_fkey")
 }
 
 model Brand {
-  brand_id    Int      @id @default(autoincrement())
+  brand_id    Int    @id @default(autoincrement())
   brand_name  String
   brand_image String
   brand_desc  String
-  series      Series[]
 }
 
 model Products {
-  product_id          Int               @id @default(autoincrement())
+  product_id          Int    @id @default(autoincrement())
   product_name        String
   product_image       String
   product_desc        String
@@ -48,30 +47,25 @@ model Products {
   shipping            Float
   markup              Float
   product_category_id Int
-  ProductCategories   ProductCategories @relation(fields: [product_category_id], references: [product_category_id])
 
   @@index([product_category_id], map: "idx_product_category_id")
 }
 
 model Series {
-  series_id    Int     @id @default(autoincrement())
+  series_id    Int    @id @default(autoincrement())
   series_name  String
   series_image String
   series_desc  String
   brand_id     Int
-  model        Model[]
-  brand        Brand   @relation(fields: [brand_id], references: [brand_id])
 
   @@index([brand_id], map: "Series_brand_id_fkey")
 }
 
 model Model {
-  model_id       Int             @id @default(autoincrement())
-  model_name     String
-  model_image    String
-  series_id      Int
-  series         Series          @relation(fields: [series_id], references: [series_id])
-  modelCategorys ModelCategory[]
+  model_id    Int    @id @default(autoincrement())
+  model_name  String
+  model_image String
+  series_id   Int
 
   @@index([series_id], map: "Model_series_id_fkey")
 }
@@ -85,7 +79,6 @@ model ModelCategory {
   timeFrame        String
   model_id         Int
   labour           Int    @default(100)
-  model            Model  @relation(fields: [model_id], references: [model_id])
 
   @@index([model_id], map: "ModelCategory_model_id_fkey")
 }
@@ -131,26 +124,24 @@ model InventoryItem {
 }
 
 model ItemsCategory {
-  itemsCategoryId Int                @id @default(autoincrement())
+  itemsCategoryId Int             @id @default(autoincrement())
   name            String
-  items           InventoryItem[]
-  subCategories   ItemsSubCategory[]
+  InventoryItem   InventoryItem[]
 }
 
 model ItemsSubCategory {
   itemsSubCategoryId Int             @id @default(autoincrement())
   name               String
   categoryId         Int
-  items              InventoryItem[]
-  category           ItemsCategory   @relation(fields: [categoryId], references: [itemsCategoryId])
+  InventoryItem      InventoryItem[]
 
   @@index([categoryId], map: "ItemsSubCategory_categoryId_fkey")
 }
 
 model Vendor {
-  vendorId Int             @id @default(autoincrement())
-  name     String
-  items    InventoryItem[]
+  vendorId      Int             @id @default(autoincrement())
+  name          String
+  InventoryItem InventoryItem[]
 }
 
 model Location {
@@ -164,10 +155,12 @@ model Location {
 }
 
 model Variation {
-  variationId     Int           @id @default(autoincrement())
-  sku             String        @unique
-  inventoryItemId Int
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  variationId       Int                @id @default(autoincrement())
+  sku               String             @unique
+  stockQuantity     Int
+  inventoryItemId   Int
+  inventoryItem     InventoryItem      @relation(fields: [inventoryItemId], references: [inventoryItemId])
+
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
 }
@@ -176,11 +169,14 @@ model InternalTransfer {
   internalTransferId Int           @id @default(autoincrement())
   inventoryItemId    Int
   quantity           Int
+  status             String
+  transferDate       DateTime      @default(now())
   fromLocationId     Int
   toLocationId       Int
   fromLocation       Location      @relation("fromLocation", fields: [fromLocationId], references: [locationId])
   inventoryItem      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   toLocation         Location      @relation("toLocation", fields: [toLocationId], references: [locationId])
+
 
   @@index([fromLocationId], map: "InternalTransfer_fromLocationId_fkey")
   @@index([inventoryItemId], map: "InternalTransfer_inventoryItemId_fkey")
@@ -188,40 +184,42 @@ model InternalTransfer {
 }
 
 model Sale {
-  saleId          Int           @id @default(autoincrement())
-  inventoryItemId Int
-  quantity        Int
-  revenue         Float
-  saleDate        DateTime
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  saleId                       Int            @id @default(autoincrement())
+  inventoryItemId              Int
+  quantity                     Int
+  revenue                      Float
+  saleDate                     DateTime
+  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
+  inventoryItemInventoryItemId Int?
 
   @@index([inventoryItemId], map: "Sale_inventoryItemId_fkey")
 }
 
 model InventoryAge {
-  inventoryAgeId  Int           @id @default(autoincrement())
-  inventoryItemId Int
-  arrivalDate     DateTime
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  inventoryAgeId               Int            @id @default(autoincrement())
+  inventoryItemId              Int
+  arrivalDate                  DateTime
+  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
+  inventoryItemInventoryItemId Int?
 
   @@index([inventoryItemId], map: "InventoryAge_inventoryItemId_fkey")
 }
 
 model LowStockAlert {
-  lowStockAlertId Int           @id @default(autoincrement())
-  inventoryItemId Int
-  threshold       Int
-  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
+  lowStockAlertId              Int            @id @default(autoincrement())
+  inventoryItemId              Int
+  threshold                    Int
+  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
+  inventoryItemInventoryItemId Int?
 
   @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
 }
 
 model ProductCategories {
-  product_category_id    Int        @id @default(autoincrement())
+  product_category_id    Int    @id @default(autoincrement())
   product_category_name  String
   product_category_desc  String
   product_category_image String
-  Products               Products[]
 }
 
 model ItemReturn {
@@ -229,7 +227,7 @@ model ItemReturn {
   inventoryItemId Int
   locationId      Int
   reason          String
-  returningParty      String  @default("Customer")
+  returningParty  String        @default("Customer")
   returnedAt      DateTime
   status          String
   request         String

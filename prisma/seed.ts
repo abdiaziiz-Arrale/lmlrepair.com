@@ -2,7 +2,7 @@ import { PrismaClient } from '@prisma/client';
 
 import {
    Comment,
-   InternalTransfer,
+   InternalTransfers,
    InventoryAge,
    InventoryItem,
    ItemReturn,
@@ -27,43 +27,48 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-   await prisma.brand.createMany({
-      data: brands,
-   });
+   // await prisma.brand.createMany({
+   //    data: brands,
+   // });
 
-   await prisma.service.createMany({
-      data: services,
-   });
+   // await prisma.service.createMany({
+   //    data: services,
+   // });
 
-   await prisma.series.createMany({
-      data: series,
-   });
+   // await prisma.series.createMany({
+   //    data: series,
+   // });
 
-   await prisma.modelCategory.createMany({
-      data: modelCategory,
-   });
+   // await prisma.modelCategory.createMany({
+   //    data: modelCategory,
+   // });
 
-   await prisma.model.createMany({
-      data: model,
-   });
+   // await prisma.model.createMany({
+   //    data: model,
+   // });
 
-   await prisma.category.createMany({
-      data: categories,
-   });
+   // await prisma.category.createMany({
+   //    data: categories,
+   // });
 
    // Delete existing records
    await prisma.lowStockAlert.deleteMany({});
    await prisma.inventoryAge.deleteMany({});
    await prisma.sale.deleteMany({});
    await prisma.internalTransfer.deleteMany({});
+
+   // Delete comments first
+   await prisma.comment.deleteMany({});
+
+   // Then delete item returns
    await prisma.itemReturn.deleteMany({});
+
    await prisma.variation.deleteMany({});
    await prisma.inventoryItem.deleteMany({});
    await prisma.location.deleteMany({});
    await prisma.vendor.deleteMany({});
    await prisma.itemsSubCategory.deleteMany({});
    await prisma.itemsCategory.deleteMany({});
-   await prisma.comment.deleteMany({});
 
    // Insert new records
    await prisma.itemsCategory.createMany({
@@ -99,7 +104,7 @@ async function main() {
    });
 
    await prisma.internalTransfer.createMany({
-      data: InternalTransfer,
+      data: InternalTransfers,
    });
 
    await prisma.sale.createMany({

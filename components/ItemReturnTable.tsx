@@ -73,7 +73,7 @@ function ItemReturnTable({ returnedItems }: returnedItemProps) {
                               {item.inventoryItem.name}
                            </Link>
                         </TableCell>
-                        {item.returningParty === 'customer' ? (
+                        {item.returningParty === 'Customer' ? (
                            <TableCell className='text-blue-500 font-semibold'>
                               {item.returningParty}
                            </TableCell>
@@ -83,7 +83,7 @@ function ItemReturnTable({ returnedItems }: returnedItemProps) {
                            </TableCell>
                         )}
                         <TableCell>{item.reason}</TableCell>
-                        {item.result === 'success' ? (
+                        {item.result === 'Success' ? (
                            <TableCell className='text-green-500 font-semibold'>
                               {item.result}
                            </TableCell>
