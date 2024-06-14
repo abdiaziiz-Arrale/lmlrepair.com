@@ -1,3 +1,4 @@
+import { AddLocationDialog } from '@/components/AddLocation';
 import { DatePickerDemo } from '@/components/DatePicker';
 import LocationTable from '@/components/LocationTable';
 import { Button } from '@/components/ui/button';
@@ -30,12 +31,7 @@ const Locations = async () => {
                   <div className='flex items-center gap-3'>
                      <DatePickerDemo />
                   </div>
-                  <Link href={'/inventory/createLocation/new'}>
-                     <Button className='space-x-2'>
-                        <Plus size={20} />
-                        <span>Add Location</span>
-                     </Button>
-                  </Link>
+                  <AddLocationDialog />
                </div>
             </div>
 

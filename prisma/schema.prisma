@@ -127,6 +127,7 @@ model ItemsCategory {
   itemsCategoryId Int             @id @default(autoincrement())
   name            String
   InventoryItem   InventoryItem[]
+  subCategories   ItemsSubCategory[]
 }
 
 model ItemsSubCategory {
@@ -134,6 +135,7 @@ model ItemsSubCategory {
   name               String
   categoryId         Int
   InventoryItem      InventoryItem[]
+  category           ItemsCategory @relation(fields: [categoryId], references: [itemsCategoryId])
 
   @@index([categoryId], map: "ItemsSubCategory_categoryId_fkey")
 }
@@ -157,7 +159,7 @@ model Location {
 model Variation {
   variationId       Int                @id @default(autoincrement())
   sku               String             @unique
-  stockQuantity     Int
+  stockQuantity     Int  
   inventoryItemId   Int
   inventoryItem     InventoryItem      @relation(fields: [inventoryItemId], references: [inventoryItemId])
 

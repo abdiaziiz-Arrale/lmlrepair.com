@@ -101,7 +101,7 @@ type UpdateCategoryResponse = {
 };
 
 export const updateCategory = async (
-   categoryId: string,
+   categoryId: number,
    data: UpdateCategoryInput
 ): Promise<UpdateCategoryResponse> => {
    try {

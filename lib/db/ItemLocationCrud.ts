@@ -52,13 +52,13 @@ type UpdateLocationResponse = {
 };
 
 export const updateLocation = async (
-   locationId: string,
+   locationId: number,
    data: UpdateLocationInput
 ): Promise<UpdateLocationResponse> => {
    try {
       const existingLocation = await prisma.location.findUnique({
          where: {
-            locationId: Number(locationId),
+            locationId: locationId,
          },
       });
 

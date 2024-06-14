@@ -1,4 +1,5 @@
-import { Edit2, Trash } from 'lucide-react';
+import { Trash } from 'lucide-react';
+import { EditCategoryDialog } from './EditCategoryDialog';
 import { Card } from './ui/card';
 import {
    Table,
@@ -8,7 +9,6 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import Link from 'next/link';
 
 type Categories = {
    name: string;
@@ -62,15 +62,9 @@ function CategoryTable({ categories }: Props) {
                            <TableCell>2021-09-12</TableCell>
                            <TableCell>
                               <div className='flex items-center gap-3'>
-                                 <Link
-                                    href={`/inventory/editCategory/${cate.itemsCategoryId}`}
-                                 >
-                                    <Edit2
-                                       size={20}
-                                       className='text-blue-500 cursor-pointer'
-                                    />
-                                 </Link>
-
+                                 <EditCategoryDialog
+                                    categoryId={cate.itemsCategoryId}
+                                 />
                                  <Trash
                                     size={20}
                                     className='text-red-500 cursor-pointer'

@@ -17,7 +17,7 @@ import { CircleDashedIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useToast } from './ui/use-toast';
+import { useToast } from '../components/ui/use-toast';
 
 type Inputs = {
    item: string;
@@ -40,15 +40,15 @@ type CreateNewItemProps = {
    locations: Location[];
 };
 
-function CreateNewItem({
+function CreateNewItemForm({
    categories,
    subCategories,
    locations,
 }: CreateNewItemProps) {
    const router = useRouter();
    const { toast } = useToast();
-   const { setClose } = useModal();
    const [isPending, startTransition] = useTransition();
+   const { setClose } = useModal();
    //Todo: Form hook for handling form inputs
    const {
       register,
@@ -83,6 +83,7 @@ function CreateNewItem({
                   description: `Item ${res.item.name} created successfully`,
                });
                router.push('/dashboard/inventory/items');
+               setClose();
             }
          } catch (error) {
             toast({
@@ -341,4 +342,4 @@ function CreateNewItem({
    );
 }
 
-export default CreateNewItem;
+export default CreateNewItemForm;

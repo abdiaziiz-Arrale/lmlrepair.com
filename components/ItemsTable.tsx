@@ -9,6 +9,8 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
+import { EditItemDialog } from './EditItemDialog';
+import EditItem from './EditItem';
 
 interface InventoryItem {
    inventoryItemId: number;
@@ -109,17 +111,12 @@ async function ItemsTable({ items }: Props) {
 
                            <TableCell>
                               <div className='flex items-center gap-3'>
-                                 <Link
-                                    href={`/inventory/editItem/${item.inventoryItemId}`}
-                                 >
-                                    <Edit2
-                                       size={20}
-                                       className='text-blue-500 cursor-pointer'
-                                    />
-                                 </Link>
+                                 <EditItemDialog
+                                    itemId={item.inventoryItemId}
+                                 />
 
                                  <Trash
-                                    size={20}
+                                    size={18}
                                     className='text-red-500 cursor-pointer'
                                  />
                               </div>

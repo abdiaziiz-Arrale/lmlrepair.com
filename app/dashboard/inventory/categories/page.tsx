@@ -1,3 +1,4 @@
+import { AddCategoryDialog } from '@/components/AddCategoryDialog';
 import CategoryTable from '@/components/CategoryTable';
 import { DatePickerDemo } from '@/components/DatePicker';
 import { Button } from '@/components/ui/button';
@@ -30,12 +31,7 @@ async function Categories() {
                   <div className='flex items-center gap-3'>
                      <DatePickerDemo />
                   </div>
-                  <Link href={'/inventory/createCategory/new'}>
-                     <Button className='space-x-2'>
-                        <Plus size={20} />
-                        <span>Add Category</span>
-                     </Button>
-                  </Link>
+                  <AddCategoryDialog />
                </div>
             </div>
 

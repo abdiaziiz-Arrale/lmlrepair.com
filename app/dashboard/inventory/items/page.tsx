@@ -1,3 +1,4 @@
+import { AddItemDialog } from '@/components/AddItem';
 import { DatePickerDemo } from '@/components/DatePicker';
 import ItemsTable from '@/components/ItemsTable';
 import { Button } from '@/components/ui/button';
@@ -25,12 +26,7 @@ async function Items() {
                   <h1 className='text-2xl font-medium'>Inventory Items</h1>
                   <p className='text-sm'>Manage your inventory items</p>
                </div>
-               <Link href={'/inventory/createItem/new'}>
-                  <Button className='space-x-2'>
-                     <Plus size={20} />
-                     <span>Add Item</span>
-                  </Button>
-               </Link>
+               <AddItemDialog />
             </div>
             <div className='flex items-center justify-between space-x-3'>
                <Input placeholder='Search Item...' className='max-w-96 ' />

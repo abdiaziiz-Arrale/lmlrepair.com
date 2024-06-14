@@ -88,6 +88,7 @@ export const createInventoryItem = async (
             data: {
                sku: variations,
                inventoryItemId: inventoryItem.inventoryItemId,
+               stockQuantity: Number(stock),
             },
          });
 
@@ -121,12 +122,12 @@ type UpdateItemResponse = {
 };
 
 export const updateInventoryItem = async (
-   itemId: string,
+   itemId: number,
    data: UpdateItemInput
 ): Promise<UpdateItemResponse> => {
    try {
       const existingItem = await prisma.inventoryItem.findUnique({
-         where: { inventoryItemId: Number(itemId) },
+         where: { inventoryItemId: itemId },
          include: {
             variations: true,
          },

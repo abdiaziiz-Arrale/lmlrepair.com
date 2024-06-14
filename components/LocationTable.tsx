@@ -9,6 +9,7 @@ import {
    TableRow,
 } from './ui/table';
 import Link from 'next/link';
+import { EditLocationDialog } from './EditLocation';
 
 type Locations = {
    locationId: number;
@@ -46,17 +47,12 @@ function CategoryTable({ locations }: Props) {
                            <TableCell>2021-09-12</TableCell>
                            <TableCell>
                               <div className='flex items-center gap-3'>
-                                 <Link
-                                    href={`/inventory/editLocation/${locate.locationId}`}
-                                 >
-                                    <Edit2
-                                       size={20}
-                                       className='text-blue-500 cursor-pointer'
-                                    />
-                                 </Link>
+                                 <EditLocationDialog
+                                    locationId={locate.locationId}
+                                 />
 
                                  <Trash
-                                    size={20}
+                                    size={18}
                                     className='text-red-500 cursor-pointer'
                                  />
                               </div>
