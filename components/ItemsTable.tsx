@@ -10,7 +10,6 @@ import {
    TableRow,
 } from './ui/table';
 import { EditItemDialog } from './EditItemDialog';
-import EditItem from './EditItem';
 
 interface InventoryItem {
    inventoryItemId: number;
