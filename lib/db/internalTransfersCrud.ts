@@ -88,3 +88,65 @@ export const createInternalTransfer = async (
       throw new Error('Failed to create internal transfer');
    }
 };
+
+type UpdateInternalTransferInput = {
+   inventoryItemId?: string;
+   quantity?: number;
+   status?: string;
+   fromLocationId?: string;
+   toLocationId?: string;
+};
+
+type updateInternalResponse = {
+   message: string;
+   status: string;
+};
+
+export const updateInternalTransfer = async (
+   internalTransferId: number,
+   data: UpdateInternalTransferInput
+): Promise<updateInternalResponse> => {
+   try {
+      // Fetch the current transfer item
+      const transferItem = await prisma.internalTransfer.findUnique({
+         where: {
+            internalTransferId: internalTransferId,
+         },
+      });
+
+      if (!transferItem) {
+         return { message: 'Internal Transfer not found', status: 'error' };
+      }
+
+      // Determine the new values for the fields to be updated
+      const updatedData = {
+         inventoryItemId: data.inventoryItemId
+            ? parseInt(data.inventoryItemId)
+            : transferItem.inventoryItemId,
+         quantity:
+            data.quantity !== undefined
+               ? +data.quantity
+               : transferItem.quantity,
+         status: data.status ?? transferItem.status,
+         fromLocationId: data.fromLocationId
+            ? parseInt(data.fromLocationId)
+            : transferItem.fromLocationId,
+         toLocationId: data.toLocationId
+            ? parseInt(data.toLocationId)
+            : transferItem.toLocationId,
+      };
+
+      // Perform the update
+      await prisma.internalTransfer.update({
+         where: {
+            internalTransferId: internalTransferId,
+         },
+         data: updatedData,
+      });
+
+      return { message: 'Internal Transfer Updated', status: 'success' };
+   } catch (error) {
+      console.error('Error updating internal transfer:', error);
+      throw new Error('Failed to update internal transfer');
+   }
+};

@@ -1,5 +1,6 @@
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { EditTransferItemDialog } from './EditTransferItem';
 import { Card } from './ui/card';
 import {
    Table,
@@ -82,10 +83,9 @@ function InternalTransfersTable({ transfers }: InternalTransfersTableProps) {
                         <TableCell>{transfer.toLocation.name}</TableCell>
                         <TableCell>{transfer.quantity}</TableCell>
                         <TableCell>
-                           <div className='flex items-center gap-2'>
-                              <Pencil
-                                 size={20}
-                                 className='text-blue-500 cursor-pointer'
+                           <div className='flex items-center gap-3'>
+                              <EditTransferItemDialog
+                                 transferId={transfer.internalTransferId}
                               />
                               <Trash2
                                  size={20}
