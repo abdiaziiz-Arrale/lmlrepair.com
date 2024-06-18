@@ -4,12 +4,12 @@ import ItemsTable from '@/components/ItemsTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { Download, Plus } from 'lucide-react';
-import Link from 'next/link';
+import { Download } from 'lucide-react';
 
 export async function fetchItems() {
    try {
       const items = await getInventoryItems();
+
       return { items, error: null };
    } catch (err) {
       return { items: [], error: 'Check your internet connection.' };
@@ -18,6 +18,7 @@ export async function fetchItems() {
 
 async function Items() {
    const { items, error } = await fetchItems();
+
    return (
       <div>
          <div className='space-y-3 '>

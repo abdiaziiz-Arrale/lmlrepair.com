@@ -7,13 +7,13 @@ export const getInventoryItems = async (): Promise<InventoryItem[]> => {
    try {
       return await prisma.inventoryItem.findMany({
          include: {
+            variations: true,
             itemsCategory: true,
             itemsSubCategory: true,
             vendor: true,
             location: true,
-            variations: true,
          },
-         orderBy: { name: 'asc' },
+         orderBy: { inventoryItemId: 'asc' },
       });
    } catch (error) {
       console.error('Error fetching inventory items:', error);

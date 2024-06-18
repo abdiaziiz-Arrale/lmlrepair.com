@@ -5,7 +5,6 @@ generator client {
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
-  // Add this
   relationMode = "prisma"
 }
 
@@ -124,7 +123,7 @@ model InventoryItem {
 }
 
 model ItemsCategory {
-  itemsCategoryId Int             @id @default(autoincrement())
+  itemsCategoryId Int                @id @default(autoincrement())
   name            String
   InventoryItem   InventoryItem[]
   subCategories   ItemsSubCategory[]
@@ -135,7 +134,7 @@ model ItemsSubCategory {
   name               String
   categoryId         Int
   InventoryItem      InventoryItem[]
-  category           ItemsCategory @relation(fields: [categoryId], references: [itemsCategoryId])
+  category           ItemsCategory   @relation(fields: [categoryId], references: [itemsCategoryId])
 
   @@index([categoryId], map: "ItemsSubCategory_categoryId_fkey")
 }
@@ -157,12 +156,11 @@ model Location {
 }
 
 model Variation {
-  variationId       Int                @id @default(autoincrement())
-  sku               String             @unique
-  stockQuantity     Int  
-  inventoryItemId   Int
-  inventoryItem     InventoryItem      @relation(fields: [inventoryItemId], references: [inventoryItemId])
-
+  variationId     Int           @id @default(autoincrement())
+  sku             String        @unique
+  stockQuantity  Int
+  inventoryItemId Int
+  inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
 }
@@ -172,13 +170,12 @@ model InternalTransfer {
   inventoryItemId    Int
   quantity           Int
   status             String
-  transferDate       DateTime      @default(now())
+  transferDate       DateTime
   fromLocationId     Int
   toLocationId       Int
   fromLocation       Location      @relation("fromLocation", fields: [fromLocationId], references: [locationId])
   inventoryItem      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   toLocation         Location      @relation("toLocation", fields: [toLocationId], references: [locationId])
-
 
   @@index([fromLocationId], map: "InternalTransfer_fromLocationId_fkey")
   @@index([inventoryItemId], map: "InternalTransfer_inventoryItemId_fkey")
@@ -186,33 +183,30 @@ model InternalTransfer {
 }
 
 model Sale {
-  saleId                       Int            @id @default(autoincrement())
-  inventoryItemId              Int
-  quantity                     Int
-  revenue                      Float
-  saleDate                     DateTime
-  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
-  inventoryItemInventoryItemId Int?
+  saleId          Int            @id @default(autoincrement())
+  inventoryItemId Int
+  quantity        Int
+  revenue         Float
+  saleDate        DateTime
+  InventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Sale_inventoryItemId_fkey")
 }
 
 model InventoryAge {
-  inventoryAgeId               Int            @id @default(autoincrement())
-  inventoryItemId              Int
-  arrivalDate                  DateTime
-  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
-  inventoryItemInventoryItemId Int?
+  inventoryAgeId  Int            @id @default(autoincrement())
+  inventoryItemId Int
+  arrivalDate     DateTime
+  InventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "InventoryAge_inventoryItemId_fkey")
 }
 
 model LowStockAlert {
-  lowStockAlertId              Int            @id @default(autoincrement())
-  inventoryItemId              Int
-  threshold                    Int
-  InventoryItem                InventoryItem? @relation(fields: [inventoryItemInventoryItemId], references: [inventoryItemId])
-  inventoryItemInventoryItemId Int?
+  lowStockAlertId Int            @id @default(autoincrement())
+  inventoryItemId Int
+  threshold       Int
+  InventoryItem   InventoryItem? @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "LowStockAlert_inventoryItemId_fkey")
 }
@@ -229,11 +223,11 @@ model ItemReturn {
   inventoryItemId Int
   locationId      Int
   reason          String
-  returningParty  String        @default("Customer")
   returnedAt      DateTime
   status          String
   request         String
   result          String
+  returningParty  String        @default("Customer")
   comments        Comment[]
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   location        Location      @relation(fields: [locationId], references: [locationId])
