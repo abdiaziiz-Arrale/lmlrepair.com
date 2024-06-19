@@ -1,27 +1,27 @@
-import { Metadata } from 'next';
-import { Karla } from 'next/font/google';
-import './globals.css';
+import { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import "./globals.css";
 
-const karla = Karla({
-   weight: ['200', '300', '400', '500', '600', '700', '800'],
-   subsets: ['latin'],
-   variable: '--font-karla',
+const poppins = Poppins({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-poppins",
 });
 export const metadata: Metadata = {
-   title: 'LML',
-   description: 'LML',
+  title: "LML",
+  description: "LML",
 };
 
 export default function RootLayout({
-   children,
+  children,
 }: {
-   children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-   return (
-      <html lang='en' suppressHydrationWarning>
-         <body className={karla.className}>
-            <main>{children}</main>
-         </body>
-      </html>
-   );
+  return (
+    <html lang="en" suppressHydrationWarning>
+      <body className={poppins.className}>
+        <main>{children}</main>
+      </body>
+    </html>
+  );
 }

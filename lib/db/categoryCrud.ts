@@ -8,6 +8,7 @@ export const getCategory = async (serviceId: number): Promise<Category[]> => {
   try {
     return await prisma.category.findMany({
       where: { service_id: serviceId },
+      include: { Service: true },
       orderBy: { type_Of_Repair: "asc" },
     });
   } catch (error) {

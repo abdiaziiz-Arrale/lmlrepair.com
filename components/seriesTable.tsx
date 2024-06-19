@@ -23,7 +23,7 @@ type Series = {
   series_image: string;
   series_desc: string;
   brand_id: number;
-  brand: {
+  Brand: {
     brand_name: string;
   };
 };
@@ -50,7 +50,7 @@ function seriesTable({ series, brandId }: seriesTableProps) {
   return (
     <CustomContainer>
       <h1 className="text-3xl px-2 mb-4">
-        {series.length !== 0 ? series[0].brand.brand_name : "No"} series
+        {series.length !== 0 ? series[0].Brand.brand_name : "No"} series
       </h1>
       <Card className="mb-4">
         <div className="flex justify-between items-center gap-5 px-3 py-6">

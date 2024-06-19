@@ -21,6 +21,15 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { updateProductCategory } from "@/lib/db/productCategoryCrud";
 import { Pencil } from "lucide-react";
 
@@ -29,6 +38,7 @@ const schema = z.object({
   productCategoryDescription: z
     .string()
     .min(1, "category description is required"),
+  type: z.string().min(1, "type is required"),
   productCategoryImage: z
     .any()
     .optional()
@@ -47,10 +57,12 @@ const EditProductCategory = ({
   productCategoryId,
   productCategoryName,
   productCategoryDescription,
+  type,
 }: {
   productCategoryId: number;
   productCategoryName: string;
   productCategoryDescription: string;
+  type: string;
 }) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
@@ -60,6 +72,7 @@ const EditProductCategory = ({
     defaultValues: {
       productCategoryName: productCategoryName,
       productCategoryDescription: productCategoryDescription,
+      type: type,
     },
   });
 
@@ -79,6 +92,7 @@ const EditProductCategory = ({
         await updateProductCategory(productCategoryId, {
           product_category_name: formData.productCategoryName,
           product_category_desc: formData.productCategoryDescription,
+          type: formData.type,
         });
         setLoading(false);
         window.location.reload();
@@ -101,6 +115,7 @@ const EditProductCategory = ({
         product_category_name: formData.productCategoryName,
         product_category_desc: formData.productCategoryDescription,
         product_category_image: imageUrl,
+        type: formData.type,
       });
 
       setLoading(false);
@@ -137,6 +152,35 @@ const EditProductCategory = ({
                   {errors.productCategoryName && (
                     <p>{errors.productCategoryName.message}</p>
                   )}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
+              name="type"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Service Category</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-max">
+                        <SelectValue placeholder="Select Type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Type:</SelectLabel>
+                          <SelectItem value="accessories">
+                            Accessories
+                          </SelectItem>
+                          <SelectItem value="dyi">DYI</SelectItem>
+                          <SelectItem value="devices">Devices</SelectItem>
+                          <SelectItem value="insurance">Insurance</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {errors.type && <p>{errors.type.message}</p>}
                 </FormItem>
               )}
             />

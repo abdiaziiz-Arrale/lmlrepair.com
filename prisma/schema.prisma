@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
@@ -168,6 +168,7 @@ model Variation {
   variationId     Int           @id @default(autoincrement())
   sku             String        @unique
   inventoryItemId Int
+  stockQuantity   Int
   InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
@@ -179,6 +180,8 @@ model InternalTransfer {
   quantity                                           Int
   fromLocationId                                     Int
   toLocationId                                       Int
+  transferDate                                       DateTime
+  status                                             String
   Location_InternalTransfer_fromLocationIdToLocation Location      @relation("InternalTransfer_fromLocationIdToLocation", fields: [fromLocationId], references: [locationId])
   InventoryItem                                      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   Location_InternalTransfer_toLocationIdToLocation   Location      @relation("InternalTransfer_toLocationIdToLocation", fields: [toLocationId], references: [locationId])
@@ -222,6 +225,7 @@ model ProductCategories {
   product_category_name  String
   product_category_desc  String
   product_category_image String
+  type String @default("accessories")
   Products               Products[]
 }
 

@@ -6,7 +6,7 @@ import { Karla } from "next/font/google";
 import { SideBar } from "../../components/sidebar";
 import "../globals.css";
 
-export const revalidate =0;
+export const revalidate = 0;
 
 const karla = Karla({
   weight: ["200", "300", "400", "500", "600", "700", "800"],
@@ -24,19 +24,21 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <ThemeProvider
-      themes={["dark", "custom", "light"]}
-      attribute="class"
-      enableSystem
-      disableTransitionOnChange
-    >
-      <div className=" h-screen overflow-hidden">
-        <SideBar />
-        <div className="flex flex-col h-full w-full ">
-          <Header />
-          <PageWrapper children={children} />
+    <div className={karla.className}>
+      <ThemeProvider
+        themes={["dark", "custom", "light"]}
+        attribute="class"
+        enableSystem
+        disableTransitionOnChange
+      >
+        <div className=" h-screen overflow-hidden">
+          <SideBar />
+          <div className="flex flex-col h-full w-full ">
+            <Header />
+            <PageWrapper children={children} />
+          </div>
         </div>
-      </div>
-    </ThemeProvider>
+      </ThemeProvider>
+    </div>
   );
 }

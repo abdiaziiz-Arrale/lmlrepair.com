@@ -10,6 +10,7 @@ export const getModelCategory = async (
   try {
     return await prisma.modelCategory.findMany({
       where: { model_id: modelId },
+      include: { Model: true },
       orderBy: { type_of_repair: "asc" },
     });
   } catch (error) {
