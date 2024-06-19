@@ -33,7 +33,7 @@ export default async function ProductTypes() {
 
             <figure className="bg-gray-100 rounded-lg p-5 flex flex-col justify-between gap-10">
               <div className="w-52 h-44">
-                <Link href={`/productcategories?type=devices`}>
+                <Link href={`/producttypes/productcategories?type=devices`}>
                   <img
                     src={"/images/products/accessories/devices.png"}
                     alt={"Devices"}
@@ -50,7 +50,7 @@ export default async function ProductTypes() {
 
             <figure className="bg-gray-100 rounded-lg p-5 flex flex-col justify-between gap-10">
               <div className="w-52 h-44">
-                <Link href={`/productcategories?type=dyi`}>
+                <Link href={`/producttypes/productcategories?type=dyi`}>
                   <img
                     src={"/images/products/accessories/dyi.png"}
                     alt={"Dyi"}
@@ -67,7 +67,7 @@ export default async function ProductTypes() {
 
             <figure className="bg-gray-100 rounded-lg p-5 flex flex-col justify-between gap-10">
               <div className="w-52 h-44">
-                <Link href={`/productcategories?type=insurance`}>
+                <Link href={`/producttypes/productcategories?type=insurance`}>
                   <img
                     src={"/images/products/accessories/insurance.png"}
                     alt={"Insurance"}
