@@ -86,9 +86,9 @@ async function main() {
     data: InventoryItem,
   });
 
-  await prisma.variation.createMany({
-    data: Variation,
-  });
+  // await prisma.variation.createMany({
+  //   data: Variation,
+  // });
 
   await prisma.itemReturn.createMany({
     data: ItemReturn,
@@ -98,9 +98,9 @@ async function main() {
     data: Comment,
   });
 
-  await prisma.internalTransfer.createMany({
-    data: InternalTransfer,
-  });
+  // await prisma.internalTransfer.createMany({
+  //   data: InternalTransfer,
+  // });
 
   await prisma.sale.createMany({
     data: Sale,
