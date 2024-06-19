@@ -8,8 +8,10 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 export const metadata: Metadata = {
-  title: "LML",
-  description: "LML",
+  title: "LML Repair",
+  description:
+    "LML Repair is a repair service company that specializes in fixing electronics.",
+  icons: "/lml_logo.png",
 };
 
 export default function RootLayout({
