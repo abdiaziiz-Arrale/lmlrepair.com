@@ -24,6 +24,7 @@ export const getInventoryItems = async (): Promise<InventoryItem[]> => {
 type CreateItemInput = {
    name: string;
    description: string;
+   // brand: string;
    sku: string;
    variations: string;
    vendor: string;
@@ -49,6 +50,7 @@ export const createInventoryItem = async (
       description,
       sku,
       variations,
+      // brand,
       vendor,
       stock,
       rawCost,
@@ -72,6 +74,7 @@ export const createInventoryItem = async (
                name,
                description,
                sku,
+               // brand,
                stock: Number(stock),
                rawCost: Number(rawCost),
                taxRate: Number(taxRate),

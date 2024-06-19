@@ -2,7 +2,6 @@
 
 import prisma from '@/lib/prisma';
 import { ItemsCategory, ItemsSubCategory } from '@prisma/client';
-import { sub } from 'date-fns';
 
 export const getCategoryWithSubCategory = async (): Promise<
    ItemsCategory[]
@@ -12,6 +11,7 @@ export const getCategoryWithSubCategory = async (): Promise<
          orderBy: { name: 'asc' },
          include: {
             subCategories: true,
+            InventoryItem: true,
          },
       });
    } catch (error) {
@@ -49,12 +49,13 @@ type CreateCategoryResponse = {
 type CreateCategoryInput = {
    name: string;
    subCategories?: { name: string }[];
+   imageUrl?: string | null;
 };
 
 export const createCategory = async (
    data: CreateCategoryInput
 ): Promise<CreateCategoryResponse> => {
-   const { name, subCategories } = data;
+   const { name, subCategories, imageUrl } = data;
 
    try {
       const createdCategory = await prisma.$transaction(async (prisma) => {
@@ -62,6 +63,7 @@ export const createCategory = async (
          const category = await prisma.itemsCategory.create({
             data: {
                name,
+               image: imageUrl ? imageUrl : '',
             },
          });
 

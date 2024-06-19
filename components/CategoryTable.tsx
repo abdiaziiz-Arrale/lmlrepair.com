@@ -1,3 +1,5 @@
+'use client';
+
 import { Trash } from 'lucide-react';
 import { EditCategoryDialog } from './EditCategoryDialog';
 import { Card } from './ui/card';
@@ -14,6 +16,7 @@ type Categories = {
    name: string;
    itemsCategoryId: number;
    subCategories?: { name: string }[];
+   InventoryItem: { name: string }[];
 };
 
 interface Props {
@@ -29,7 +32,7 @@ function CategoryTable({ categories }: Props) {
                   <TableRow>
                      <TableHead className='lg:w-80'>Category</TableHead>
                      <TableHead>Sub-Category</TableHead>
-                     <TableHead>Date Added</TableHead>
+                     <TableHead>Linked Items</TableHead>
                      <TableHead>Acttions</TableHead>
                   </TableRow>
                </TableHeader>
@@ -59,7 +62,10 @@ function CategoryTable({ categories }: Props) {
                                  )}
                               </ul>
                            </TableCell>
-                           <TableCell>2021-09-12</TableCell>
+                           <TableCell>
+                              {cate.InventoryItem && cate.InventoryItem.length}
+                           </TableCell>
+
                            <TableCell>
                               <div className='flex items-center gap-3'>
                                  <EditCategoryDialog

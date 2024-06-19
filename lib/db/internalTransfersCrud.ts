@@ -78,6 +78,7 @@ export const createInternalTransfer = async (
             inventoryItemId: parseInt(inventoryItemId),
             status: status,
             quantity: parseInt(quantity),
+            transferDate: new Date(),
             fromLocationId: parseInt(fromLocationId),
             toLocationId: parseInt(toLocationId),
          },

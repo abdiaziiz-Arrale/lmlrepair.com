@@ -212,9 +212,6 @@ export default function CreateTransferItemForm() {
                                  <SelectItem value='Pending'>
                                     Pending
                                  </SelectItem>
-                                 <SelectItem value='InTransit'>
-                                    In-Transit
-                                 </SelectItem>
                                  <SelectItem value='Completed'>
                                     Completed
                                  </SelectItem>

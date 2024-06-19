@@ -27,23 +27,25 @@ import {
 } from '@/components/ui/tooltip';
 import { useModal } from '@/providers/model-provider';
 import { ItemsCategory, ItemsSubCategory, Location } from '@prisma/client';
-import { CircleDashedIcon, Plus, ShieldQuestion, X } from 'lucide-react';
+import { CircleDashedIcon, ShieldQuestion, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useToast } from '../components/ui/use-toast';
+import VariationTable from '../components/VariationsTable';
+import VariationsDialog from '@/components/VariatinosDialog';
 
 type Inputs = {
    item: string;
    description: string;
    vendor: string;
-
    rawCost: number;
    taxRate: number;
    shippingCost: number;
    category: string;
    subCategory: string;
    location: string;
+   brand: string;
 };
 
 type CreateNewItemProps = {
@@ -52,18 +54,22 @@ type CreateNewItemProps = {
    locations: Location[];
 };
 
+type Variation = {
+   name: string;
+   value: string;
+};
+
 function CreateNewItemForm({
    categories,
    subCategories,
    locations,
 }: CreateNewItemProps) {
+   const [variationsData, setVariationsData] = useState<any>([]);
    const router = useRouter();
    const { toast } = useToast();
    const [isPending, startTransition] = useTransition();
    const { setClose } = useModal();
-   const [optionsData, setOptionsData] = useState<any[]>([]);
 
-   //Todo: Form hook for handling form inputs
    const {
       register,
       handleSubmit,
@@ -71,52 +77,20 @@ function CreateNewItemForm({
       formState: { errors },
    } = useForm<Inputs>();
 
-   const handleOptionsData = (options: any[]) => {
-      setOptionsData((prevOptionSets) => [
-         ...prevOptionSets,
-         ...options.map((option) => ({
-            setName: option.setName,
-            options: option.options,
-         })),
-      ]);
+   const handleOptionsData = (options: any) => {
+      setVariationsData(options);
    };
-   console.log(optionsData);
 
-   //Todo: Handle form submission
-   const onSubmit: SubmitHandler<Inputs> = (data) => {
-      console.log(data.description);
-      // startTransition(async () => {
-      //    try {
-      //       const res = await createInventoryItem({
-      //          name: data.item,
-      //          description: data.description,
+   const handleDeleteVariation = (deleteIndex: any) => {
+      const updatedVariations = variationsData?.filter((_: any, index: any) => {
+         return index !== deleteIndex;
+      });
 
-      //          vendor: data.vendor,
-
-      //          rawCost: data.rawCost,
-      //          taxRate: data.taxRate,
-      //          shippingCost: data.shippingCost,
-      //          category: data.category,
-      //          subCategory: data.subCategory,
-      //          location: data.location,
-      //       });
-
-      //       if (res.status === 'success') {
-      //          toast({
-      //             title: res.status,
-      //             description: `Item ${res.item.name} created successfully`,
-      //          });
-      //          router.push('/dashboard/inventory/items');
-      //          setClose();
-      //       }
-      //    } catch (error) {
-      //       toast({
-      //          title: 'Failed to create item',
-      //          description: 'An error occurred while creating the item',
-      //       });
-      //    }
-      // });
+      setVariationsData(updatedVariations);
    };
+
+   console.log(variationsData);
+   const onSubmit: SubmitHandler<Inputs> = (data) => {};
 
    return (
       <div className='flex flex-col'>
@@ -175,7 +149,7 @@ function CreateNewItemForm({
 
                <div className='flex flex-col justify-start'>
                   <div className='flex items-center justify-between'>
-                     <Label className='font-medium text-lg'>Options</Label>
+                     <Label className='font-medium text-lg'>Variations</Label>
                      <div className='flex items-center gap-4'>
                         <TooltipProvider>
                            <Tooltip>
@@ -184,27 +158,29 @@ function CreateNewItemForm({
                               </TooltipTrigger>
                               <TooltipContent>
                                  <p>
-                                    Add options such as size, color, or material
-                                    to create variations
+                                    Add variations such as size, color, or
+                                    material to create variations
                                  </p>
                               </TooltipContent>
                            </Tooltip>
                         </TooltipProvider>
 
-                        <OptionsDialog getOptions={handleOptionsData} />
+                        <VariationsDialog getVariations={handleOptionsData} />
                      </div>
                   </div>
-                  {/* {options.options.length > 0 && (
-                     <OptionsTable
-                        setName={options.setName}
-                        options={options.options}
+                  {variationsData.length > 0 && (
+                     <VariationTable
+                        variationData={variationsData}
+                        getVariations={handleOptionsData}
+                        handleDeleteVariation={handleDeleteVariation}
                      />
-                  )} */}
+                  )}
                </div>
-               <div className='mt-10'>
+
+               <div>
                   <Label className='block mb-1'>Vendor</Label>
                   <Input
-                     placeholder='Vendor....'
+                     placeholder='e.g Apple Store'
                      className='w-full'
                      {...register('vendor', { required: true })}
                   />
@@ -216,133 +192,91 @@ function CreateNewItemForm({
                </div>
 
                <div>
-                  <Label className='block mb-1 '>Raw</Label>
+                  <Label className='block mb-1'>Brand</Label>
                   <Input
-                     placeholder='e.g $10'
+                     placeholder='e.g Apple'
                      className='w-full'
-                     {...register('rawCost', { required: true })}
+                     {...register('brand', { required: true })}
                   />
-                  {errors.rawCost && (
+                  {errors.brand && (
                      <span className='text-red-500'>
                         This field is required
                      </span>
                   )}
                </div>
 
-               <div className='flex items-center  justify-between'>
-                  <div>
-                     <Label className='block mb-1 '>Tax</Label>
-                     <Input
-                        placeholder='e.g $10'
-                        className='w-full'
-                        {...register('taxRate', { required: true })}
-                     />
-                     {errors.taxRate && (
-                        <span className='text-red-500'>
-                           This field is required
-                        </span>
+               <div>
+                  <Label className='block mb-1'>Category</Label>
+                  <Controller
+                     name='category'
+                     control={control}
+                     rules={{ required: true }}
+                     render={({ field }) => (
+                        <Select onValueChange={field.onChange}>
+                           <SelectTrigger className='w-full'>
+                              <SelectValue placeholder='Select a category' />
+                           </SelectTrigger>
+                           <SelectContent>
+                              {categories.map((category) => (
+                                 <SelectItem
+                                    key={category.itemsCategoryId}
+                                    value={String(category.itemsCategoryId)}
+                                 >
+                                    {category.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
                      )}
-                  </div>
-
-                  <div>
-                     <Label className='block mb-1 text-right'>Shipping</Label>
-                     <Input
-                        placeholder='e.g $10'
-                        className='w-full'
-                        {...register('shippingCost', { required: true })}
-                     />
-                     {errors.shippingCost && (
-                        <span className='text-red-500'>
-                           This field is required
-                        </span>
-                     )}
-                  </div>
-               </div>
-
-               <div className='flex items-center justify-between gap-6'>
-                  <div className='w-screen'>
-                     <Label className='block mb-1'>Categories</Label>
-                     <Controller
-                        control={control}
-                        name='category'
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                           <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                           >
-                              <SelectTrigger className='w-full'>
-                                 <SelectValue placeholder='Select a Category' />
-                              </SelectTrigger>
-                              <SelectContent>
-                                 {categories.map((category) => (
-                                    <SelectItem
-                                       key={category.itemsCategoryId}
-                                       value={String(category.itemsCategoryId)}
-                                    >
-                                       {category.name}
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                        )}
-                     />
-                     {errors.category && (
-                        <span className='text-red-500'>
-                           This field is required
-                        </span>
-                     )}
-                  </div>
-                  <div className='w-screen'>
-                     <Label className='block mb-1 text-right'>
-                        Sub Categories
-                     </Label>
-                     <Controller
-                        control={control}
-                        name='subCategory'
-                        rules={{ required: true }}
-                        render={({ field }) => (
-                           <Select
-                              onValueChange={field.onChange}
-                              value={field.value}
-                           >
-                              <SelectTrigger className='w-full'>
-                                 <SelectValue placeholder='Select a sub category' />
-                              </SelectTrigger>
-                              <SelectContent>
-                                 {subCategories.map((subCategory, index) => (
-                                    <SelectItem
-                                       key={subCategory.itemsSubCategoryId}
-                                       value={String(
-                                          subCategory.itemsSubCategoryId
-                                       )}
-                                    >
-                                       {subCategory.name}
-                                    </SelectItem>
-                                 ))}
-                              </SelectContent>
-                           </Select>
-                        )}
-                     />
-                     {errors.subCategory && (
-                        <span className='text-red-500'>
-                           This field is required
-                        </span>
-                     )}
-                  </div>
+                  />
+                  {errors.category && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
                </div>
 
                <div>
-                  <Label className='block mb-1'>Locations</Label>
+                  <Label className='block mb-1'>Sub-Category</Label>
                   <Controller
+                     name='subCategory'
                      control={control}
-                     name='location'
                      rules={{ required: true }}
                      render={({ field }) => (
-                        <Select
-                           onValueChange={field.onChange}
-                           value={field.value}
-                        >
+                        <Select onValueChange={field.onChange}>
+                           <SelectTrigger className='w-full'>
+                              <SelectValue placeholder='Select a sub-category' />
+                           </SelectTrigger>
+                           <SelectContent>
+                              {subCategories.map((subCategory) => (
+                                 <SelectItem
+                                    key={subCategory.itemsSubCategoryId}
+                                    value={String(
+                                       subCategory.itemsSubCategoryId
+                                    )}
+                                 >
+                                    {subCategory.name}
+                                 </SelectItem>
+                              ))}
+                           </SelectContent>
+                        </Select>
+                     )}
+                  />
+                  {errors.subCategory && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+
+               <div>
+                  <Label className='block mb-1'>Location</Label>
+                  <Controller
+                     name='location'
+                     control={control}
+                     rules={{ required: true }}
+                     render={({ field }) => (
+                        <Select onValueChange={field.onChange}>
                            <SelectTrigger className='w-full'>
                               <SelectValue placeholder='Select a location' />
                            </SelectTrigger>
@@ -360,6 +294,54 @@ function CreateNewItemForm({
                      )}
                   />
                   {errors.location && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+
+               <div>
+                  <Label className='block mb-1'>Raw</Label>
+                  <Input
+                     type='number'
+                     step='0.01'
+                     placeholder='e.g 1000.00'
+                     className='w-full'
+                     {...register('rawCost', { required: true })}
+                  />
+                  {errors.rawCost && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+
+               <div>
+                  <Label className='block mb-1'>Tax</Label>
+                  <Input
+                     type='number'
+                     step='0.01'
+                     placeholder='e.g 7.25'
+                     className='w-full'
+                     {...register('taxRate', { required: true })}
+                  />
+                  {errors.taxRate && (
+                     <span className='text-red-500'>
+                        This field is required
+                     </span>
+                  )}
+               </div>
+
+               <div>
+                  <Label className='block mb-1'>Shipping</Label>
+                  <Input
+                     type='number'
+                     step='0.01'
+                     placeholder='e.g 25.00'
+                     className='w-full'
+                     {...register('shippingCost', { required: true })}
+                  />
+                  {errors.shippingCost && (
                      <span className='text-red-500'>
                         This field is required
                      </span>
@@ -388,18 +370,18 @@ export function ImageField() {
          <ImageIcon className='h-6 w-6 text-gray-600' />
          <span className='text-gray-600'>
             Drag and drop images here,{' '}
-            <label
+            <Label
                htmlFor='file-upload'
                className='text-blue-600 underline cursor-pointer'
             >
                upload
-               <input
+               <Input
                   id='file-upload'
                   type='file'
                   accept='image/*'
                   className='hidden'
                />
-            </label>
+            </Label>
          </span>
       </div>
    );
@@ -425,116 +407,4 @@ function ImageIcon(props: any) {
       </svg>
    );
 }
-
-const OptionsDialog = ({
-   getOptions,
-}: {
-   getOptions: (options: any[]) => void;
-}) => {
-   const [optionSets, setOptionSets] = useState<any[]>([
-      { setName: '', options: [''] }, // Initial empty option set
-   ]);
-
-   // Function to handle adding a new option set
-   const handleAddOptionSet = () => {
-      setOptionSets([...optionSets, { setName: '', options: [''] }]);
-   };
-
-   // Function to handle setting the setName value
-   const handleSetNameChange = (index: number, value: string) => {
-      const newOptionSets = [...optionSets];
-      newOptionSets[index].setName = value;
-      setOptionSets(newOptionSets);
-   };
-
-   // Function to handle adding a new option field within a set
-   const handleAddOptionField = (setIndex: number) => {
-      const newOptionSets = [...optionSets];
-      newOptionSets[setIndex].options.push('');
-      setOptionSets(newOptionSets);
-   };
-
-   // Function to handle setting an option value within a set
-   const handleOptionChange = (
-      setIndex: number,
-      optionIndex: number,
-      value: string
-   ) => {
-      const newOptionSets = [...optionSets];
-      newOptionSets[setIndex].options[optionIndex] = value;
-      setOptionSets(newOptionSets);
-   };
-
-   // Function to handle submitting the options data to the parent component
-   const handleAddOptions = () => {
-      getOptions(optionSets);
-   };
-
-   // const handleAddOptions = (setName: string, options: string[]) => {
-
-   // };
-
-   return (
-      <Dialog>
-         <DialogHeader>
-            <DialogTrigger>
-               <Button type='button'>Add</Button>
-            </DialogTrigger>
-         </DialogHeader>
-         <DialogContent>
-            <div className='space-y-4'>
-               {optionSets.map((optionSet, setIndex) => (
-                  <div key={setIndex}>
-                     <div>
-                        <Label className='block mb-1'>Option Set Name</Label>
-                        <Input
-                           placeholder='Enter option set name'
-                           className='w-full'
-                           value={optionSet.setName}
-                           onChange={(e) =>
-                              handleSetNameChange(setIndex, e.target.value)
-                           }
-                        />
-                     </div>
-                     <div>
-                        <Label className='block mb-1'>
-                           <span>Options</span>
-                           <Plus
-                              size={20}
-                              onClick={() => handleAddOptionField(setIndex)}
-                           />
-                        </Label>
-                        {optionSet.options.map(
-                           (option: any, optionIndex: number) => (
-                              <div key={optionIndex}>
-                                 <Input
-                                    placeholder={`Enter Option`}
-                                    className='w-full'
-                                    onChange={(e) =>
-                                       handleOptionChange(
-                                          setIndex,
-                                          optionIndex,
-                                          e.target.value
-                                       )
-                                    }
-                                 />
-                              </div>
-                           )
-                        )}
-                     </div>
-                  </div>
-               ))}
-            </div>
-            <DialogFooter>
-               <DialogClose>
-                  <Button type='button' onClick={handleAddOptions}>
-                     Create Variation
-                  </Button>
-               </DialogClose>
-            </DialogFooter>
-         </DialogContent>
-      </Dialog>
-   );
-};
-
 export default CreateNewItemForm;

@@ -2,18 +2,22 @@ export const ItemsCategory = [
    {
       itemsCategoryId: 1,
       name: 'Parts',
+      image: '/parts/test.jpg',
    },
    {
       itemsCategoryId: 2,
       name: 'Equipments',
+      image: '/equipments/test.jpg',
    },
    {
       itemsCategoryId: 3,
       name: 'Accessories',
+      image: '/accessories/test.jpg',
    },
    {
       itemsCategoryId: 4,
       name: 'Devices',
+      image: '/devices/test.jpg',
    },
 ];
 
@@ -84,6 +88,8 @@ export const InventoryItem = [
       name: 'iPhone 11 LCD Screen Replacement Aftermarket AM',
       description: 'Replacement screen for iPhone 11',
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM',
+      brand: 'Apple',
+      image: '/iphone11/test.jpg',
       itemsCategoryId: 1, // Parts
       stock: 3,
       rawCost: 12.0,
@@ -99,6 +105,8 @@ export const InventoryItem = [
       description:
          'Tempered glass screen protector for Samsung Galaxy S20 Ultra',
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR',
+      brand: 'Samsung',
+      image: '/samsungs20ultra/test.jpg',
       itemsCategoryId: 3, // Accessories
       stock: 10,
       rawCost: 7.5,
@@ -114,6 +122,8 @@ export const InventoryItem = [
       description:
          'Wired gaming mouse with customizable RGB lighting and 11 programmable buttons',
       sku: 'LOGITECH-G502-HERO',
+      brand: 'Logitech',
+      image: '/logitechg502/test.jpg',
       itemsCategoryId: 2, // Equipments
       stock: 5,
       rawCost: 40.0,
@@ -128,6 +138,8 @@ export const InventoryItem = [
       name: 'Apple AirPods Pro',
       description: 'Wireless Bluetooth earbuds with active noise cancellation',
       sku: 'APPLE-AIRPODS-PRO',
+      brand: 'Apple',
+      image: '/appleairpods/test.jpg',
       itemsCategoryId: 4, // Devices
       stock: 20,
       rawCost: 180.0,

@@ -98,6 +98,8 @@ model InventoryItem {
   description        String?
   sku                String
   stock              Int
+  brand              String
+  image              String
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
@@ -125,6 +127,7 @@ model InventoryItem {
 model ItemsCategory {
   itemsCategoryId Int                @id @default(autoincrement())
   name            String
+  image           String
   InventoryItem   InventoryItem[]
   subCategories   ItemsSubCategory[]
 }
@@ -158,8 +161,8 @@ model Location {
 model Variation {
   variationId     Int           @id @default(autoincrement())
   sku             String        @unique
-  stockQuantity  Int
   inventoryItemId Int
+  stockQuantity   Int
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
@@ -169,10 +172,10 @@ model InternalTransfer {
   internalTransferId Int           @id @default(autoincrement())
   inventoryItemId    Int
   quantity           Int
-  status             String
-  transferDate       DateTime
   fromLocationId     Int
   toLocationId       Int
+  transferDate       DateTime  @default(now())
+  status             String
   fromLocation       Location      @relation("fromLocation", fields: [fromLocationId], references: [locationId])
   inventoryItem      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   toLocation         Location      @relation("toLocation", fields: [toLocationId], references: [locationId])
@@ -216,6 +219,7 @@ model ProductCategories {
   product_category_name  String
   product_category_desc  String
   product_category_image String
+  type                   String @default("accessories")
 }
 
 model ItemReturn {

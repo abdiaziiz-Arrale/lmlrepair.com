@@ -32,7 +32,7 @@ async function Items() {
             <div className='flex items-center justify-between space-x-3'>
                <Input placeholder='Search Item...' className='max-w-96 ' />
                <div className='flex items-center gap-3'>
-                  <DatePickerDemo />
+                  {/* <DatePickerDemo /> */}
                   <Button className='space-x-2 w-32'>
                      <Download size={20} />
                      <span>Export</span>
