@@ -164,7 +164,6 @@ type ImageFieldProps = {
 };
 
 export function ImageField({ getImageFile }: ImageFieldProps) {
-   const [image, setImage] = useState<File | null>(null);
    const handleDragOver = (e: any) => {
       e.preventDefault();
    };
@@ -175,7 +174,6 @@ export function ImageField({ getImageFile }: ImageFieldProps) {
 
    const handleImageChange = (e: any) => {
       const file = e.target.files[0];
-      setImage(file);
       if (file) {
          getImageFile(file);
       }

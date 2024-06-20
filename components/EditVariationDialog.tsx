@@ -4,6 +4,13 @@ import { Dialog, DialogContent, DialogTrigger } from '@/components/TopDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from '@/components/ui/tooltip';
+import { Pencil } from 'lucide-react';
 import { useState } from 'react';
 
 type Variation = {
@@ -20,29 +27,23 @@ type ErrorVariation = {
    quantity?: string;
 };
 
-type VariationsDialogProps = {
-   getVariations: (options: Variation[]) => void;
+type EditVariationsDialogProps = {
+   variation: Variation;
+   index: number;
+   onEditVariation: (index: number, variation: Variation) => void;
 };
 
-const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
+const EditVariationsDialog = ({
+   variation: initialVariation,
+   index,
+   onEditVariation,
+}: EditVariationsDialogProps) => {
    const [open, setOpen] = useState(false);
-   const [variation, setVariation] = useState<Variation>({
-      name: '',
-      price: '',
-      sku: '',
-      quantity: '',
-      image: null,
-   });
+   const [variation, setVariation] = useState<Variation>(initialVariation);
    const [errors, setErrors] = useState<ErrorVariation>({});
 
-   const handleChange = (key: string, value: string | number) => {
+   const handleChange = (key: string, value: string | number | File) => {
       setVariation({ ...variation, [key]: value });
-   };
-
-   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-         setVariation({ ...variation, image: e.target.files[0] });
-      }
    };
 
    const handleSubmit = () => {
@@ -54,22 +55,30 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
          });
          return;
       }
-
-      getVariations([variation]);
+      onEditVariation(index, variation);
       setOpen(false);
-      setVariation({ name: '', price: '', sku: '', quantity: '', image: null });
    };
 
    return (
       <Dialog open={open} onOpenChange={setOpen}>
-         <DialogTrigger asChild>
-            <Button onClick={() => setOpen(true)}>Add</Button>
-         </DialogTrigger>
+         <TooltipProvider>
+            <Tooltip>
+               <TooltipTrigger type='button'>
+                  <DialogTrigger asChild type='button'>
+                     <Pencil
+                        size={18}
+                        className='text-blue-600 font-bold cursor-pointer'
+                     />
+                  </DialogTrigger>
+               </TooltipTrigger>
+               <TooltipContent>
+                  <p>Edit</p>
+               </TooltipContent>
+            </Tooltip>
+         </TooltipProvider>
          <DialogContent>
             <form className='space-y-6'>
-               <h1 className='text-xl font-bold text-center'>
-                  Create Variation
-               </h1>
+               <h1 className='text-xl font-bold text-center'>Edit Variation</h1>
                <div className='space-y-4'>
                   <div>
                      <Label className='mb-3'>
@@ -83,7 +92,6 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
                      />
                      <p className='text-red-600'>{errors.name}</p>
                   </div>
-
                   <div>
                      <Label className='mb-3'>
                         Price{' '}
@@ -126,10 +134,10 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
                      />
                      <p className='text-red-600'>{errors.quantity}</p>
                   </div>
-                  <VariationImageField handleImageChange={handleImageChange} />
+                  <VariationImageField handleImageChange={handleChange} />
                </div>
                <Button type='button' onClick={handleSubmit}>
-                  Create Variation
+                  Save Changes
                </Button>
             </form>
          </DialogContent>
@@ -138,7 +146,7 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
 };
 
 type ImageFieldProps = {
-   handleImageChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+   handleImageChange: (key: string, value: string | number | File) => void;
 };
 
 export function VariationImageField({ handleImageChange }: ImageFieldProps) {
@@ -153,7 +161,7 @@ export function VariationImageField({ handleImageChange }: ImageFieldProps) {
                type='file'
                accept='image/*'
                className='hidden'
-               onChange={handleImageChange}
+               onChange={(e) => handleImageChange('image', e.target.files![0])}
             />
          </Label>
       </div>
@@ -181,4 +189,4 @@ function ImageIcon(props: any) {
    );
 }
 
-export default VariationsDialog;
+export default EditVariationsDialog;

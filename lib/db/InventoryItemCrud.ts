@@ -21,17 +21,21 @@ export const getInventoryItems = async (): Promise<InventoryItem[]> => {
    }
 };
 
+type Variations = {
+   name: string;
+   price: string;
+   sku: string;
+   quantity: string;
+   image?: string;
+};
+
 type CreateItemInput = {
    name: string;
    description: string;
-   // brand: string;
-   sku: string;
-   variations: string;
+   brand: string;
+   image: string | null;
+   variations: Variations[];
    vendor: string;
-   stock: number;
-   rawCost: number;
-   taxRate: number;
-   shippingCost: number;
    category: string;
    subCategory?: string;
    location?: string;
@@ -48,52 +52,51 @@ export const createInventoryItem = async (
    const {
       name,
       description,
-      sku,
       variations,
-      // brand,
+      brand,
       vendor,
-      stock,
-      rawCost,
-      taxRate,
-      shippingCost,
       category,
       subCategory,
       location,
+      image,
    } = data;
 
    try {
       const createdItem = await prisma.$transaction(async (prisma) => {
-         //Todo: Create the vendor
+         // Create the vendor
          const vendorRecord = await prisma.vendor.create({
             data: { name: vendor },
          });
 
-         //Todo: Create the inventory item
+         // Create the inventory item
          const inventoryItem = await prisma.inventoryItem.create({
             data: {
                name,
                description,
-               sku,
-               // brand,
-               stock: Number(stock),
-               rawCost: Number(rawCost),
-               taxRate: Number(taxRate),
-               shippingCost: Number(shippingCost),
+               brand,
+               image: image ? image : '',
+               vendorId: vendorRecord.vendorId,
                itemsCategoryId: Number(category),
                itemsSubCategoryId: subCategory ? Number(subCategory) : null,
-               vendorId: vendorRecord.vendorId,
                locationId: location ? Number(location) : null,
             },
          });
 
-         //Todo: Create the variation
-         await prisma.variation.create({
-            data: {
-               sku: variations,
-               inventoryItemId: inventoryItem.inventoryItemId,
-               stockQuantity: Number(stock),
-            },
-         });
+         // Create the variations using Promise.all to ensure all variations are created before the transaction completes
+         await Promise.all(
+            variations.map(async (vr) => {
+               return prisma.variation.create({
+                  data: {
+                     name: vr.name,
+                     price: Number(vr.price),
+                     sku: vr.sku,
+                     quantity: Number(vr.quantity),
+                     image: vr.image ? vr.image : '',
+                     inventoryItemId: inventoryItem.inventoryItemId,
+                  },
+               });
+            })
+         );
 
          return inventoryItem;
       });

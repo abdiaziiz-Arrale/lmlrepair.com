@@ -1,5 +1,5 @@
-import { Edit2, Trash } from 'lucide-react';
-import Link from 'next/link';
+import { Trash2 } from 'lucide-react';
+import { EditItemDialog } from './EditItemDialog';
 import { Card } from './ui/card';
 import {
    Table,
@@ -9,17 +9,18 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import { EditItemDialog } from './EditItemDialog';
+import {
+   Tooltip,
+   TooltipContent,
+   TooltipProvider,
+   TooltipTrigger,
+} from './ui/tooltip';
 
 interface InventoryItem {
    inventoryItemId: number;
    name: string;
    description: string | null;
-   sku: string;
-   stock: number;
-   rawCost: number;
-   shippingCost: number;
-   taxRate: number;
+   brand: string;
    itemsCategoryId: number | null;
    itemsSubCategoryId: number | null;
    vendorId: number | null;
@@ -27,7 +28,7 @@ interface InventoryItem {
    itemsCategory?: { name: string };
    itemsSubCategory?: { name: string };
    location?: { name: string };
-   variations?: { sku: string }[];
+   // variations?: { sku: string }[];
 }
 
 interface Props {
@@ -43,13 +44,8 @@ async function ItemsTable({ items }: Props) {
                   <TableRow>
                      <TableHead>Item</TableHead>
                      <TableHead>Category</TableHead>
-                     <TableHead>SKU</TableHead>
-                     <TableHead>Variations</TableHead>
-                     <TableHead>Stock</TableHead>
-                     <TableHead>Raw</TableHead>
-                     <TableHead>Tax</TableHead>
-                     <TableHead>Shipping</TableHead>
-                     <TableHead>Cost</TableHead>
+                     <TableHead>Brand</TableHead>
+                     {/* <TableHead>Variations</TableHead> */}
                      <TableHead>Location</TableHead>
                      <TableHead>Actions</TableHead>
                   </TableRow>
@@ -66,8 +62,8 @@ async function ItemsTable({ items }: Props) {
                                  {item.itemsSubCategory?.name}
                               </span>
                            </TableCell>
-                           <TableCell>{item.sku}</TableCell>
-                           <TableCell className=''>
+
+                           {/* <TableCell className=''>
                               {item.variations && item.variations.length > 0 ? (
                                  <ul>
                                     {item.variations.map((variation, index) => (
@@ -84,28 +80,9 @@ async function ItemsTable({ items }: Props) {
                               ) : (
                                  'No variations'
                               )}
-                           </TableCell>
-                           <TableCell>{item.stock}</TableCell>
+                           </TableCell> */}
 
-                           <TableCell className='text-green-500 font-semibol'>
-                              ${item.rawCost}
-                           </TableCell>
-
-                           <TableCell className='text-green-500 font-semibol'>
-                              {item.taxRate}%
-                           </TableCell>
-                           <TableCell className='text-green-500 font-semibold '>
-                              ${item.shippingCost}
-                           </TableCell>
-                           <TableCell className='text-green-500 font-bold'>
-                              $
-                              {Math.round(
-                                 +item.rawCost +
-                                    +item.rawCost * (+item.taxRate / 100) +
-                                    +item.shippingCost
-                              )}
-                           </TableCell>
-
+                           <TableCell>{item.brand}</TableCell>
                            <TableCell>{item.location?.name || 'N/A'}</TableCell>
 
                            <TableCell>
@@ -114,10 +91,19 @@ async function ItemsTable({ items }: Props) {
                                     itemId={item.inventoryItemId}
                                  />
 
-                                 <Trash
-                                    size={18}
-                                    className='text-red-500 cursor-pointer'
-                                 />
+                                 <TooltipProvider>
+                                    <Tooltip>
+                                       <TooltipTrigger>
+                                          <Trash2
+                                             size={18}
+                                             className='text-red-600 font-bold cursor-pointer'
+                                          />
+                                       </TooltipTrigger>
+                                       <TooltipContent className='bg-red-600 text-white'>
+                                          <p>Delete</p>
+                                       </TooltipContent>
+                                    </Tooltip>
+                                 </TooltipProvider>
                               </div>
                            </TableCell>
                         </TableRow>

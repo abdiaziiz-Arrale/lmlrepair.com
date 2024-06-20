@@ -1,13 +1,5 @@
 'use client';
 
-import {
-   Dialog,
-   DialogClose,
-   DialogContent,
-   DialogFooter,
-   DialogHeader,
-   DialogTrigger,
-} from '@/components/TopDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -32,20 +24,20 @@ import { useRouter } from 'next/navigation';
 import { useState, useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useToast } from '../components/ui/use-toast';
+import VariationsDialog from '../components/VariatinosDialog';
 import VariationTable from '../components/VariationsTable';
-import VariationsDialog from '@/components/VariatinosDialog';
+import { PutBlobResult } from '@vercel/blob';
+import { createInventoryItem } from '@/lib/db/InventoryItemCrud';
 
 type Inputs = {
    item: string;
    description: string;
    vendor: string;
-   rawCost: number;
-   taxRate: number;
-   shippingCost: number;
    category: string;
    subCategory: string;
    location: string;
    brand: string;
+   image?: File | null;
 };
 
 type CreateNewItemProps = {
@@ -56,7 +48,10 @@ type CreateNewItemProps = {
 
 type Variation = {
    name: string;
-   value: string;
+   price: string;
+   sku: string;
+   quantity: string;
+   image?: File | null;
 };
 
 function CreateNewItemForm({
@@ -64,7 +59,6 @@ function CreateNewItemForm({
    subCategories,
    locations,
 }: CreateNewItemProps) {
-   const [variationsData, setVariationsData] = useState<any>([]);
    const router = useRouter();
    const { toast } = useToast();
    const [isPending, startTransition] = useTransition();
@@ -76,26 +70,120 @@ function CreateNewItemForm({
       control,
       formState: { errors },
    } = useForm<Inputs>();
+   const [image, setImage] = useState<File | null>(null);
+   const [variationsData, setVariationsData] = useState<Variation[]>([]);
 
-   const handleOptionsData = (options: any) => {
-      setVariationsData(options);
+   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files) {
+         setImage(e.target.files[0]);
+      }
    };
 
-   const handleDeleteVariation = (deleteIndex: any) => {
-      const updatedVariations = variationsData?.filter((_: any, index: any) => {
-         return index !== deleteIndex;
-      });
+   const handleOptionsData = (options: Variation[]) => {
+      setVariationsData((prevData) => [...prevData, ...options]);
+   };
 
+   const handleDeleteVariation = (deleteIndex: number) => {
+      const updatedVariations = variationsData.filter(
+         (_: Variation, index: number) => index !== deleteIndex
+      );
       setVariationsData(updatedVariations);
    };
 
-   console.log(variationsData);
-   const onSubmit: SubmitHandler<Inputs> = (data) => {};
+   const handleEditVariation = (
+      editIndex: number,
+      editedVariation: Variation
+   ) => {
+      const updatedVariations = variationsData.map((variation, index) =>
+         index === editIndex ? editedVariation : variation
+      );
+      setVariationsData(updatedVariations);
+   };
+
+   const onSubmit: SubmitHandler<Inputs> = (data) => {
+      let imageUrl: string | null = null;
+      let variationImages: string[] = [];
+
+      startTransition(async () => {
+         try {
+            if (image) {
+               const response = await fetch(
+                  `/api/upload?filename=${image.name}`,
+                  {
+                     method: 'POST',
+                     body: image,
+                  }
+               );
+
+               if (!response.ok) {
+                  throw new Error('Failed to upload file.');
+               }
+
+               const newBlob = (await response.json()) as PutBlobResult;
+               imageUrl = newBlob.url;
+            }
+
+            if (variationsData.length > 0) {
+               for (const variation of variationsData) {
+                  if (variation.image) {
+                     const response = await fetch(
+                        `/api/upload?filename=${variation.image.name}`,
+                        {
+                           method: 'POST',
+                           body: variation.image,
+                        }
+                     );
+
+                     if (!response.ok) {
+                        throw new Error('Failed to upload file.');
+                     }
+
+                     const newBlob = (await response.json()) as PutBlobResult;
+                     variationImages.push(newBlob.url);
+                  }
+               }
+            }
+
+            const res = await createInventoryItem({
+               name: data.item,
+               description: data.description,
+               variations: variationsData.map((variation, index) => ({
+                  name: variation.name,
+                  price: variation.price,
+                  sku: variation.sku,
+                  quantity: variation.quantity,
+                  image: variationImages[index],
+               })),
+               brand: data.brand,
+               vendor: data.vendor,
+               category: data.category,
+               subCategory: data.subCategory,
+               location: data.location,
+               image: imageUrl,
+            });
+
+            if (res.status === 'success') {
+               toast({
+                  title: 'Item created',
+                  description: 'Item has been created successfully',
+               });
+               router.push('/dashboard/inventory/items');
+               setClose();
+            }
+         } catch (error) {
+            console.log(error);
+         }
+      });
+   };
 
    return (
       <div className='flex flex-col'>
          <div className='flex items-center justify-between p-6 bg-white '>
-            <Button variant={'secondary'} onClick={() => setClose()}>
+            <Button
+               type='button'
+               variant={'secondary'}
+               onClick={() => setClose()}
+            >
                <X size={20} />
             </Button>
 
@@ -137,14 +225,27 @@ function CreateNewItemForm({
                      className='w-full'
                      {...register('description', { required: true })}
                   />
-                  {errors.item && (
+                  {errors.description && (
                      <span className='text-red-500'>
                         This field is required
                      </span>
                   )}
                </div>
                <div>
-                  <ImageField />
+                  <div className='border-2 border-dashed border-gray-300 p-4 rounded-md flex items-center justify-center space-x-2'>
+                     <ImageIcon className='h-6 w-6 text-gray-600' />
+                     <span> Drag and drop images here, </span>
+                     <Label className='text-blue-600 underline cursor-pointer'>
+                        upload
+                        <Input
+                           id='file-upload'
+                           type='file'
+                           accept='image/*'
+                           className='hidden'
+                           onChange={handleImageChange}
+                        />
+                     </Label>
+                  </div>
                </div>
 
                <div className='flex flex-col justify-start'>
@@ -153,34 +254,36 @@ function CreateNewItemForm({
                      <div className='flex items-center gap-4'>
                         <TooltipProvider>
                            <Tooltip>
-                              <TooltipTrigger type='button'>
-                                 <ShieldQuestion size={20} />
+                              <TooltipTrigger asChild>
+                                 <ShieldQuestion className='cursor-pointer' />
                               </TooltipTrigger>
                               <TooltipContent>
                                  <p>
-                                    Add variations such as size, color, or
-                                    material to create variations
+                                    A variation is a unique combination of
+                                    attributes. An example of a variation is a
+                                    16GB, Green iPhone 6 Plus.
                                  </p>
                               </TooltipContent>
                            </Tooltip>
                         </TooltipProvider>
-
                         <VariationsDialog getVariations={handleOptionsData} />
                      </div>
                   </div>
+               </div>
+               <div className='space-y-4'>
                   {variationsData.length > 0 && (
                      <VariationTable
                         variationData={variationsData}
-                        getVariations={handleOptionsData}
                         handleDeleteVariation={handleDeleteVariation}
+                        handleEditVariation={handleEditVariation}
                      />
                   )}
                </div>
 
-               <div>
+               <div className='space-y-4'>
                   <Label className='block mb-1'>Vendor</Label>
                   <Input
-                     placeholder='e.g Apple Store'
+                     placeholder='Vendor'
                      className='w-full'
                      {...register('vendor', { required: true })}
                   />
@@ -190,11 +293,10 @@ function CreateNewItemForm({
                      </span>
                   )}
                </div>
-
-               <div>
+               <div className='space-y-4'>
                   <Label className='block mb-1'>Brand</Label>
                   <Input
-                     placeholder='e.g Apple'
+                     placeholder='Brand'
                      className='w-full'
                      {...register('brand', { required: true })}
                   />
@@ -204,80 +306,141 @@ function CreateNewItemForm({
                      </span>
                   )}
                </div>
-
-               <div>
-                  <Label className='block mb-1'>Category</Label>
-                  <Controller
-                     name='category'
-                     control={control}
-                     rules={{ required: true }}
-                     render={({ field }) => (
-                        <Select onValueChange={field.onChange}>
-                           <SelectTrigger className='w-full'>
-                              <SelectValue placeholder='Select a category' />
-                           </SelectTrigger>
-                           <SelectContent>
-                              {categories.map((category) => (
-                                 <SelectItem
-                                    key={category.itemsCategoryId}
-                                    value={String(category.itemsCategoryId)}
-                                 >
-                                    {category.name}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
-                     )}
+               {/* <div className='w-1/3'>
+                  <Label className='block mb-1'>Raw Cost</Label>
+                  <Input
+                     type='number'
+                     step='0.01'
+                     placeholder='e.g 100.00'
+                     className='w-full'
+                     {...register('rawCost', { required: true })}
                   />
-                  {errors.category && (
+                  {errors.rawCost && (
                      <span className='text-red-500'>
                         This field is required
                      </span>
                   )}
                </div>
-
-               <div>
-                  <Label className='block mb-1'>Sub-Category</Label>
-                  <Controller
-                     name='subCategory'
-                     control={control}
-                     rules={{ required: true }}
-                     render={({ field }) => (
-                        <Select onValueChange={field.onChange}>
-                           <SelectTrigger className='w-full'>
-                              <SelectValue placeholder='Select a sub-category' />
-                           </SelectTrigger>
-                           <SelectContent>
-                              {subCategories.map((subCategory) => (
-                                 <SelectItem
-                                    key={subCategory.itemsSubCategoryId}
-                                    value={String(
-                                       subCategory.itemsSubCategoryId
-                                    )}
-                                 >
-                                    {subCategory.name}
-                                 </SelectItem>
-                              ))}
-                           </SelectContent>
-                        </Select>
+               <div className='flex justify-between'>
+                  <div className='w-1/3'>
+                     <Label className='block mb-1'>Tax Rate</Label>
+                     <Input
+                        type='number'
+                        step='0.01'
+                        placeholder='e.g 7.25'
+                        className='w-full'
+                        {...register('taxRate', { required: true })}
+                     />
+                     {errors.taxRate && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
                      )}
-                  />
-                  {errors.subCategory && (
-                     <span className='text-red-500'>
-                        This field is required
-                     </span>
-                  )}
+                  </div>
+                  <div className='w-1/3'>
+                     <Label className='block mb-1 text-right'>
+                        Shipping Cost
+                     </Label>
+                     <Input
+                        type='number'
+                        step='0.01'
+                        placeholder='e.g 5.00'
+                        className='w-full'
+                        {...register('shippingCost', { required: true })}
+                     />
+                     {errors.shippingCost && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
+                     )}
+                  </div>
+               </div> */}
+               <div className='flex justify-between space-x-'>
+                  <div className='w-1/2'>
+                     <Label className='block mb-1'>Category</Label>
+                     <Controller
+                        name='category'
+                        control={control}
+                        defaultValue=''
+                        render={({ field }) => (
+                           <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                           >
+                              <SelectTrigger>
+                                 <SelectValue placeholder='Select a category' />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 {categories.map((category) => (
+                                    <SelectItem
+                                       key={category.itemsCategoryId}
+                                       value={String(category.itemsCategoryId)}
+                                    >
+                                       {category.name}
+                                    </SelectItem>
+                                 ))}
+                              </SelectContent>
+                           </Select>
+                        )}
+                        rules={{ required: true }}
+                     />
+                     {errors.category && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
+                     )}
+                  </div>
+                  <div className='w-1/2'>
+                     <Label className='block mb-1 text-right'>
+                        Sub Category
+                     </Label>
+                     <Controller
+                        name='subCategory'
+                        control={control}
+                        defaultValue=''
+                        render={({ field }) => (
+                           <Select
+                              onValueChange={field.onChange}
+                              value={field.value}
+                           >
+                              <SelectTrigger>
+                                 <SelectValue placeholder='Select a subcategory' />
+                              </SelectTrigger>
+                              <SelectContent>
+                                 {subCategories.map((subcategory) => (
+                                    <SelectItem
+                                       key={subcategory.itemsSubCategoryId}
+                                       value={String(
+                                          subcategory.itemsSubCategoryId
+                                       )}
+                                    >
+                                       {subcategory.name}
+                                    </SelectItem>
+                                 ))}
+                              </SelectContent>
+                           </Select>
+                        )}
+                        rules={{ required: true }}
+                     />
+                     {errors.subCategory && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
+                     )}
+                  </div>
                </div>
-
-               <div>
+               <div className='space-y-4'>
                   <Label className='block mb-1'>Location</Label>
                   <Controller
                      name='location'
                      control={control}
-                     rules={{ required: true }}
+                     defaultValue=''
                      render={({ field }) => (
-                        <Select onValueChange={field.onChange}>
-                           <SelectTrigger className='w-full'>
+                        <Select
+                           onValueChange={field.onChange}
+                           value={field.value}
+                        >
+                           <SelectTrigger>
                               <SelectValue placeholder='Select a location' />
                            </SelectTrigger>
                            <SelectContent>
@@ -292,6 +455,7 @@ function CreateNewItemForm({
                            </SelectContent>
                         </Select>
                      )}
+                     rules={{ required: true }}
                   />
                   {errors.location && (
                      <span className='text-red-500'>
@@ -299,90 +463,8 @@ function CreateNewItemForm({
                      </span>
                   )}
                </div>
-
-               <div>
-                  <Label className='block mb-1'>Raw</Label>
-                  <Input
-                     type='number'
-                     step='0.01'
-                     placeholder='e.g 1000.00'
-                     className='w-full'
-                     {...register('rawCost', { required: true })}
-                  />
-                  {errors.rawCost && (
-                     <span className='text-red-500'>
-                        This field is required
-                     </span>
-                  )}
-               </div>
-
-               <div>
-                  <Label className='block mb-1'>Tax</Label>
-                  <Input
-                     type='number'
-                     step='0.01'
-                     placeholder='e.g 7.25'
-                     className='w-full'
-                     {...register('taxRate', { required: true })}
-                  />
-                  {errors.taxRate && (
-                     <span className='text-red-500'>
-                        This field is required
-                     </span>
-                  )}
-               </div>
-
-               <div>
-                  <Label className='block mb-1'>Shipping</Label>
-                  <Input
-                     type='number'
-                     step='0.01'
-                     placeholder='e.g 25.00'
-                     className='w-full'
-                     {...register('shippingCost', { required: true })}
-                  />
-                  {errors.shippingCost && (
-                     <span className='text-red-500'>
-                        This field is required
-                     </span>
-                  )}
-               </div>
             </form>
          </div>
-      </div>
-   );
-}
-
-export function ImageField() {
-   const handleDragOver = (e: any) => {
-      e.preventDefault();
-   };
-   const handleDrop = (e: any) => {
-      e.preventDefault();
-      const files = e.dataTransfer.files;
-   };
-   return (
-      <div
-         className='border-2 border-dashed border-gray-300 p-4 rounded-md flex items-center justify-center space-x-2'
-         onDragOver={handleDragOver}
-         onDrop={handleDrop}
-      >
-         <ImageIcon className='h-6 w-6 text-gray-600' />
-         <span className='text-gray-600'>
-            Drag and drop images here,{' '}
-            <Label
-               htmlFor='file-upload'
-               className='text-blue-600 underline cursor-pointer'
-            >
-               upload
-               <Input
-                  id='file-upload'
-                  type='file'
-                  accept='image/*'
-                  className='hidden'
-               />
-            </Label>
-         </span>
       </div>
    );
 }
@@ -407,4 +489,5 @@ function ImageIcon(props: any) {
       </svg>
    );
 }
+
 export default CreateNewItemForm;

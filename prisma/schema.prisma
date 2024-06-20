@@ -96,17 +96,12 @@ model InventoryItem {
   inventoryItemId    Int                @id @default(autoincrement())
   name               String
   description        String?
-  sku                String
-  stock              Int
   brand              String
   image              String
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
   locationId         Int?
-  rawCost            Float              @default(0)
-  shippingCost       Float              @default(10)
-  taxRate            Float              @default(10.25)
   internalTransfers  InternalTransfer[]
   inventoryAge       InventoryAge[]
   itemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
@@ -160,9 +155,12 @@ model Location {
 
 model Variation {
   variationId     Int           @id @default(autoincrement())
+  name            String
+  price           Float
   sku             String        @unique
+  quantity        Int
+  image           String
   inventoryItemId Int
-  stockQuantity   Int
   inventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")

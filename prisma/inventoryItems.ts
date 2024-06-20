@@ -87,14 +87,9 @@ export const InventoryItem = [
       inventoryItemId: 1,
       name: 'iPhone 11 LCD Screen Replacement Aftermarket AM',
       description: 'Replacement screen for iPhone 11',
-      sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM',
       brand: 'Apple',
       image: '/iphone11/test.jpg',
       itemsCategoryId: 1, // Parts
-      stock: 3,
-      rawCost: 12.0,
-      taxRate: 10.25,
-      shippingCost: 10.0,
       vendorId: 1, // TechParts Co.
       itemsSubCategoryId: 1, // Screen
       locationId: 1, // Warehouse A
@@ -104,14 +99,11 @@ export const InventoryItem = [
       name: 'Samsung Galaxy S20 Ultra Screen Protector',
       description:
          'Tempered glass screen protector for Samsung Galaxy S20 Ultra',
-      sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR',
+
       brand: 'Samsung',
       image: '/samsungs20ultra/test.jpg',
       itemsCategoryId: 3, // Accessories
-      stock: 10,
-      rawCost: 7.5,
-      taxRate: 10.25,
-      shippingCost: 10.0,
+
       vendorId: 2, // ScreenGuard Inc.
       itemsSubCategoryId: 16, // Screen Protectors
       locationId: 2, // Retail Store 1
@@ -121,14 +113,11 @@ export const InventoryItem = [
       name: 'Logitech G502 HERO Gaming Mouse',
       description:
          'Wired gaming mouse with customizable RGB lighting and 11 programmable buttons',
-      sku: 'LOGITECH-G502-HERO',
+
       brand: 'Logitech',
       image: '/logitechg502/test.jpg',
       itemsCategoryId: 2, // Equipments
-      stock: 5,
-      rawCost: 40.0,
-      taxRate: 10.25,
-      shippingCost: 10.0,
+
       vendorId: 3, // Logitech Official
       itemsSubCategoryId: 12, // Tools
       locationId: 3, // Warehouse B
@@ -137,14 +126,11 @@ export const InventoryItem = [
       inventoryItemId: 4,
       name: 'Apple AirPods Pro',
       description: 'Wireless Bluetooth earbuds with active noise cancellation',
-      sku: 'APPLE-AIRPODS-PRO',
+
       brand: 'Apple',
       image: '/appleairpods/test.jpg',
       itemsCategoryId: 4, // Devices
-      stock: 20,
-      rawCost: 180.0,
-      taxRate: 10.25,
-      shippingCost: 10.0,
+
       vendorId: 4, // Apple Store
       itemsSubCategoryId: 20, // Watch
       locationId: 4, // Retail Store 2
@@ -154,47 +140,67 @@ export const InventoryItem = [
 export const Variation = [
    {
       variationId: 1,
+      name: 'Iphone 11 screen red',
+      price: 25.0,
+      quantity: 1,
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-RED',
-
+      image: '/iphone11red/test.jpg',
       inventoryItemId: 1,
-      stockQuantity: 1,
    },
    {
       variationId: 2,
+      name: 'Iphone 11 screen blue',
+      price: 30.0,
+      quantity: 4,
       sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-BLUE',
-
+      image: '/iphone11blue/test.jpg',
       inventoryItemId: 1,
-      stockQuantity: 2,
    },
    {
       variationId: 3,
+      name: 'Samsung S20 Ultra glass',
+      price: 10.0,
+      quantity: 3,
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-GLASS',
-      stockQuantity: 5,
+      image: '/samsungs20ultraglass/test.jpg',
+
       inventoryItemId: 2,
    },
    {
       variationId: 4,
+      name: 'Samsung S20 Ultra plastic',
+      price: 5.0,
+      quantity: 2,
       sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-PLASTIC',
+      image: '/samsungs20ultraplastic/test.jpg',
       inventoryItemId: 2,
-      stockQuantity: 5,
    },
    {
       variationId: 5,
+      name: 'Logitech G502 HERO Wired',
+      price: 60.0,
+      quantity: 2,
       sku: 'LOGITECH-G502-HERO-WIRED',
+      image: '/logitechg502wired/test.jpg',
       inventoryItemId: 3,
-      stockQuantity: 2,
    },
    {
       variationId: 6,
+      name: 'Logitech G502 HERO Wireless',
+      price: 80.0,
+      quantity: 3,
       sku: 'LOGITECH-G502-HERO-WIRELESS',
+      image: '/logitechg502wireless/test.jpg',
       inventoryItemId: 3,
-      stockQuantity: 3,
    },
    {
       variationId: 7,
+      name: 'Apple AirPods Pro White',
+      price: 200.0,
+      quantity: 20,
       sku: 'APPLE-AIRPODS-PRO-WHITE',
+      image: '/appleairpodswhite/test.jpg',
       inventoryItemId: 4,
-      stockQuantity: 20,
    },
 ];
 

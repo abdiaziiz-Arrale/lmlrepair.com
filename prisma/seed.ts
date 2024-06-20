@@ -46,21 +46,21 @@ async function main() {
    //    data: categories,
    // });
    //Todo Delete existing records
-   await prisma.lowStockAlert.deleteMany({});
-   await prisma.inventoryAge.deleteMany({});
-   await prisma.sale.deleteMany({});
-   await prisma.internalTransfer.deleteMany({});
-   // Delete comments first
-   await prisma.comment.deleteMany({});
-   // Then delete item returns
-   await prisma.itemReturn.deleteMany({});
-   await prisma.variation.deleteMany({});
-   await prisma.inventoryItem.deleteMany({});
-   await prisma.location.deleteMany({});
-   await prisma.vendor.deleteMany({});
-   await prisma.itemsSubCategory.deleteMany({});
-   await prisma.itemsCategory.deleteMany({});
-   //Todo: Insert new records
+   // await prisma.lowStockAlert.deleteMany({});
+   // await prisma.inventoryAge.deleteMany({});
+   // await prisma.sale.deleteMany({});
+   // await prisma.internalTransfer.deleteMany({});
+   // // Delete comments first
+   // await prisma.comment.deleteMany({});
+   // // Then delete item returns
+   // await prisma.itemReturn.deleteMany({});
+   // await prisma.variation.deleteMany({});
+   // await prisma.inventoryItem.deleteMany({});
+   // await prisma.location.deleteMany({});
+   // await prisma.vendor.deleteMany({});
+   // await prisma.itemsSubCategory.deleteMany({});
+   // await prisma.itemsCategory.deleteMany({});
+   // Todo: Insert new records
    await prisma.itemsCategory.createMany({
       data: ItemsCategory,
    });
