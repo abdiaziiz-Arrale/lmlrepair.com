@@ -13,5 +13,9 @@ export const LogoutButton = () => {
     signOut({ callbackUrl });
   };
 
-  return <button onClick={handleSignOut}>Sign Out</button>;
+  return (
+    <Button variant={"destructive"} onClick={handleSignOut}>
+      Sign Out
+    </Button>
+  );
 };

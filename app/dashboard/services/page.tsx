@@ -1,8 +1,14 @@
 import CustomContainer from "@/components/CustomContainer";
 import ServicesTable from "@/components/ServicesTable";
 import { getServices } from "@/lib/db/serviceCrud";
-
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/lib/config/authOptions";
+import { redirect } from "next/navigation";
 async function Services() {
+  const staffInSession: Session | null = await getServerSession(authOptions);
+  if (!staffInSession) {
+    redirect("/");
+  }
   let services: any = [];
   let error = "";
 

@@ -50,7 +50,7 @@ export default async function Footer() {
                   <>
                     <Link
                       href="dashboard"
-                      className="hover:underline me-4 md:me-6"
+                      className="bg-emerald-500 text-white font-bold py-2 px-4 rounded-md shadow-lg hover:bg-emerald-600 hover:text-yellow-300 hover:underline me-4 md:me-6 transition duration-300"
                     >
                       Dashboard
                     </Link>

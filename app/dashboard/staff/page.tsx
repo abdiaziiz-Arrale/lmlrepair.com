@@ -2,8 +2,14 @@ import React from "react";
 import StaffTable from "./StaffTable";
 import { getStaffs } from "@/lib/db/staffCrud";
 import CustomContainer from "@/components/CustomContainer";
-
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/lib/config/authOptions";
+import { redirect } from "next/navigation";
 const Staff = async () => {
+  const staffInSession: Session | null = await getServerSession(authOptions);
+  if (!staffInSession) {
+    redirect("/");
+  }
   let staff: any = [];
   let error = "";
 

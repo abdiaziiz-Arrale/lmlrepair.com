@@ -2,12 +2,18 @@ import CustomContainer from "@/components/CustomContainer";
 import ProductsTable from "@/components/ProductsTable";
 import { getProducts } from "@/lib/db/productCrud";
 import Link from "next/link";
-
+import { Session, getServerSession } from "next-auth";
+import { authOptions } from "@/lib/config/authOptions";
+import { redirect } from "next/navigation";
 interface ProductsSearchParams {
   searchParams?: { productcategoryid?: string };
 }
 
 async function Products({ searchParams }: ProductsSearchParams) {
+  const staffInSession: Session | null = await getServerSession(authOptions);
+  if (!staffInSession) {
+    redirect("/");
+  }
   let products: any = [];
   let error = "";
 
