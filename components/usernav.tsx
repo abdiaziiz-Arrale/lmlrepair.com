@@ -1,21 +1,22 @@
 "use client";
+import React from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import Link from "next/link";
-
-import { LogoutButton } from ".././app/auth";
+import { useSession } from "next-auth/react";
+import { LogoutButton } from "../app/auth";
 
 export function UserNav() {
+  const { data: session, status } = useSession();
+  const loading = status === "loading";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -29,23 +30,15 @@ export function UserNav() {
       <DropdownMenuContent className="w-56 z-[99998]">
         <DropdownMenuLabel>
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">LML Repair</p>
+            <p className="text-sm font-medium leading-none">
+              {" "}
+              {loading ? "Loading..." : session?.user?.staff_name || "..."}
+            </p>
             <p className="text-xs leading-none text-muted-foreground">
-              lmldevs@gmail.com
+              {loading ? "Loading..." : session?.user?.email || "..."}
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>
-            Profile
-            <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-          </DropdownMenuItem>
-          <DropdownMenuItem>
-            Settings
-            <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-          </DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem>
           <LogoutButton />

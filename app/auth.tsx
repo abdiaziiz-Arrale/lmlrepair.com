@@ -4,7 +4,11 @@ import { Button } from "@/components/ui/button";
 import { signIn, signOut } from "next-auth/react";
 
 export const LoginButton = () => {
-  return <Button onClick={() => signIn()}>Sign in</Button>;
+  return (
+    <Button onClick={() => signIn(undefined, { callbackUrl: "/dashboard" })}>
+      Sign in
+    </Button>
+  );
 };
 
 export const LogoutButton = () => {

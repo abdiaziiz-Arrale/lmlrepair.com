@@ -1,6 +1,4 @@
 import Link from "next/link";
-import Image from "next/image";
-import { getProductCategories } from "@/lib/db/productCategoryCrud";
 import Header from "@/components/website/header";
 import Footer from "@/components/website/footer";
 export default async function ProductTypes() {
