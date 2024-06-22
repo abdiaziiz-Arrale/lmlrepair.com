@@ -15,20 +15,6 @@ export const getProductCategories = async (): Promise<ProductCategories[]> => {
   }
 };
 
-export const getProductCategoriesByType = async (
-  type: string
-): Promise<ProductCategories[]> => {
-  try {
-    return await prisma.productCategories.findMany({
-      where: { type: type },
-      orderBy: { product_category_name: "asc" },
-    });
-  } catch (error) {
-    console.error("Error fetching products:", error);
-    throw new Error("Failed to fetch products");
-  }
-};
-
 export const createProductCatgeory = async (
   productCategoryData: PartialBy<ProductCategories, "product_category_id">
 ) => {

@@ -105,15 +105,12 @@ model InventoryItem {
   inventoryItemId    Int                @id @default(autoincrement())
   name               String
   description        String?
-  sku                String
-  stock              Int
   itemsCategoryId    Int
   itemsSubCategoryId Int?
   vendorId           Int?
   locationId         Int?
-  rawCost            Float              @default(0)
-  shippingCost       Float              @default(10)
-  taxRate            Float              @default(10.25)
+  brand              String
+  image              String
   InternalTransfer   InternalTransfer[]
   InventoryAge       InventoryAge[]
   ItemsCategory      ItemsCategory      @relation(fields: [itemsCategoryId], references: [itemsCategoryId])
@@ -134,6 +131,7 @@ model InventoryItem {
 model ItemsCategory {
   itemsCategoryId  Int                @id @default(autoincrement())
   name             String
+  image            String
   InventoryItem    InventoryItem[]
   ItemsSubCategory ItemsSubCategory[]
 }
@@ -168,7 +166,10 @@ model Variation {
   variationId     Int           @id @default(autoincrement())
   sku             String        @unique
   inventoryItemId Int
-  stockQuantity   Int
+  image           String
+  name            String
+  price           Float
+  quantity        Int
   InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
 
   @@index([inventoryItemId], map: "Variation_inventoryItemId_fkey")
@@ -180,7 +181,7 @@ model InternalTransfer {
   quantity                                           Int
   fromLocationId                                     Int
   toLocationId                                       Int
-  transferDate                                       DateTime
+  transferDate                                       DateTime      @default(now())
   status                                             String
   Location_InternalTransfer_fromLocationIdToLocation Location      @relation("InternalTransfer_fromLocationIdToLocation", fields: [fromLocationId], references: [locationId])
   InventoryItem                                      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
@@ -225,7 +226,6 @@ model ProductCategories {
   product_category_name  String
   product_category_desc  String
   product_category_image String
-  type String @default("accessories")
   Products               Products[]
 }
 

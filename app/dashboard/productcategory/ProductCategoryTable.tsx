@@ -59,11 +59,9 @@ function ProductCategoryTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-72">Category Name</TableHead>
-            <TableHead>Category Image</TableHead>
-            <TableHead className="w-80">Category Description</TableHead>
-            <TableHead>Type</TableHead>
-
+            <TableHead className="w-72"> Name</TableHead>
+            <TableHead> Image</TableHead>
+            <TableHead className="w-80"> Description</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -92,10 +90,8 @@ function ProductCategoryTable({
                 {filteredProductCategory.product_category_desc}
               </TableCell>
 
-              <TableCell>{filteredProductCategory.type}</TableCell>
               <TableCell>
                 <EditProductCategory
-                  type={filteredProductCategory.type}
                   productCategoryId={
                     filteredProductCategory.product_category_id
                   }

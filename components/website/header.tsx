@@ -11,7 +11,7 @@ export const Navlink = [
   },
 
   {
-    id: "/producttypes",
+    id: "/productcategories",
     title: "Products",
   },
 

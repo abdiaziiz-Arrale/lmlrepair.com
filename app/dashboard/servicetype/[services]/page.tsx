@@ -4,19 +4,34 @@ import { getServices } from "@/lib/db/serviceCrud";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
-async function Services() {
+
+interface ServicesSearchParams {
+  searchParams?: { servicetype?: string };
+}
+
+async function Services({ searchParams }: ServicesSearchParams) {
   const staffInSession: Session | null = await getServerSession(authOptions);
   if (!staffInSession) {
     redirect("/");
+    return null; // Ensure no further processing if redirected
   }
-  let services: any = [];
-  let error = "";
 
-  try {
-    services = await getServices();
-  } catch (err) {
-    console.error("Error fetching services:", err);
-    error = "Check your internet connection.";
+  let services: any[] = [];
+  let error = "";
+  const serviceType = searchParams?.servicetype;
+
+  if (!serviceType) {
+    error = "No service type specified.";
+  } else {
+    try {
+      services = await getServices(serviceType);
+      if (!services) {
+        error = "No services found for the specified service type.";
+      }
+    } catch (err) {
+      console.error("Error fetching services:", err);
+      error = "Check your internet connection.";
+    }
   }
 
   return (

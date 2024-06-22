@@ -21,15 +21,7 @@ import {
   FormLabel,
   FormControl,
 } from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+
 import { createProductCatgeory } from "@/lib/db/productCategoryCrud";
 
 const schema = z.object({
@@ -37,7 +29,6 @@ const schema = z.object({
   productCategoryDescription: z
     .string()
     .min(1, "category description is required"),
-  type: z.string().min(1, "type is required"),
   productCategoryImage: z
     .any()
     .optional()
@@ -77,7 +68,6 @@ const AddProductCategory = () => {
           product_category_name: formData.productCategoryName,
           product_category_desc: formData.productCategoryDescription,
           product_category_image: "/lml_logo.png",
-          type: formData.type,
         });
         setLoading(false);
         window.location.reload();
@@ -100,7 +90,6 @@ const AddProductCategory = () => {
         product_category_name: formData.productCategoryName,
         product_category_desc: formData.productCategoryDescription,
         product_category_image: imageUrl,
-        type: formData.type,
       });
 
       setLoading(false);
@@ -135,35 +124,6 @@ const AddProductCategory = () => {
                   {errors.productCategoryName && (
                     <p>{errors.productCategoryName.message}</p>
                   )}
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name="type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Service Category</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange}>
-                      <SelectTrigger className="w-max">
-                        <SelectValue placeholder="Select Type" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectGroup>
-                          <SelectLabel>Type:</SelectLabel>
-                          <SelectItem value="accessories">
-                            Accessories
-                          </SelectItem>
-                          <SelectItem value="dyi">DYI</SelectItem>
-                          <SelectItem value="devices">Devices</SelectItem>
-                          <SelectItem value="insurance">Insurance</SelectItem>
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  {errors.type && <p>{errors.type.message}</p>}
                 </FormItem>
               )}
             />

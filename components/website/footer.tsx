@@ -41,7 +41,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link href="contact" className="hover:underline me-4 md:me-6">
-                  Contact
+                  contact
                 </Link>
               </li>
 

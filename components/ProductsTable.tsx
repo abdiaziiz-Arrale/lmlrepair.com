@@ -54,7 +54,7 @@ function ProductsTable({ products, productCategoryId }: ProductsTableProps) {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-72">Product name</TableHead>
+            <TableHead className="w-72"> Name</TableHead>
             <TableHead>Image</TableHead>
             <TableHead className="w-80">Description</TableHead>
             <TableHead>Raw</TableHead>

@@ -29,7 +29,7 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
       },
       {
         title: "Services",
-        path: "/dashboard/services",
+        path: "/dashboard/servicetype",
         icon: <HandCoins size={20} />,
       },
       {
