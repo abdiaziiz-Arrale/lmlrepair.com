@@ -1,11 +1,12 @@
 import { Metadata } from "next";
-import { Poppins } from "next/font/google";
+import { Bangers } from "next/font/google";
 import "./globals.css";
 
-const poppins = Poppins({
+const bangers = Bangers({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-poppins",
+  variable: "--font-bangers",
+  style: "normal",
 });
 export const metadata: Metadata = {
   title: "LML Repair",
@@ -21,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={poppins.className}>
+      <body className={bangers.className}>
         <main>{children}</main>
       </body>
     </html>

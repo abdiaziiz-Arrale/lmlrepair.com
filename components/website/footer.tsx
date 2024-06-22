@@ -30,7 +30,10 @@ export default async function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="products" className="hover:underline me-4 md:me-6">
+                <Link
+                  href="/productcategories"
+                  className="hover:underline me-4 md:me-6"
+                >
                   products
                 </Link>
               </li>
@@ -50,9 +53,9 @@ export default async function Footer() {
                   <>
                     <Link
                       href="/dashboard"
-                      className="bg-emerald-500 text-white font-bold py-2 px-4 rounded-md shadow-lg hover:bg-emerald-600 hover:text-yellow-300 hover:underline me-4 md:me-6 transition duration-300"
+                      className=" text-lg font-light bg-yellow-500 text-white py-2 px-4 rounded-md shadow-lg hover:bg-yellow-600 hover:text-yellow-300 hover:underline me-4 md:me-6 transition duration-300"
                     >
-                      Dashboard
+                      Login
                     </Link>
 
                     <LogoutButton />
