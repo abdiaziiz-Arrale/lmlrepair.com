@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useState } from 'react';
+import { generateSKU } from '@/lib/skuGenerator'; // Adjust the import path as needed
 
 type Variation = {
    name: string;
@@ -36,12 +37,29 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
    const [errors, setErrors] = useState<ErrorVariation>({});
 
    const handleChange = (key: string, value: string | number) => {
-      setVariation({ ...variation, [key]: value });
+      try {
+         let updatedVariation = { ...variation, [key]: value };
+         if (key === 'name') {
+            updatedVariation = {
+               ...updatedVariation,
+               sku: generateSKU(value as string),
+            };
+         }
+         setVariation(updatedVariation);
+      } catch (error) {
+         // Ignore the error
+         console.error(`Error updating ${key}:`, error);
+      }
    };
 
    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (e.target.files) {
-         setVariation({ ...variation, image: e.target.files[0] });
+      try {
+         if (e.target.files) {
+            setVariation({ ...variation, image: e.target.files[0] });
+         }
+      } catch (error) {
+         // Ignore the error
+         console.error('Error updating image:', error);
       }
    };
 
@@ -63,7 +81,9 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
    return (
       <Dialog open={open} onOpenChange={setOpen}>
          <DialogTrigger asChild>
-            <Button onClick={() => setOpen(true)}>Add</Button>
+            <Button type='button' onClick={() => setOpen(true)}>
+               Add
+            </Button>
          </DialogTrigger>
          <DialogContent>
             <form className='space-y-6'>
@@ -101,14 +121,15 @@ const VariationsDialog = ({ getVariations }: VariationsDialogProps) => {
                      />
                      <p className='text-red-600'>{errors.price}</p>
                   </div>
-                  <div>
+                  {/* <div>
                      <Label className='mb-3'>SKU </Label>
                      <Input
                         placeholder='e.g. 12345-CLR-RED'
                         value={variation.sku}
                         onChange={(e) => handleChange('sku', e.target.value)}
+                        disabled // Disable SKU input field
                      />
-                  </div>
+                  </div> */}
                   <div>
                      <Label className='mb-3'>
                         Quantity{' '}

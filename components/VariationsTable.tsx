@@ -118,7 +118,7 @@ const VariationTable = ({
                         />
                         <TooltipProvider>
                            <Tooltip>
-                              <TooltipTrigger>
+                              <TooltipTrigger type='button'>
                                  <Trash2
                                     size={18}
                                     className='text-red-600 font-bold cursor-pointer'

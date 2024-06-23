@@ -18,14 +18,6 @@ async function TransfersPage() {
 
    return (
       <div className='space-y-3'>
-         <div className='flex items-center justify-between'>
-            <div>
-               <h1 className='text-2xl font-medium'>Internal Transfers List</h1>
-               <p className='text-sm'>Here all Internal transfers data</p>
-            </div>
-            <TransferItemDialog />
-         </div>
-         <Input placeholder='Search Item Return...' className='max-w-96 ' />
          {error ? (
             <p className='text-red-500 text-center mt-10'>{error}</p>
          ) : (

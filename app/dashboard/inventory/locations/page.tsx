@@ -21,26 +21,6 @@ const Locations = async () => {
 
    return (
       <div>
-         <div className='space-y-3'>
-            <div className='flex items-center justify-between'>
-               <div className='space-y-1'>
-                  <h1 className='text-2xl font-medium'>Locations</h1>
-                  <p className='text-sm'>Manage your Locations</p>
-               </div>
-               <div className='flex items-center gap-3'>
-                  <div className='flex items-center gap-3'>
-                     <DatePickerDemo />
-                  </div>
-                  <AddLocationDialog />
-               </div>
-            </div>
-
-            <Input
-               placeholder='Search Location. . . . .'
-               className='max-w-96 '
-            />
-         </div>
-
          {error ? (
             <p className='text-red-500 text-center mt-10'>{error}</p>
          ) : (

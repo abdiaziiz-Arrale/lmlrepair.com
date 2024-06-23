@@ -1,8 +1,12 @@
-import { ItemReturn } from '@prisma/client';
+'use client';
+
 import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { useState } from 'react';
+import { AddReturnItemDialog } from './AddReturnItem';
 import { EditReturnItemDialog } from './EditReturnItem';
 import { Card } from './ui/card';
+import { Input } from './ui/input';
 import {
    Table,
    TableBody,
@@ -12,100 +16,92 @@ import {
    TableRow,
 } from './ui/table';
 
-type Vendor = {
-   vendorId: number;
-   name: string;
-};
+function ItemReturnTable({ returnedItems }: any) {
+   const [search, setSearch] = useState('');
 
-type InventoryItem = {
-   name: string;
-   rawCost: number;
-   taxRate: number;
-   shippingCost: number;
-   stock: number;
-   vendor: Vendor;
-};
+   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const inputValue = e.target.value;
+      setSearch(inputValue);
+   };
 
-type Location = {
-   locationId: number;
-   name: string;
-   description: string;
-};
-
-type Comment = {
-   commentId: number;
-   stockReturnId: number;
-   text: string;
-   createdAt: Date;
-};
-
-type ItemReturnExtended = ItemReturn & {
-   inventoryItem: InventoryItem;
-   location: Location;
-   comments: Comment[];
-};
-
-type returnedItemProps = {
-   returnedItems: ItemReturnExtended[];
-};
-
-function ItemReturnTable({ returnedItems }: returnedItemProps) {
+   const filteredReturnedItems = returnedItems.filter((returned: any) => {
+      return (
+         search.toLowerCase() === '' ||
+         returned.inventoryItem.name
+            .toLowerCase()
+            .includes(search.toLocaleLowerCase())
+      );
+   });
    return (
       <div>
-         <Card className='my-8'>
-            <Table>
-               <TableHeader>
-                  <TableRow>
-                     <TableHead className='lg:w-80'>Returned Item</TableHead>
-                     <TableHead>Returned By</TableHead>
-                     <TableHead>Reason</TableHead>
-                     <TableHead>Result</TableHead>
-                     <TableHead>Actions</TableHead>
-                  </TableRow>
-               </TableHeader>
-               <TableBody>
-                  {returnedItems.map((item) => (
-                     <TableRow key={item.stockReturnId}>
-                        <TableCell className='hover:text-blue-500 hover:underline hover:underline-offset-1'>
-                           <Link
-                              href={`/inventory/returnItems/${item.stockReturnId}`}
-                           >
-                              {item.inventoryItem.name}
-                           </Link>
-                        </TableCell>
-                        {item.returningParty === 'Customer' ? (
-                           <TableCell className='text-blue-500 font-semibold'>
-                              {item.returningParty}
-                           </TableCell>
-                        ) : (
-                           <TableCell className='text-purple-700 font-semibold'>
-                              {item.returningParty}
-                           </TableCell>
-                        )}
-                        <TableCell>{item.reason}</TableCell>
-                        {item.result === 'Success' ? (
-                           <TableCell className='text-green-500 font-semibold'>
-                              {item.result}
-                           </TableCell>
-                        ) : (
-                           <TableCell className='text-red-500 font-semibold'>
-                              {item.result}
-                           </TableCell>
-                        )}
-                        <TableCell>
-                           <div className='flex gap-2'>
-                              <EditReturnItemDialog
-                                 stockReturnId={item.stockReturnId}
-                              />
-
-                              <Trash2 size={20} className='text-red-600' />
-                           </div>
-                        </TableCell>
+         <div className='flex items-center justify-between'>
+            <div>
+               <h1 className='text-2xl font-medium'>Return Items List</h1>
+               <p className='text-sm'>Here all Returned Items data</p>
+            </div>
+            <AddReturnItemDialog />
+         </div>
+         <Input
+            placeholder='Search Item Return...'
+            className='max-w-96 '
+            onChange={handleInputChange}
+         />
+         <div>
+            <Card className='my-8'>
+               <Table>
+                  <TableHeader>
+                     <TableRow>
+                        <TableHead className='lg:w-80'>Returned Item</TableHead>
+                        <TableHead>Returned By</TableHead>
+                        <TableHead>Reason</TableHead>
+                        <TableHead>Result</TableHead>
+                        <TableHead>Actions</TableHead>
                      </TableRow>
-                  ))}
-               </TableBody>
-            </Table>
-         </Card>
+                  </TableHeader>
+                  <TableBody>
+                     {filteredReturnedItems.map((item: any) => (
+                        <TableRow key={item.stockReturnId}>
+                           <TableCell className='hover:text-blue-500 hover:underline hover:underline-offset-1'>
+                              <Link
+                                 href={`/inventory/returnItems/${item.stockReturnId}`}
+                              >
+                                 {item.inventoryItem.name}
+                              </Link>
+                           </TableCell>
+                           {item.returningParty === 'Customer' ? (
+                              <TableCell className='text-blue-500 font-semibold'>
+                                 {item.returningParty}
+                              </TableCell>
+                           ) : (
+                              <TableCell className='text-purple-700 font-semibold'>
+                                 {item.returningParty}
+                              </TableCell>
+                           )}
+                           <TableCell>{item.reason}</TableCell>
+                           {item.result === 'Success' ? (
+                              <TableCell className='text-green-500 font-semibold'>
+                                 {item.result}
+                              </TableCell>
+                           ) : (
+                              <TableCell className='text-red-500 font-semibold'>
+                                 {item.result}
+                              </TableCell>
+                           )}
+                           <TableCell>
+                              <div className='flex gap-2'>
+                                 <EditReturnItemDialog
+                                    stockReturnId={item.stockReturnId}
+                                 />
+
+                                 <Trash2 size={20} className='text-red-600' />
+                              </div>
+                           </TableCell>
+                        </TableRow>
+                     ))}
+                  </TableBody>
+               </Table>
+            </Card>
+         </div>
       </div>
    );
 }

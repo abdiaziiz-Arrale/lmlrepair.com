@@ -1,13 +1,10 @@
-import { AddItemDialog } from '@/components/AddItem';
 import ItemsTable from '@/components/ItemsTable';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { Download } from 'lucide-react';
+import { InventoryItem } from '@prisma/client';
 
 export async function fetchItems() {
    try {
-      const items = await getInventoryItems();
+      const items: InventoryItem[] = await getInventoryItems();
 
       return { items, error: null };
    } catch (err) {
@@ -20,26 +17,6 @@ async function Items() {
 
    return (
       <div>
-         <div className='space-y-3 '>
-            <div className='flex items-center justify-between'>
-               <div className='space-y-1'>
-                  <h1 className='text-2xl font-medium'>Inventory Items</h1>
-                  <p className='text-sm'>Manage your inventory items</p>
-               </div>
-               <AddItemDialog />
-            </div>
-            <div className='flex items-center justify-between space-x-3'>
-               <Input placeholder='Search Item...' className='max-w-96 ' />
-               <div className='flex items-center gap-3'>
-                  {/* <DatePickerDemo /> */}
-                  <Button className='space-x-2 w-32'>
-                     <Download size={20} />
-                     <span>Export</span>
-                  </Button>
-               </div>
-            </div>
-         </div>
-
          {error ? (
             <p className='text-red-500 text-center mt-10'>{error}</p>
          ) : (

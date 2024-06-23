@@ -12,6 +12,7 @@ import {
 } from '@/components/ui/tooltip';
 import { Pencil } from 'lucide-react';
 import { useState } from 'react';
+import { generateSKU } from '@/lib/skuGenerator'; // Adjust the import path as needed
 
 type Variation = {
    name: string;
@@ -43,7 +44,30 @@ const EditVariationsDialog = ({
    const [errors, setErrors] = useState<ErrorVariation>({});
 
    const handleChange = (key: string, value: string | number | File) => {
-      setVariation({ ...variation, [key]: value });
+      try {
+         let updatedVariation = { ...variation, [key]: value };
+         if (key === 'name') {
+            updatedVariation = {
+               ...updatedVariation,
+               sku: generateSKU(value as string),
+            };
+         }
+         setVariation(updatedVariation);
+      } catch (error) {
+         // Ignore the error
+         console.error(`Error updating ${key}:`, error);
+      }
+   };
+
+   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      try {
+         if (e.target.files) {
+            setVariation({ ...variation, image: e.target.files[0] });
+         }
+      } catch (error) {
+         // Ignore the error
+         console.error('Error updating image:', error);
+      }
    };
 
    const handleSubmit = () => {
@@ -109,14 +133,7 @@ const EditVariationsDialog = ({
                      />
                      <p className='text-red-600'>{errors.price}</p>
                   </div>
-                  <div>
-                     <Label className='mb-3'>SKU </Label>
-                     <Input
-                        placeholder='e.g. 12345-CLR-RED'
-                        value={variation.sku}
-                        onChange={(e) => handleChange('sku', e.target.value)}
-                     />
-                  </div>
+
                   <div>
                      <Label className='mb-3'>
                         Quantity{' '}
