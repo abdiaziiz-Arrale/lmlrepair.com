@@ -140,103 +140,105 @@ export const InventoryItem = [
 export const Variation = [
    {
       variationId: 1,
-      name: 'Iphone 11 screen red',
+      sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-RED',
+      inventoryItemId: 1,
+      image: '/iphone11red/test.jpg',
+      name: 'iPhone 11 Screen Red',
       price: 25.0,
       quantity: 1,
-      sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-RED',
-      image: '/iphone11red/test.jpg',
-      inventoryItemId: 1,
    },
    {
       variationId: 2,
-      name: 'Iphone 11 screen blue',
+      sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-BLUE',
+      inventoryItemId: 1,
+      image: '/iphone11blue/test.jpg',
+      name: 'iPhone 11 Screen Blue',
       price: 30.0,
       quantity: 4,
-      sku: 'IPHONE-11-SCREEN-AFTERMARKET-AM-BLUE',
-      image: '/iphone11blue/test.jpg',
-      inventoryItemId: 1,
    },
    {
       variationId: 3,
-      name: 'Samsung S20 Ultra glass',
+      sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-GLASS',
+      inventoryItemId: 2,
+      image: '/samsungs20ultraglass/test.jpg',
+      name: 'Samsung S20 Ultra Glass',
       price: 10.0,
       quantity: 3,
-      sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-GLASS',
-      image: '/samsungs20ultraglass/test.jpg',
-
-      inventoryItemId: 2,
    },
    {
       variationId: 4,
-      name: 'Samsung S20 Ultra plastic',
+      sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-PLASTIC',
+      inventoryItemId: 2,
+      image: '/samsungs20ultraplastic/test.jpg',
+      name: 'Samsung S20 Ultra Plastic',
       price: 5.0,
       quantity: 2,
-      sku: 'SAMSUNG-S20ULTRA-SCREEN-PROTECTOR-PLASTIC',
-      image: '/samsungs20ultraplastic/test.jpg',
-      inventoryItemId: 2,
    },
    {
       variationId: 5,
+      sku: 'LOGITECH-G502-HERO-WIRED',
+      inventoryItemId: 3,
+      image: '/logitechg502wired/test.jpg',
       name: 'Logitech G502 HERO Wired',
       price: 60.0,
       quantity: 2,
-      sku: 'LOGITECH-G502-HERO-WIRED',
-      image: '/logitechg502wired/test.jpg',
-      inventoryItemId: 3,
    },
    {
       variationId: 6,
+      sku: 'LOGITECH-G502-HERO-WIRELESS',
+      inventoryItemId: 3,
+      image: '/logitechg502wireless/test.jpg',
       name: 'Logitech G502 HERO Wireless',
       price: 80.0,
       quantity: 3,
-      sku: 'LOGITECH-G502-HERO-WIRELESS',
-      image: '/logitechg502wireless/test.jpg',
-      inventoryItemId: 3,
    },
    {
       variationId: 7,
+      sku: 'APPLE-AIRPODS-PRO-WHITE',
+      inventoryItemId: 4,
+      image: '/appleairpodswhite/test.jpg',
       name: 'Apple AirPods Pro White',
       price: 200.0,
       quantity: 20,
-      sku: 'APPLE-AIRPODS-PRO-WHITE',
-      image: '/appleairpodswhite/test.jpg',
-      inventoryItemId: 4,
    },
 ];
 
-export const ItemReturn = [
+export const ItemReturns = [
    {
       stockReturnId: 1,
-      returningParty: 'Customer',
-      locationId: 2, // Retail Store 1 (Seattle)
-      returnedAt: new Date('2024-05-27T10:00:00Z'),
-      status: 'Complete',
-      reason: 'Defective product',
+      inventoryItemId: 1,
+      variationId: 1,
+      locationId: 2,
+      reason: 'Defective',
+      returnedAt: new Date('2024-06-01T10:00:00Z'),
+      status: 'Processed',
       request: 'Refund',
-      result: 'Success',
-      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
+      result: 'Approved',
+      returningParty: 'Customer',
    },
    {
       stockReturnId: 2,
-      returningParty: 'Store',
-      locationId: 1, // Warehouse A
-      returnedAt: new Date('2024-05-25T15:30:00Z'),
-      status: 'Complete',
-      reason: 'Customer return',
-      request: 'Credit',
-      result: 'Success',
-      inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
+      inventoryItemId: 2,
+      variationId: 3,
+      locationId: 1,
+      reason: 'Wrong item',
+      returnedAt: new Date('2024-06-02T11:00:00Z'),
+      status: 'Pending',
+      request: 'Exchange',
+      result: 'Pending',
+      returningParty: 'Customer',
    },
    {
       stockReturnId: 3,
-      returningParty: 'Customer',
-      locationId: 2, // Retail Store 1 (Seattle)
-      returnedAt: new Date('2024-05-26T12:45:00Z'),
-      status: 'Pending',
-      reason: 'Change of mind',
+      inventoryItemId: 3,
+      variationId: 5,
+      locationId: 4,
+      reason: 'No longer needed',
+      returnedAt: new Date('2024-06-03T12:00:00Z'),
+      status: 'Rejected',
       request: 'Refund',
       result: 'Rejected',
-      inventoryItemId: 4, // Apple AirPods Pro
+      returningParty: 'Customer',
    },
 ];
 
@@ -282,41 +284,41 @@ export const Comment = [
 export const InternalTransfers = [
    {
       internalTransferId: 1,
-      fromLocationId: 1, // Warehouse A
-      toLocationId: 2, // Retail Store 1
-      inventoryItemId: 1, // iPhone 11 LCD Screen Replacement Aftermarket AM
-
+      inventoryItemId: 1,
+      variationId: 1,
       quantity: 1,
+      fromLocationId: 1,
+      toLocationId: 2,
       transferDate: new Date('2024-05-20T09:00:00Z'),
       status: 'Completed',
    },
    {
       internalTransferId: 2,
-      fromLocationId: 3, // Warehouse B
-      toLocationId: 4, // Retail Store 2
-      inventoryItemId: 3, // Logitech G502 HERO Gaming Mouse
-
+      inventoryItemId: 3,
+      variationId: 5,
       quantity: 1,
+      fromLocationId: 3,
+      toLocationId: 4,
       transferDate: new Date('2024-05-21T10:00:00Z'),
       status: 'Pending',
    },
    {
       internalTransferId: 3,
-      fromLocationId: 2, // Retail Store 1
-      toLocationId: 1, // Warehouse A
-      inventoryItemId: 2, // Samsung Galaxy S20 Ultra Screen Protector
-
+      inventoryItemId: 2,
+      variationId: 3,
       quantity: 2,
+      fromLocationId: 2,
+      toLocationId: 1,
       transferDate: new Date('2024-05-22T11:00:00Z'),
       status: 'Pending',
    },
    {
       internalTransferId: 4,
-      fromLocationId: 4, // Retail Store 2
-      toLocationId: 3, // Warehouse B
-      inventoryItemId: 4, // Apple AirPods Pro
-
+      inventoryItemId: 4,
+      variationId: 7,
       quantity: 5,
+      fromLocationId: 4,
+      toLocationId: 3,
       transferDate: new Date('2024-05-23T12:00:00Z'),
       status: 'In Transit',
    },

@@ -1,6 +1,8 @@
 import { Trash2 } from 'lucide-react';
+import Image from 'next/image';
 import { EditItemDialog } from './EditItemDialog';
 import { Card } from './ui/card';
+
 import {
    Table,
    TableBody,
@@ -18,17 +20,28 @@ import {
 
 interface InventoryItem {
    inventoryItemId: number;
+   image: string;
    name: string;
    description: string | null;
    brand: string;
    itemsCategoryId: number | null;
    itemsSubCategoryId: number | null;
    vendorId: number | null;
+   variations:
+      | {
+           variationId: number;
+           name: string;
+           price: number;
+           quantity: number;
+           image: string | null;
+           sku: string;
+        }[]
+      | null;
    locationId: number | null;
    itemsCategory?: { name: string };
    itemsSubCategory?: { name: string };
    location?: { name: string };
-   // variations?: { sku: string }[];
+   vendor: { name: string };
 }
 
 interface Props {
@@ -42,10 +55,13 @@ async function ItemsTable({ items }: Props) {
             <Table>
                <TableHeader>
                   <TableRow>
+                     <TableHead>Image</TableHead>
                      <TableHead>Item</TableHead>
                      <TableHead>Category</TableHead>
+                     <TableHead>Stock</TableHead>
                      <TableHead>Brand</TableHead>
-                     {/* <TableHead>Variations</TableHead> */}
+                     <TableHead>Vendor</TableHead>
+                     <TableHead>Price</TableHead>
                      <TableHead>Location</TableHead>
                      <TableHead>Actions</TableHead>
                   </TableRow>
@@ -54,35 +70,60 @@ async function ItemsTable({ items }: Props) {
                   {items &&
                      items.map((item) => (
                         <TableRow key={item.inventoryItemId}>
+                           <TableCell>
+                              <Image
+                                 src={
+                                    item.image ? item.image : '/noPicture.png'
+                                 }
+                                 className='rounded-lg aspect-square  hover:scale-125 tranisition-all duration-300 ease-in-out'
+                                 alt='No Picture'
+                                 width={50}
+                                 height={50}
+                              />
+                           </TableCell>
                            <TableCell>{item.name}</TableCell>
 
                            <TableCell className='space-x-1'>
-                              <span>
-                                 {item.itemsCategory?.name} -{' '}
-                                 {item.itemsSubCategory?.name}
-                              </span>
+                              <>
+                                 <span>{item.itemsCategory?.name} </span> -
+                                 <span className='text-green-600 font-semibold'>
+                                    {item.itemsSubCategory?.name}
+                                 </span>
+                              </>
+                           </TableCell>
+                           <TableCell>
+                              {item.variations
+                                 ?.map((vr) => vr.quantity)
+                                 .reduce((a, b) => a + b, 0)}
                            </TableCell>
 
-                           {/* <TableCell className=''>
+                           <TableCell>{item.brand}</TableCell>
+                           <TableCell>{item.vendor.name}</TableCell>
+                           <TableCell>
                               {item.variations && item.variations.length > 0 ? (
-                                 <ul>
-                                    {item.variations.map((variation, index) => (
-                                       <li
-                                          key={index}
-                                          className='truncate hover:overflow-visible transition-all delay-75 hover:whitespace-normal'
-                                       >
-                                          <span className='hover:whitespace-normal tranisition-all'>
-                                             {variation.sku}
-                                          </span>
-                                       </li>
-                                    ))}
-                                 </ul>
+                                 <>
+                                    <span className='text-blue-500 font-bold'>
+                                       $
+                                       {Math.min(
+                                          ...item.variations.map(
+                                             (vr) => vr.price
+                                          )
+                                       )}{' '}
+                                    </span>
+                                    -{' '}
+                                    <span>
+                                       $
+                                       {Math.max(
+                                          ...item.variations.map(
+                                             (vr) => vr.price
+                                          )
+                                       )}
+                                    </span>
+                                 </>
                               ) : (
                                  'No variations'
                               )}
-                           </TableCell> */}
-
-                           <TableCell>{item.brand}</TableCell>
+                           </TableCell>
                            <TableCell>{item.location?.name || 'N/A'}</TableCell>
 
                            <TableCell>

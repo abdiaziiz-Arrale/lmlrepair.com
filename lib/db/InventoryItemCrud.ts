@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from '@/lib/prisma';
-import { InventoryItem } from '@prisma/client';
+import { InventoryItem, Vendor } from '@prisma/client';
 
 export const getInventoryItems = async (): Promise<InventoryItem[]> => {
    try {
@@ -18,6 +18,24 @@ export const getInventoryItems = async (): Promise<InventoryItem[]> => {
    } catch (error) {
       console.error('Error fetching inventory items:', error);
       throw new Error('Failed to fetch inventory items');
+   }
+};
+
+export const getInventoryItemById = async (itemId: number): Promise<any> => {
+   try {
+      return await prisma.inventoryItem.findUnique({
+         where: { inventoryItemId: itemId },
+         include: {
+            variations: true,
+            itemsCategory: true,
+            itemsSubCategory: true,
+            vendor: true,
+            location: true,
+         },
+      });
+   } catch (error) {
+      console.error('Error fetching inventory item:', error);
+      throw new Error('Failed to fetch inventory item');
    }
 };
 
@@ -109,16 +127,13 @@ export const createInventoryItem = async (
 };
 
 type UpdateItemInput = {
-   name?: string;
-   description?: string;
-   sku?: string;
-   variations: string;
-   vendor?: string;
-   stock?: string;
-   rawCost?: string;
-   taxRate?: string;
-   shippingCost?: string;
-   category?: string;
+   name: string;
+   description: string;
+   brand: string;
+   image: string | null;
+   variations: Variations[];
+   vendor: string;
+   category: string;
    subCategory?: string;
    location?: string;
 };
@@ -144,35 +159,46 @@ export const updateInventoryItem = async (
       }
 
       const valueToUpdate = {
-         name: data.name || existingItem.name,
-         description: data.description || existingItem.description,
-         sku: data.sku || existingItem.sku,
-         stock: data.stock ? Number(data.stock) : existingItem.stock,
-         rawCost: data.rawCost ? Number(data.rawCost) : existingItem.rawCost,
-         taxRate: data.taxRate ? Number(data.taxRate) : existingItem.taxRate,
-         shippingCost: data.shippingCost
-            ? Number(data.shippingCost)
-            : existingItem.shippingCost,
+         name: data.name ? data.name : existingItem.name,
+         description: data.description
+            ? data.description
+            : existingItem.description,
+         brand: data.brand ? data.brand : existingItem.brand,
+         image: data.image ? data.image : existingItem.image,
+         vendorId: data.vendor
+            ? (await prisma.vendor.create({ data: { name: data.vendor } }))
+                 .vendorId
+            : existingItem.vendorId,
          itemsCategoryId: data.category
             ? Number(data.category)
             : existingItem.itemsCategoryId,
          itemsSubCategoryId: data.subCategory
             ? Number(data.subCategory)
             : existingItem.itemsSubCategoryId,
-         vendorId: data.vendor
-            ? (await prisma.vendor.create({ data: { name: data.vendor } }))
-                 .vendorId
-            : existingItem.vendorId,
          locationId: data.location
             ? Number(data.location)
             : existingItem.locationId,
       };
 
       if (data.variations) {
-         await prisma.variation.update({
-            where: { variationId: existingItem.variations[0].variationId },
-            data: { sku: data.variations },
+         await prisma.variation.deleteMany({
+            where: { inventoryItemId: itemId },
          });
+
+         await Promise.all(
+            data.variations.map(async (vr) => {
+               return prisma.variation.create({
+                  data: {
+                     name: vr.name,
+                     price: Number(vr.price),
+                     sku: vr.sku,
+                     quantity: Number(vr.quantity),
+                     image: vr.image ? vr.image : '',
+                     inventoryItemId: itemId,
+                  },
+               });
+            })
+         );
       }
 
       await prisma.inventoryItem.update({

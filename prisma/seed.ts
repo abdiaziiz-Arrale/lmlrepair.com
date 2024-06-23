@@ -5,7 +5,7 @@ import {
    InternalTransfers,
    InventoryAge,
    InventoryItem,
-   ItemReturn,
+   ItemReturns,
    ItemsCategory,
    ItemsSubCategory,
    Location,
@@ -45,7 +45,7 @@ async function main() {
    // await prisma.category.createMany({
    //    data: categories,
    // });
-   //Todo Delete existing records
+   // Todo Delete existing records
    // await prisma.lowStockAlert.deleteMany({});
    // await prisma.inventoryAge.deleteMany({});
    // await prisma.sale.deleteMany({});
@@ -80,7 +80,7 @@ async function main() {
       data: Variation,
    });
    await prisma.itemReturn.createMany({
-      data: ItemReturn,
+      data: ItemReturns,
    });
    await prisma.comment.createMany({
       data: Comment,

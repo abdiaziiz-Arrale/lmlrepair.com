@@ -7,13 +7,21 @@ export type Vendor = {
    name: string;
 };
 
+export type Variations = {
+   variationId: number;
+   name: string;
+   price: number;
+   quantity: number;
+   image: string | null;
+   sku: string;
+};
 export type InventoryItem = {
    name: string;
-   rawCost: number;
-   taxRate: number;
-   shippingCost: number;
-   stock: number;
+   brand: string;
+   description: string;
+   image: string;
    vendor: Vendor;
+   variations: Variations[];
 };
 
 export type Location = {
@@ -32,5 +40,5 @@ export type Comment = {
 export type ItemReturnExtended = ItemReturn & {
    inventoryItem: InventoryItem;
    location: Location;
-   comments: Comment[];
+   Comment: Comment[];
 };

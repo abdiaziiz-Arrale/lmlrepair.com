@@ -20,12 +20,22 @@ import { InventoryItem, Location } from '@prisma/client';
 import { CircleDashedIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
+import { InventoryCombined } from './TransferItemForm';
+
+type Variation = {
+   variationId: number;
+   name: string;
+   quantity: number;
+   image: string;
+   sku: string;
+};
 
 type FormData = {
    reason: string;
    returningParty: 'customer' | 'shop';
    returnedAt: Date;
+   variationId: string;
    request: 'refund' | 'credit';
    status: 'pending' | 'complete';
    result: 'success' | 'rejected';
@@ -34,28 +44,27 @@ type FormData = {
    comments: string[];
 };
 
+type InventoryWithVariations = InventoryItem & { variations: Variation[] };
+
 export default function CreateReturnItemForm() {
    const { setClose } = useModal();
    const { toast } = useToast();
    const router = useRouter();
    const {
       register,
-      handleSubmit,
       control,
+      handleSubmit,
       formState: { errors: formErrors },
    } = useForm<FormData>();
-
-   const [isPending, startTranisition] = useTransition();
-
-   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+   const [isPending, startTransition] = useTransition();
+   const [inventoryItems, setInventoryItems] = useState<any>([]);
+   const [locations, setLocations] = useState<Location[]>([]);
+   const [selectedItem, setSelectedItem] = useState<any>(null);
+   const [variations, setVariations] = useState<any>([]);
    const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
    const [inventoryError, setInventoryError] = useState<string | null>(null);
-
-   const [locations, setLocations] = useState<Location[]>([]);
    const [locationsLoading, setLocationsLoading] = useState<boolean>(false);
    const [locationsError, setLocationsError] = useState<string | null>(null);
-
-   const [additionalComments, setAdditionalComments] = useState<string[]>([]);
 
    useEffect(() => {
       const fetchInventoryItems = async () => {
@@ -63,12 +72,8 @@ export default function CreateReturnItemForm() {
          try {
             const items: InventoryItem[] = await getInventoryItems();
             setInventoryItems(items);
-         } catch (error: unknown) {
-            if (error instanceof Error) {
-               setInventoryError(error.message);
-            } else {
-               setInventoryError('An unknown error occurred');
-            }
+         } catch (error) {
+            setInventoryError('Error fetching inventory items');
          } finally {
             setInventoryLoading(false);
          }
@@ -79,12 +84,8 @@ export default function CreateReturnItemForm() {
          try {
             const locs: Location[] = await getLocations();
             setLocations(locs);
-         } catch (error: unknown) {
-            if (error instanceof Error) {
-               setLocationsError(error.message);
-            } else {
-               setLocationsError('An unknown error occurred');
-            }
+         } catch (error) {
+            setLocationsError('Error fetching locations');
          } finally {
             setLocationsLoading(false);
          }
@@ -94,19 +95,27 @@ export default function CreateReturnItemForm() {
       fetchLocations();
    }, []);
 
-   const handleAddComment = (e: any) => {
-      e.preventDefault();
-      setAdditionalComments((prevComments) => [...prevComments, '']);
+   const handleItemChange = (itemId: string) => {
+      const selectedItem = inventoryItems.find(
+         (item: InventoryCombined) => item.inventoryItemId === Number(itemId)
+      );
+      setSelectedItem(selectedItem || null);
+      if (selectedItem) {
+         setVariations(selectedItem.variations);
+      } else {
+         setVariations([]);
+      }
    };
 
-   const onSubmit: SubmitHandler<FormData> = (data) => {
-      startTranisition(async () => {
+   const onSubmit = async (data: FormData) => {
+      startTransition(async () => {
          try {
             const returnedAt = new Date(data.returnedAt);
             const res = await createReturnedItem({
                inventoryItemId: data.itemId,
                locationId: data.locationId,
                reason: data.reason,
+               variationId: data.variationId,
                returningParty: data.returningParty,
                returnedAt: returnedAt,
                status: data.status,
@@ -132,18 +141,18 @@ export default function CreateReturnItemForm() {
    };
 
    return (
-      <div className='flex items-center justify-center  '>
+      <div className='flex items-center justify-center'>
          <div className='w-full max-w-3xl flex flex-col gap-10'>
-            <div className='flex items-center justify-between '>
+            <div className='flex items-center justify-between'>
                <Button variant={'ghost'} onClick={() => setClose()}>
                   <X size={20} />
                </Button>
-               <h1 className=' text-3xl font-bold '>Add Return</h1>
+               <h1 className='text-3xl font-bold'>Add Return</h1>
                <Button onClick={handleSubmit(onSubmit)}>
                   {isPending ? (
                      <CircleDashedIcon className='animate-spin' />
                   ) : (
-                     'save'
+                     'Save'
                   )}
                </Button>
             </div>
@@ -178,10 +187,10 @@ export default function CreateReturnItemForm() {
                                  <SelectValue placeholder='Select Party' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='Customer'>
+                                 <SelectItem value='customer'>
                                     Customer
                                  </SelectItem>
-                                 <SelectItem value='Shop'>Shop</SelectItem>
+                                 <SelectItem value='shop'>Shop</SelectItem>
                               </SelectContent>
                            </Select>
                         )}
@@ -192,13 +201,17 @@ export default function CreateReturnItemForm() {
                         </span>
                      )}
                   </div>
-                  <div className='flex flex-col gap-2'>
-                     <Label htmlFor='returned-at'>Returned At</Label>
+                  <div>
+                     <Label htmlFor='returnedAt'>Returned At</Label>
                      <Input
-                        placeholder='Select Date'
                         type='date'
                         {...register('returnedAt', { required: true })}
                      />
+                     {formErrors.returnedAt && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
+                     )}
                   </div>
                   <div>
                      <Label htmlFor='request'>Request</Label>
@@ -212,11 +225,11 @@ export default function CreateReturnItemForm() {
                               value={field.value}
                            >
                               <SelectTrigger className='w-full'>
-                                 <SelectValue placeholder='Select a request type' />
+                                 <SelectValue placeholder='Select request' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='Refund'>Refund</SelectItem>
-                                 <SelectItem value='Credit'>Credit</SelectItem>
+                                 <SelectItem value='refund'>Refund</SelectItem>
+                                 <SelectItem value='credit'>Credit</SelectItem>
                               </SelectContent>
                            </Select>
                         )}
@@ -239,13 +252,13 @@ export default function CreateReturnItemForm() {
                               value={field.value}
                            >
                               <SelectTrigger className='w-full'>
-                                 <SelectValue placeholder='Select a request type' />
+                                 <SelectValue placeholder='Select status' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='Pending'>
+                                 <SelectItem value='pending'>
                                     Pending
                                  </SelectItem>
-                                 <SelectItem value='Complete'>
+                                 <SelectItem value='complete'>
                                     Complete
                                  </SelectItem>
                               </SelectContent>
@@ -259,7 +272,7 @@ export default function CreateReturnItemForm() {
                      )}
                   </div>
                   <div>
-                     <Label htmlFor='status'>Result</Label>
+                     <Label htmlFor='result'>Result</Label>
                      <Controller
                         control={control}
                         name='result'
@@ -270,13 +283,13 @@ export default function CreateReturnItemForm() {
                               value={field.value}
                            >
                               <SelectTrigger className='w-full'>
-                                 <SelectValue placeholder='Select a request type' />
+                                 <SelectValue placeholder='Select result' />
                               </SelectTrigger>
                               <SelectContent>
-                                 <SelectItem value='Success'>
+                                 <SelectItem value='success'>
                                     Success
                                  </SelectItem>
-                                 <SelectItem value='Rejected'>
+                                 <SelectItem value='rejected'>
                                     Rejected
                                  </SelectItem>
                               </SelectContent>
@@ -292,11 +305,11 @@ export default function CreateReturnItemForm() {
                </div>
                <div className='col-span-1 space-y-4'>
                   <div>
-                     <Label htmlFor='status'>Items</Label>
+                     <Label htmlFor='itemId'>Item</Label>
                      {inventoryLoading ? (
                         <CircleDashedIcon className='animate-spin' />
                      ) : inventoryError ? (
-                        <p className='text-red-500 '>{inventoryError}</p>
+                        <p className='text-red-500'>{inventoryError}</p>
                      ) : (
                         <Controller
                            control={control}
@@ -304,14 +317,17 @@ export default function CreateReturnItemForm() {
                            rules={{ required: true }}
                            render={({ field }) => (
                               <Select
-                                 onValueChange={field.onChange}
+                                 onValueChange={(value) => {
+                                    field.onChange(value);
+                                    handleItemChange(value);
+                                 }}
                                  value={field.value}
                               >
                                  <SelectTrigger className='w-full'>
-                                    <SelectValue placeholder='Select the item returned' />
+                                    <SelectValue placeholder='Select item' />
                                  </SelectTrigger>
                                  <SelectContent>
-                                    {inventoryItems.map((item) => (
+                                    {inventoryItems.map((item: any) => (
                                        <SelectItem
                                           key={item.inventoryItemId}
                                           value={String(item.inventoryItemId)}
@@ -330,12 +346,47 @@ export default function CreateReturnItemForm() {
                         </span>
                      )}
                   </div>
+                  {selectedItem && variations.length > 0 && (
+                     <div>
+                        <Label htmlFor='variationId'>Variation</Label>
+                        <Controller
+                           control={control}
+                           name='variationId'
+                           rules={{ required: true }}
+                           render={({ field }) => (
+                              <Select
+                                 onValueChange={field.onChange}
+                                 value={field.value}
+                              >
+                                 <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Select a variation' />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    {variations.map((variation: any) => (
+                                       <SelectItem
+                                          key={variation.variationId}
+                                          value={String(variation.variationId)}
+                                       >
+                                          {variation.name}
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                           )}
+                        />
+                        {formErrors.variationId && (
+                           <span className='text-red-500'>
+                              This field is required
+                           </span>
+                        )}
+                     </div>
+                  )}
                   <div>
-                     <Label htmlFor='location'>Locations</Label>
+                     <Label htmlFor='locationId'>Location</Label>
                      {locationsLoading ? (
                         <CircleDashedIcon className='animate-spin' />
                      ) : locationsError ? (
-                        <p className='text-red-500 '>{locationsError}</p>
+                        <p className='text-red-500'>{locationsError}</p>
                      ) : (
                         <Controller
                            control={control}
@@ -347,7 +398,7 @@ export default function CreateReturnItemForm() {
                                  value={field.value}
                               >
                                  <SelectTrigger className='w-full'>
-                                    <SelectValue placeholder='Select the location' />
+                                    <SelectValue placeholder='Select location' />
                                  </SelectTrigger>
                                  <SelectContent>
                                     {locations.map((location) => (
@@ -371,30 +422,37 @@ export default function CreateReturnItemForm() {
                   </div>
                   <div>
                      <Label htmlFor='comments'>Comments</Label>
-                     <div className='grid gap-2'>
-                        {additionalComments.map((comment, index) => (
-                           <Controller
-                              key={index}
-                              control={control}
-                              name={`comments.${index}`}
-                              defaultValue={comment}
-                              render={({ field }) => (
+                     <Controller
+                        control={control}
+                        name='comments'
+                        defaultValue={[]}
+                        render={({ field }) => (
+                           <div className='grid gap-2'>
+                              {field.value.map((comment, index) => (
                                  <Textarea
+                                    key={index}
                                     rows={2}
-                                    placeholder={`Enter comment `}
-                                    value={field.value}
-                                    onChange={(e) =>
-                                       field.onChange(e.target.value)
-                                    }
+                                    placeholder={`Enter comment ${index + 1}`}
+                                    value={comment}
+                                    onChange={(e) => {
+                                       const newComments = [...field.value];
+                                       newComments[index] = e.target.value;
+                                       field.onChange(newComments);
+                                    }}
                                  />
-                              )}
-                           />
-                        ))}
-
-                        <Button variant='outline' onClick={handleAddComment}>
-                           Add More Comment
-                        </Button>
-                     </div>
+                              ))}
+                              <Button
+                                 type='button'
+                                 variant='outline'
+                                 onClick={() =>
+                                    field.onChange([...field.value, ''])
+                                 }
+                              >
+                                 Add More Comment
+                              </Button>
+                           </div>
+                        )}
+                     />
                   </div>
                </div>
             </form>

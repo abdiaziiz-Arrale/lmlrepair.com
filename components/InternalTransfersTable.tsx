@@ -19,24 +19,23 @@ type Location = {
 
 type Variation = {
    variationId: number;
+   name: string;
+   price: number;
+   quantity: number;
+   image: string | null;
    sku: string;
-   stockQuantity: number;
-   inventoryItemId: number;
 };
 
 type InventoryItem = {
    inventoryItemId: number;
    name: string;
    description: string;
-   sku: string;
-   stock: number;
+   brand: string;
+   image: string;
    itemsCategoryId: number;
    itemsSubCategoryId: number;
    vendorId: number;
    locationId: number;
-   rawCost: number;
-   shippingCost: number;
-   taxRate: number;
    variations: Variation[];
 };
 

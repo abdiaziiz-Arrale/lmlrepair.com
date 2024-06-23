@@ -4,12 +4,14 @@ import { Button } from '@/components/ui/button';
 import { Download, Printer } from 'lucide-react';
 import { ItemReturnExtended } from '@/lib/type';
 import { useRouter } from 'next/navigation';
+
 export type ReturnedItemProps = {
    returnedItem: ItemReturnExtended;
 };
 
 function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
    const router = useRouter();
+
    return (
       <div className='container mx-auto px-4 py-8 max-w-3xl'>
          <div className='dark:bg-gray-950 rounded-lg p-6 space-y-6'>
@@ -41,6 +43,20 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
                            {returnedItem.inventoryItem.name}
                         </span>
                      </div>
+                     <div className='flex justify-between'>
+                        <span className='font-medium'>Variation:</span>
+                        <span className='text-right'>
+                           {returnedItem.inventoryItem.variations &&
+                              returnedItem.inventoryItem.variations
+                                 .filter(
+                                    (vr) =>
+                                       vr.variationId ===
+                                       returnedItem.variationId
+                                 )
+                                 .map((vr) => vr.name)}
+                        </span>
+                     </div>
+
                      <div className='flex justify-between'>
                         <span className='font-medium'>Request:</span>
                         <span className='text-blue-600 font-semibold'>
@@ -93,29 +109,40 @@ function ReturnedItemComp({ returnedItem }: ReturnedItemProps) {
                         )}
                      </div>
                      <div className='flex justify-between'>
-                        <span className='font-medium'>Raw:</span>
-                        <span className='text-green-500 font-medium'>
-                           ${returnedItem.inventoryItem.rawCost.toFixed(2)}
-                        </span>
-                     </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Shipping:</span>
-                        <span>
-                           ${returnedItem.inventoryItem.shippingCost.toFixed(2)}
-                        </span>
-                     </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Tax:</span>
-                        <span className='text-blue-500 font-medium'>
-                           {returnedItem.inventoryItem.taxRate}%
-                        </span>
+                        <span className='font-medium'>Price:</span>
+                        <p>
+                           {returnedItem.inventoryItem.variations &&
+                           returnedItem.inventoryItem.variations.length > 0 ? (
+                              <>
+                                 <span className='text-blue-500 font-bold'>
+                                    $
+                                    {Math.min(
+                                       ...returnedItem.inventoryItem.variations.map(
+                                          (vr) => vr.price
+                                       )
+                                    )}{' '}
+                                 </span>
+                                 -{' '}
+                                 <span>
+                                    $
+                                    {Math.max(
+                                       ...returnedItem.inventoryItem.variations.map(
+                                          (vr) => vr.price
+                                       )
+                                    )}
+                                 </span>
+                              </>
+                           ) : (
+                              'No variations'
+                           )}
+                        </p>
                      </div>
                   </div>
                </div>
                <div>
                   <h2 className='text-lg font-medium mb-2'>Comments</h2>
                   <div className='space-y-4'>
-                     {returnedItem.comments.map((comment) => (
+                     {returnedItem.Comment.map((comment) => (
                         <div
                            key={comment.commentId}
                            className='bg-gray-100 dark:bg-gray-800 rounded-lg p-4'

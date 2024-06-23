@@ -25,7 +25,7 @@ type Variation = {
    price: string;
    sku: string;
    quantity: string;
-   image?: File | null;
+   image?: string | File | null;
 };
 
 type VariationTableProps = {
@@ -52,10 +52,25 @@ const VariationTable = ({
       reader.readAsDataURL(file);
    };
 
-   console.log(imagePreviews);
+   const getImageSrc = (image: string | File | null, index: number): string => {
+      if (!image) return '';
+      if (typeof image === 'string') {
+         return image;
+      }
+      if (imagePreviews[index]) {
+         return imagePreviews[index] as string;
+      }
+      const fileURL = URL.createObjectURL(image);
+      setImagePreviews((prev) => {
+         const newPreviews = [...prev];
+         newPreviews[index] = fileURL;
+         return newPreviews;
+      });
+      return fileURL;
+   };
 
    return (
-      <Table className=' border-collapse border border-gray-300 '>
+      <Table className='border-collapse border border-gray-300'>
          <TableHeader>
             <TableRow>
                <TableHead>Image</TableHead>
@@ -68,20 +83,13 @@ const VariationTable = ({
          </TableHeader>
          <TableBody>
             {variationData.map((variation, index) => (
-               <>
-                  <TableRow key={index}>
+               <TableRow key={index}>
+                  <TableCell>
                      {variation.image ? (
                         <img
-                           src={
-                              imagePreviews[index] ||
-                              URL.createObjectURL(variation.image)
-                           }
+                           src={getImageSrc(variation.image, index)}
                            alt={`Preview of ${variation.name}`}
-                           className={
-                              index === variationData.length - 1
-                                 ? 'h-12 w-12 ml-3 my-2  rounded-lg aspect-square   transition ease-in-out delay-150 hover:-translate-y-4 hover:scale-150 duration-300  hover:overflow-hidden'
-                                 : 'h-12 w-12 ml-3 my-2  rounded-lg aspect-square  hover:scale-150 tranisition-all duration-300 ease-in-out'
-                           }
+                           className='h-12 w-12 ml-3 my-2 rounded-lg aspect-square transition ease-in-out delay-150 hover:-translate-y-4 hover:scale-150 duration-300 hover:overflow-hidden'
                         />
                      ) : (
                         <Image
@@ -89,18 +97,20 @@ const VariationTable = ({
                            width={50}
                            height={50}
                            alt='no-picture'
-                           className='ml-3 my-2 '
+                           className='ml-3 my-2'
                         />
                      )}
-                     <TableCell>{variation.name}</TableCell>
-                     <TableCell className='text-green-500 font-bold'>
-                        ${variation.price}
-                     </TableCell>
-                     <TableCell>{variation.sku}</TableCell>
-                     <TableCell className='text-purple-500 font-bold'>
-                        {variation.quantity}
-                     </TableCell>
-                     <TableCell className='space-x-2'>
+                  </TableCell>
+                  <TableCell>{variation.name}</TableCell>
+                  <TableCell className='text-green-500 font-bold'>
+                     ${variation.price}
+                  </TableCell>
+                  <TableCell>{variation.sku}</TableCell>
+                  <TableCell className='text-purple-500 font-bold'>
+                     {variation.quantity}
+                  </TableCell>
+                  <TableCell>
+                     <div className='space-x-2 flex items-center'>
                         <EditVariationsDialog
                            variation={variation}
                            index={index}
@@ -120,9 +130,9 @@ const VariationTable = ({
                               </TooltipContent>
                            </Tooltip>
                         </TooltipProvider>
-                     </TableCell>
-                  </TableRow>
-               </>
+                     </div>
+                  </TableCell>
+               </TableRow>
             ))}
          </TableBody>
       </Table>

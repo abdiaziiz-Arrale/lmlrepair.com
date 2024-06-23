@@ -10,10 +10,7 @@ export const getReturnedItems = async (): Promise<ItemReturnExtended[]> => {
             inventoryItem: {
                select: {
                   name: true,
-                  rawCost: true,
-                  taxRate: true,
-                  shippingCost: true,
-                  stock: true,
+                  variations: true,
                   vendor: {
                      select: {
                         vendorId: true,
@@ -23,12 +20,12 @@ export const getReturnedItems = async (): Promise<ItemReturnExtended[]> => {
                },
             },
             location: true,
-            comments: true,
+            Comment: true,
          },
          orderBy: {
             returnedAt: 'desc',
          },
-      })) as ItemReturnExtended[];
+      })) as any[];
    } catch (error) {
       throw new Error('Failed to fetch returned items');
    }
@@ -46,10 +43,7 @@ export const getReturnedItemById = async (
             inventoryItem: {
                select: {
                   name: true,
-                  rawCost: true,
-                  taxRate: true,
-                  shippingCost: true,
-                  stock: true,
+                  variations: true,
                   vendor: {
                      select: {
                         vendorId: true,
@@ -59,11 +53,10 @@ export const getReturnedItemById = async (
                },
             },
             location: true,
-            comments: true,
+            Comment: true,
          },
       });
 
-      console.log(item);
       return item as ItemReturnExtended | null;
    } catch (error) {
       throw new Error('Failed to fetch returned item');
@@ -74,6 +67,7 @@ type dataToSave = {
    inventoryItemId: string;
    locationId: string;
    reason: string;
+   variationId: string;
    returningParty: string;
    returnedAt?: Date;
    status: string;
@@ -97,6 +91,7 @@ export const createReturnedItem = async (
             inventoryItemId: parseInt(data.inventoryItemId),
             locationId: parseInt(data.locationId),
             reason: data.reason,
+            variationId: parseInt(data.variationId),
             returningParty: data.returningParty,
             returnedAt: data.returnedAt ? data.returnedAt : new Date(),
             status: data.status,
@@ -124,9 +119,20 @@ export const createReturnedItem = async (
    }
 };
 
+type Variation = {
+   variationId: number;
+   inventoryItemId: number;
+   name: string;
+   sku: string;
+   image: string | undefined;
+   quantity: number;
+   price: number;
+};
+
 type dataToUpdate = {
    inventoryItemId?: string;
    locationId?: string;
+   variationId?: string;
    reason?: string;
    returningParty?: string;
    returnedAt?: Date;
@@ -145,13 +151,15 @@ export const updateReturnedItem = async (
    stockReturnId: number,
    data: dataToUpdate
 ): Promise<updateItemReturnResponse> => {
+   console.log(data);
    try {
       const returnedItem = await prisma.itemReturn.findUnique({
          where: {
             stockReturnId,
          },
          include: {
-            comments: true,
+            Comment: true,
+            variation: true,
          },
       });
 
@@ -159,36 +167,31 @@ export const updateReturnedItem = async (
          throw new Error('Returned item not found');
       }
 
-      const updated = await prisma.itemReturn.update({
+      await prisma.itemReturn.update({
          where: {
             stockReturnId,
          },
          data: {
-            inventoryItemId: data.inventoryItemId
-               ? parseInt(data.inventoryItemId)
-               : returnedItem.inventoryItemId,
+            inventoryItemId:
+               parseInt(data.inventoryItemId!) || returnedItem.inventoryItemId,
             locationId: data.locationId
                ? parseInt(data.locationId)
                : returnedItem.locationId,
-            reason: data.reason ? data.reason : returnedItem.reason,
-            returningParty: data.returningParty
-               ? data.returningParty
-               : returnedItem.returningParty,
-            returnedAt: data.returnedAt
-               ? data.returnedAt
-               : returnedItem.returnedAt,
-            status: data.status ? data.status : returnedItem.status,
-            request: data.request ? data.request : returnedItem.request,
-            result: data.result ? data.result : returnedItem.result,
+            reason: data.reason || returnedItem.reason,
+            returningParty: data.returningParty || returnedItem.returningParty,
+            returnedAt: data.returnedAt || returnedItem.returnedAt,
+            status: data.status || returnedItem.status,
+            request: data.request || returnedItem.request,
+            result: data.result || returnedItem.result,
+            variationId:
+               parseInt(data.variationId!) || returnedItem.variationId,
          },
       });
 
       if (data.comments && data.comments.length > 0) {
          await prisma.comment.deleteMany({
             where: {
-               commentId: {
-                  in: returnedItem.comments.map((comment) => comment.commentId),
-               },
+               stockReturnId,
             },
          });
 
@@ -204,7 +207,7 @@ export const updateReturnedItem = async (
          message: 'Returned item updated successfully',
          status: 'success',
       };
-   } catch (error: any) {
+   } catch (error) {
       console.log(error);
       throw new Error('Failed to update returned item');
    }

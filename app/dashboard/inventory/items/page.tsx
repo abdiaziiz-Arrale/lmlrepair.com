@@ -1,5 +1,4 @@
 import { AddItemDialog } from '@/components/AddItem';
-import { DatePickerDemo } from '@/components/DatePicker';
 import ItemsTable from '@/components/ItemsTable';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

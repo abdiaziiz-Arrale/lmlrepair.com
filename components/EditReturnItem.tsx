@@ -19,6 +19,10 @@ export function EditReturnItemDialog({ stockReturnId }: stockReturnIdProps) {
    };
 
    return (
-      <Pencil size={16} className='mr-2 cursor-pointer' onClick={handleOpen} />
+      <Pencil
+         size={20}
+         className='mr-2 cursor-pointer text-blue-500 font-medium'
+         onClick={handleOpen}
+      />
    );
 }

@@ -37,7 +37,7 @@ type Inputs = {
    subCategory: string;
    location: string;
    brand: string;
-   image?: File | null;
+   image?: File | null | string;
 };
 
 type CreateNewItemProps = {
@@ -51,7 +51,7 @@ type Variation = {
    price: string;
    sku: string;
    quantity: string;
-   image?: File | null;
+   image?: File | null | string;
 };
 
 function CreateNewItemForm({
@@ -70,7 +70,7 @@ function CreateNewItemForm({
       control,
       formState: { errors },
    } = useForm<Inputs>();
-   const [image, setImage] = useState<File | null>(null);
+   const [image, setImage] = useState<File | null | string>(null);
    const [variationsData, setVariationsData] = useState<Variation[]>([]);
 
    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,7 +106,7 @@ function CreateNewItemForm({
 
       startTransition(async () => {
          try {
-            if (image) {
+            if (image && image instanceof File) {
                const response = await fetch(
                   `/api/upload?filename=${image.name}`,
                   {
@@ -125,7 +125,7 @@ function CreateNewItemForm({
 
             if (variationsData.length > 0) {
                for (const variation of variationsData) {
-                  if (variation.image) {
+                  if (variation.image && variation.image instanceof File) {
                      const response = await fetch(
                         `/api/upload?filename=${variation.image.name}`,
                         {

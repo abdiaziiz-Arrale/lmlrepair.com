@@ -14,6 +14,7 @@ export const getInternalTransfers = async (): Promise<InternalTransfer[]> => {
                   variations: true,
                },
             },
+            variation: true,
          },
       });
    } catch (error) {
@@ -50,6 +51,7 @@ export const getInternalTransferById = async (
 
 type CreateInternalTransferInput = {
    inventoryItemId: string;
+   variationId: string;
    quantity: string;
    status: string;
    fromLocationId: string;
@@ -77,6 +79,7 @@ export const createInternalTransfer = async (
          data: {
             inventoryItemId: parseInt(inventoryItemId),
             status: status,
+            variationId: parseInt(data.variationId),
             quantity: parseInt(quantity),
             transferDate: new Date(),
             fromLocationId: parseInt(fromLocationId),
@@ -91,11 +94,12 @@ export const createInternalTransfer = async (
 };
 
 type UpdateInternalTransferInput = {
-   inventoryItemId?: string;
+   inventoryItemId?: number;
    quantity?: number;
    status?: string;
-   fromLocationId?: string;
-   toLocationId?: string;
+   fromLocationId?: number;
+   toLocationId?: number;
+   variationId: number;
 };
 
 type updateInternalResponse = {
@@ -108,7 +112,7 @@ export const updateInternalTransfer = async (
    data: UpdateInternalTransferInput
 ): Promise<updateInternalResponse> => {
    try {
-      // Fetch the current transfer item
+      //Todo: Fetch the current transfer item
       const transferItem = await prisma.internalTransfer.findUnique({
          where: {
             internalTransferId: internalTransferId,
@@ -119,25 +123,17 @@ export const updateInternalTransfer = async (
          return { message: 'Internal Transfer not found', status: 'error' };
       }
 
-      // Determine the new values for the fields to be updated
+      //Todo: Determine the new values for the fields to be updated
       const updatedData = {
-         inventoryItemId: data.inventoryItemId
-            ? parseInt(data.inventoryItemId)
-            : transferItem.inventoryItemId,
-         quantity:
-            data.quantity !== undefined
-               ? +data.quantity
-               : transferItem.quantity,
+         inventoryItemId: data.inventoryItemId ?? transferItem.inventoryItemId,
+         quantity: data.quantity ?? transferItem.quantity,
          status: data.status ?? transferItem.status,
-         fromLocationId: data.fromLocationId
-            ? parseInt(data.fromLocationId)
-            : transferItem.fromLocationId,
-         toLocationId: data.toLocationId
-            ? parseInt(data.toLocationId)
-            : transferItem.toLocationId,
+         fromLocationId: data.fromLocationId ?? transferItem.fromLocationId,
+         toLocationId: data.toLocationId ?? transferItem.toLocationId,
+         variationId: data.variationId ?? transferItem.variationId,
       };
 
-      // Perform the update
+      //Todo: Perform the update
       await prisma.internalTransfer.update({
          where: {
             internalTransferId: internalTransferId,

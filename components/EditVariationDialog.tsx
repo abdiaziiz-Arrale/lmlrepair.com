@@ -18,7 +18,7 @@ type Variation = {
    price: string;
    sku: string;
    quantity: string;
-   image?: File | null;
+   image?: File | null | string;
 };
 
 type ErrorVariation = {

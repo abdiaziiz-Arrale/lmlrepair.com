@@ -6,6 +6,9 @@ import { Location } from '@prisma/client';
 export const getLocations = async (): Promise<Location[]> => {
    try {
       return await prisma.location.findMany({
+         include: {
+            items: true,
+         },
          orderBy: { name: 'asc' },
       });
    } catch (error) {

@@ -14,7 +14,6 @@ import { useToast } from '@/components/ui/use-toast';
 import { createInternalTransfer } from '@/lib/db/internalTransfersCrud';
 import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
 import { getLocations } from '@/lib/db/ItemLocationCrud';
-// import { createInternalTransfer } from '@/lib/db/internalTransfersCrud';
 import { useModal } from '@/providers/model-provider';
 import { InventoryItem, Location } from '@prisma/client';
 import { CircleDashedIcon, X } from 'lucide-react';
@@ -24,11 +23,35 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 
 type FormData = {
    inventoryItemId: string;
+   variationId: string;
    quantity: number;
    status: string;
    fromLocationId: string;
    toLocationId: string;
 };
+
+type Variation = {
+   variationId: number;
+   name: string;
+   quantity: number;
+   image: string;
+   sku: string;
+};
+
+type InventoryItemWithVariation = {
+   inventoryItemId: number;
+   name: string;
+   description: string | null;
+   itemsCategoryId: number;
+   itemsSubCategoryId: number | null;
+   vendorId: number | null;
+   locationId: number | null;
+   brand: string;
+   image: string;
+   variations: Variation[];
+};
+
+export type InventoryCombined = InventoryItem & { variations: Variation[] };
 
 export default function CreateTransferItemForm() {
    const { setClose } = useModal();
@@ -43,15 +66,21 @@ export default function CreateTransferItemForm() {
    } = useForm<FormData>();
 
    const [isPending, startTransition] = useTransition();
-   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
+   const [inventoryItems, setInventoryItems] = useState<InventoryCombined[]>(
+      []
+   );
    const [locations, setLocations] = useState<Location[]>([]);
+   const [selectedItem, setSelectedItem] = useState<InventoryCombined | null>(
+      null
+   );
+   const [variations, setVariations] = useState<any[]>([]);
    const [inventoryError, setInventoryError] = useState<string | null>(null);
    const [locationError, setLocationError] = useState<string | null>(null);
 
    useEffect(() => {
       const fetchInventoryItems = async () => {
          try {
-            const items: InventoryItem[] = await getInventoryItems();
+            const items: any = await getInventoryItems();
             setInventoryItems(items);
          } catch (error) {
             setInventoryError('Error fetching inventory items');
@@ -71,18 +100,36 @@ export default function CreateTransferItemForm() {
       fetchLocations();
    }, []);
 
+   const handleItemChange = (itemId: string) => {
+      const selectedItem = inventoryItems.find(
+         (item) => item.inventoryItemId === Number(itemId)
+      );
+      setSelectedItem(selectedItem || null);
+      if (selectedItem) {
+         setVariations(selectedItem.variations || []);
+      } else {
+         setVariations([]);
+      }
+   };
+
    const onSubmit: SubmitHandler<FormData> = (data) => {
       const inventoryItemFiltered = inventoryItems.find((item) => {
          return item.inventoryItemId === Number(data.inventoryItemId);
       });
 
-      const inValidQuantity =
-         inventoryItemFiltered && inventoryItemFiltered?.stock < data.quantity;
+      const variationFiltered = inventoryItemFiltered?.variations?.find(
+         (vr) => {
+            return vr.variationId === Number(data.variationId);
+         }
+      );
 
-      if (inValidQuantity) {
+      const inValidVariationQuantity =
+         data.quantity > variationFiltered?.quantity!;
+
+      if (inValidVariationQuantity) {
          setError('quantity', {
             type: 'manual',
-            message: 'Insufficient quantity, try less',
+            message: `Insufficient quantity, try less you have  (${variationFiltered?.quantity}) in stock`,
          });
          return;
       }
@@ -91,18 +138,17 @@ export default function CreateTransferItemForm() {
          try {
             const res = await createInternalTransfer({
                inventoryItemId: data.inventoryItemId,
+               variationId: data.variationId,
                quantity: String(data.quantity),
                status: data.status,
                fromLocationId: data.fromLocationId,
                toLocationId: data.toLocationId,
             });
-
             if (res.status === 'success') {
                toast({
                   title: `Item transferred successfully`,
                   description: 'Item has been transferred successfully',
                });
-
                router.push('/dashboard/inventory/transfers');
                setClose();
             }
@@ -147,7 +193,10 @@ export default function CreateTransferItemForm() {
                            rules={{ required: true }}
                            render={({ field }) => (
                               <Select
-                                 onValueChange={field.onChange}
+                                 onValueChange={(value) => {
+                                    field.onChange(value);
+                                    handleItemChange(value);
+                                 }}
                                  value={field.value}
                               >
                                  <SelectTrigger className='w-full'>
@@ -173,6 +222,43 @@ export default function CreateTransferItemForm() {
                         </span>
                      )}
                   </div>
+
+                  {selectedItem && variations.length > 0 && (
+                     <div>
+                        <Label htmlFor='variationId'>Variation</Label>
+                        <Controller
+                           control={control}
+                           name='variationId'
+                           rules={{ required: true }}
+                           render={({ field }) => (
+                              <Select
+                                 onValueChange={field.onChange}
+                                 value={field.value}
+                              >
+                                 <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Select a variation' />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    {variations.map((variation) => (
+                                       <SelectItem
+                                          key={variation.variationId}
+                                          value={String(variation.variationId)}
+                                       >
+                                          {variation.name}
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                           )}
+                        />
+                        {formErrors.variationId && (
+                           <span className='text-red-500'>
+                              This field is required
+                           </span>
+                        )}
+                     </div>
+                  )}
+
                   <div>
                      <Label htmlFor='quantity'>Quantity</Label>
                      <Input

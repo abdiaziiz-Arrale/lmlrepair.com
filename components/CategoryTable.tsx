@@ -1,6 +1,6 @@
 'use client';
 
-import { Trash } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import { EditCategoryDialog } from './EditCategoryDialog';
 import { Card } from './ui/card';
 import {
@@ -71,7 +71,7 @@ function CategoryTable({ categories }: Props) {
                                  <EditCategoryDialog
                                     categoryId={cate.itemsCategoryId}
                                  />
-                                 <Trash
+                                 <Trash2
                                     size={20}
                                     className='text-red-500 cursor-pointer'
                                  />

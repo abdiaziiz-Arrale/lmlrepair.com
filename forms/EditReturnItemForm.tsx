@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -11,19 +9,22 @@ import {
    SelectValue,
 } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { getLocations } from '@/lib/db/ItemLocationCrud';
+import VariationTable from '@/components/VariationsTable';
 import {
-   updateReturnedItem,
    getReturnedItemById,
+   updateReturnedItem,
 } from '@/lib/db/returnItemCrud';
 import { useModal } from '@/providers/model-provider';
-import { InventoryItem, Location } from '@prisma/client';
+import { InventoryItem, Location, Variation } from '@prisma/client';
 import { CircleDashedIcon, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState, useTransition } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useToast } from '@/components/ui/use-toast';
+import { useToast } from '../components/ui/use-toast';
+import { getLocations } from '@/lib/db/ItemLocationCrud';
+import { PutBlobResult } from '@vercel/blob';
+import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
+import { InventoryCombined } from './TransferItemForm';
 
 type FormData = {
    reason: string;
@@ -32,18 +33,19 @@ type FormData = {
    request: string;
    status: string;
    result: string;
-   itemId: number;
-   locationId: number;
-   comments: Comment[];
+   locationId: string;
+   variationId: string;
+   inventoryItemId: string;
+   comments: string[];
 };
 
-type stockReturnIdProps = {
+type StockReturnIdProps = {
    returnItemId: number;
 };
 
 export default function EditReturnItemForm({
    returnItemId,
-}: stockReturnIdProps) {
+}: StockReturnIdProps) {
    const { setClose } = useModal();
    const router = useRouter();
    const { toast } = useToast();
@@ -51,20 +53,22 @@ export default function EditReturnItemForm({
       register,
       handleSubmit,
       control,
+      setValue,
+      reset,
       formState: { errors: formErrors },
    } = useForm<FormData>();
 
    const [isPending, startTransition] = useTransition();
-
-   const [inventoryItems, setInventoryItems] = useState<InventoryItem[]>([]);
-   const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
-   const [inventoryError, setInventoryError] = useState<string | null>(null);
-
    const [locations, setLocations] = useState<Location[]>([]);
    const [locationsLoading, setLocationsLoading] = useState<boolean>(false);
    const [locationsError, setLocationsError] = useState<string | null>(null);
-
+   const [fetchingOne, setFetchingOne] = useState<boolean>(false);
+   const [inventoryItems, setInventoryItems] = useState<any>([]);
+   const [inventoryLoading, setInventoryLoading] = useState<boolean>(false);
+   const [inventoryError, setInventoryError] = useState<string | null>(null);
    const [additionalComments, setAdditionalComments] = useState<string[]>([]);
+   const [selectedItem, setSelectedItem] = useState<any>(null);
+   const [variations, setVariations] = useState<any>([]);
 
    useEffect(() => {
       const fetchInventoryItems = async () => {
@@ -72,12 +76,8 @@ export default function EditReturnItemForm({
          try {
             const items: InventoryItem[] = await getInventoryItems();
             setInventoryItems(items);
-         } catch (error: unknown) {
-            if (error instanceof Error) {
-               setInventoryError(error.message);
-            } else {
-               setInventoryError('An unknown error occurred');
-            }
+         } catch (error) {
+            setInventoryError('Error fetching inventory items');
          } finally {
             setInventoryLoading(false);
          }
@@ -99,37 +99,77 @@ export default function EditReturnItemForm({
          }
       };
 
-      fetchInventoryItems();
+      const fetchReturnedItem = async () => {
+         try {
+            setFetchingOne(true);
+            const returnedItem: any = await getReturnedItemById(returnItemId);
+            setValue('reason', returnedItem.reason);
+            setValue('returningParty', returnedItem.returningParty);
+            setValue('returnedAt', new Date(returnedItem.returnedAt));
+            setValue('request', returnedItem.request);
+            setValue('status', returnedItem.status);
+            setValue('result', returnedItem.result);
+            setValue('locationId', String(returnedItem.locationId));
+            setValue('variationId', returnedItem.variationId);
+            setValue('inventoryItemId', returnedItem.inventoryItemId);
+            setValue(
+               'comments',
+               returnedItem.Comment.map((comment: any) => comment.text)
+            );
+         } catch (error) {
+            console.log(error);
+         } finally {
+            setFetchingOne(false);
+         }
+      };
+
       fetchLocations();
-   }, [returnItemId]);
+      fetchInventoryItems();
+      fetchReturnedItem();
+   }, [returnItemId, reset, setValue]);
 
-   const onSubmit: SubmitHandler<formData> = (data) => {
-      try {
-         startTransition(async () => {
-            const res = await updateReturnedItem(returnItemId, data);
+   const handleItemChange = (itemId: string) => {
+      const selectedItem = inventoryItems.find(
+         (item: InventoryCombined) => item.inventoryItemId === Number(itemId)
+      );
+      setSelectedItem(selectedItem || null);
+      if (selectedItem) {
+         setVariations(selectedItem.variations);
+      } else {
+         setVariations([]);
+      }
+   };
 
-            if (res.status === 'success') {
-               router.refresh();
-               await toast({
-                  title: 'Return Item Updated',
-                  description: 'Return item has been updated successfully',
-               });
-               setClose();
-            }
-         });
-      } catch (error: unknown) {
-         if (error instanceof Error) {
-            toast({
-               title: 'Error',
-               description: error.message,
+   const onSubmit: SubmitHandler<FormData> = (data) => {
+      startTransition(async () => {
+         try {
+            const res = await updateReturnedItem(returnItemId, {
+               reason: data.reason,
+               returningParty: data.returningParty,
+               returnedAt: data.returnedAt, // Use the properly formatted returnedAt
+               request: data.request,
+               status: data.status,
+               result: data.result,
+               locationId: data.locationId,
+               comments: data.comments,
+               variationId: data.variationId,
+               inventoryItemId: data.inventoryItemId,
             });
-         } else {
+            if (res.status === 'success') {
+               toast({ title: 'Success', description: res.message });
+               setClose();
+               router.refresh();
+            } else {
+               toast({ title: 'Error', description: res.message });
+            }
+         } catch (error) {
+            console.log(error);
             toast({
                title: 'Error',
-               description: 'An unknown error occurred',
+               description: 'Failed to update returned item',
             });
          }
-      }
+      });
    };
 
    return (
@@ -264,25 +304,29 @@ export default function EditReturnItemForm({
                </div>
                <div className='col-span-1 space-y-4'>
                   <div>
-                     <Label htmlFor='status'>Items</Label>
+                     <Label htmlFor='itemId'>Item</Label>
                      {inventoryLoading ? (
                         <CircleDashedIcon className='animate-spin' />
                      ) : inventoryError ? (
-                        <p className='text-red-500 '>{inventoryError}</p>
+                        <p className='text-red-500'>{inventoryError}</p>
                      ) : (
                         <Controller
                            control={control}
-                           name='itemId'
+                           name='inventoryItemId'
+                           rules={{ required: true }}
                            render={({ field }) => (
                               <Select
-                                 onValueChange={field.onChange}
+                                 onValueChange={(value) => {
+                                    field.onChange(value);
+                                    handleItemChange(value);
+                                 }}
                                  value={field.value}
                               >
                                  <SelectTrigger className='w-full'>
-                                    <SelectValue placeholder='Select the item returned' />
+                                    <SelectValue placeholder='Select item' />
                                  </SelectTrigger>
                                  <SelectContent>
-                                    {inventoryItems.map((item) => (
+                                    {inventoryItems.map((item: any) => (
                                        <SelectItem
                                           key={item.inventoryItemId}
                                           value={String(item.inventoryItemId)}
@@ -295,13 +339,55 @@ export default function EditReturnItemForm({
                            )}
                         />
                      )}
+                     {formErrors.inventoryItemId && (
+                        <span className='text-red-500'>
+                           This field is required
+                        </span>
+                     )}
                   </div>
+
+                  {selectedItem && variations.length > 0 && (
+                     <div>
+                        <Label htmlFor='variationId'>Variation</Label>
+                        <Controller
+                           control={control}
+                           name='variationId'
+                           rules={{ required: true }}
+                           render={({ field }) => (
+                              <Select
+                                 onValueChange={field.onChange}
+                                 value={field.value}
+                              >
+                                 <SelectTrigger className='w-full'>
+                                    <SelectValue placeholder='Select a variation' />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    {variations.map((variation: any) => (
+                                       <SelectItem
+                                          key={variation.variationId}
+                                          value={String(variation.variationId)}
+                                       >
+                                          {variation.name}
+                                       </SelectItem>
+                                    ))}
+                                 </SelectContent>
+                              </Select>
+                           )}
+                        />
+                        {formErrors.variationId && (
+                           <span className='text-red-500'>
+                              This field is required
+                           </span>
+                        )}
+                     </div>
+                  )}
+
                   <div>
-                     <Label htmlFor='location'>Locations</Label>
+                     <Label htmlFor='locationId'>Locations</Label>
                      {locationsLoading ? (
                         <CircleDashedIcon className='animate-spin' />
                      ) : locationsError ? (
-                        <p className='text-red-500 '>{locationsError}</p>
+                        <p className='text-red-500'>{locationsError}</p>
                      ) : (
                         <Controller
                            control={control}
@@ -350,7 +436,6 @@ export default function EditReturnItemForm({
                               )}
                            />
                         ))}
-
                         <Button
                            variant='outline'
                            onClick={(e) => {

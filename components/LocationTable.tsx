@@ -1,4 +1,5 @@
-import { Edit2, Trash } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
+import { EditLocationDialog } from './EditLocation';
 import { Card } from './ui/card';
 import {
    Table,
@@ -8,13 +9,12 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import Link from 'next/link';
-import { EditLocationDialog } from './EditLocation';
 
 type Locations = {
    locationId: number;
    name: string;
    description?: string | null;
+   items: { name: string }[];
 };
 
 interface Props {
@@ -30,7 +30,7 @@ function CategoryTable({ locations }: Props) {
                   <TableRow>
                      <TableHead className='lg:w-80'>Location</TableHead>
                      <TableHead>Description</TableHead>
-                     <TableHead>Date Added</TableHead>
+                     <TableHead>Items in Location</TableHead>
                      <TableHead>Actions</TableHead>
                   </TableRow>
                </TableHeader>
@@ -44,14 +44,16 @@ function CategoryTable({ locations }: Props) {
                            <TableCell className='space-x-1 text-green-500 font-medium'>
                               {locate.description}
                            </TableCell>
-                           <TableCell>2021-09-12</TableCell>
+                           <TableCell>
+                              {locate.items && locate.items.length}
+                           </TableCell>
                            <TableCell>
                               <div className='flex items-center gap-3'>
                                  <EditLocationDialog
                                     locationId={locate.locationId}
                                  />
 
-                                 <Trash
+                                 <Trash2
                                     size={18}
                                     className='text-red-500 cursor-pointer'
                                  />

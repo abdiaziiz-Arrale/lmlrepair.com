@@ -1,6 +1,6 @@
 'use client';
 import { Button } from '@/components/ui/button';
-import { Download, Printer } from 'lucide-react';
+import { Printer } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 type InternalTransfer = {
@@ -9,6 +9,7 @@ type InternalTransfer = {
       inventoryItemId: number;
       quantity: number;
       status: string;
+      variationId: number;
       transferDate: Date;
       fromLocationId: number;
       toLocationId: number;
@@ -26,15 +27,12 @@ type InternalTransfer = {
          inventoryItemId: number;
          name: string;
          description: string;
-         sku: string;
-         stock: number;
+         brand: string;
+         image: string;
          itemsCategoryId: number;
          itemsSubCategoryId: number;
          vendorId: number;
          locationId: number;
-         rawCost: number;
-         shippingCost: number;
-         taxRate: number;
          variations: any[]; // Adjust the type of variations based on your actual data structure
       };
    };
@@ -73,11 +71,18 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                         </span>
                      </div>
                      <div className='flex justify-between'>
-                        <span className='font-medium'>SKU:</span>
+                        <span className='font-medium'>Variation:</span>
                         <span className='text-right'>
-                           {transfer.inventoryItem.sku}
+                           {transfer.inventoryItem.variations &&
+                              transfer.inventoryItem.variations
+                                 .filter(
+                                    (vr) =>
+                                       vr.variationId === transfer.variationId
+                                 )
+                                 .map((vr) => vr.name)}
                         </span>
                      </div>
+
                      <div className='flex justify-between'>
                         <span className='font-medium'>Quantity:</span>
                         <span>{transfer.quantity}</span>
@@ -99,8 +104,38 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                         ) : (
                            <span className='text-gray-500 font-medium'>
                               {transfer.status}
-                           </span> // Fallback color for unexpected status values
+                           </span>
                         )}
+                     </div>
+
+                     <div className='flex justify-between'>
+                        <span className='font-medium'>Price:</span>
+                        <span>
+                           {transfer.inventoryItem.variations &&
+                           transfer.inventoryItem.variations.length > 0 ? (
+                              <>
+                                 <span className='text-blue-500 font-bold'>
+                                    $
+                                    {Math.min(
+                                       ...transfer.inventoryItem.variations.map(
+                                          (vr) => vr.price
+                                       )
+                                    )}{' '}
+                                 </span>
+                                 -{' '}
+                                 <span>
+                                    $
+                                    {Math.max(
+                                       ...transfer.inventoryItem.variations.map(
+                                          (vr) => vr.price
+                                       )
+                                    )}
+                                 </span>
+                              </>
+                           ) : (
+                              'No variations'
+                           )}
+                        </span>
                      </div>
 
                      <div className='flex justify-between'>
@@ -111,28 +146,7 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                         <span className='font-medium'>To Location:</span>
                         <span>{transfer.toLocation.name}</span>
                      </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Raw:</span>
-                        <span className='text-green-500 font-medium'>
-                           ${transfer.inventoryItem.rawCost.toFixed(2)}
-                        </span>
-                     </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Shipping:</span>
-                        <span>
-                           ${transfer.inventoryItem.shippingCost.toFixed(2)}
-                        </span>
-                     </div>
-                     <div className='flex justify-between'>
-                        <span className='font-medium'>Tax:</span>
-                        <span className='text-blue-500 font-medium'>
-                           {transfer.inventoryItem.taxRate}%
-                        </span>
-                     </div>
                   </div>
-               </div>
-               <div>
-                  {/* Additional details or sections can be added here */}
                </div>
             </div>
          </div>

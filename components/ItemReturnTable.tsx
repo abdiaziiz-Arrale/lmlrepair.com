@@ -1,6 +1,7 @@
 import { ItemReturn } from '@prisma/client';
-import { Pencil, Trash2 } from 'lucide-react';
+import { Trash2 } from 'lucide-react';
 import Link from 'next/link';
+import { EditReturnItemDialog } from './EditReturnItem';
 import { Card } from './ui/card';
 import {
    Table,
@@ -10,7 +11,6 @@ import {
    TableHeader,
    TableRow,
 } from './ui/table';
-import { EditReturnItemDialog } from './EditReturnItem';
 
 type Vendor = {
    vendorId: number;
