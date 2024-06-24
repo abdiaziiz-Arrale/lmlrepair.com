@@ -19,33 +19,39 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
+        try {
+          if (!credentials?.email || !credentials.password) {
+            throw new Error("Missing email or password");
+          }
+
+          const staff = await getStaff(credentials.email);
+
+          if (!staff) {
+            throw new Error("No user found with the provided email");
+          }
+
+          const passwordMatch = await bcryptjs.compare(
+            credentials.password,
+            staff.password
+          );
+
+          if (!passwordMatch) {
+            throw new Error("Incorrect password");
+          }
+
+          return {
+            id: `${staff.staff_id}`,
+            staff_id: staff.staff_id,
+            staff_name: staff.staff_name,
+            email: staff.email,
+            name: staff.staff_name,
+            role: staff.role,
+            mobile_number: staff.mobile_number,
+          };
+        } catch (error) {
+          console.error("Authorization error:", error);
           return null;
         }
-
-        const staff = await getStaff(credentials.email);
-        if (!staff) {
-          return null;
-        }
-
-        const passwordMatch = await bcryptjs.compare(
-          credentials.password,
-          staff.password
-        );
-
-        if (!passwordMatch) {
-          return null;
-        }
-
-        return {
-          id: `${staff.staff_id}`,
-          staff_id: staff.staff_id,
-          staff_name: staff.staff_name,
-          email: staff.email,
-          name: staff.staff_name,
-          role: staff.role,
-          mobile_number: staff.mobile_number,
-        };
       },
     }),
   ],
