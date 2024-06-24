@@ -6,7 +6,7 @@ import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
 interface ProductsSearchParams {
-  searchParams?: { productcategoryid?: string };
+  searchParams?: { productsubcategoryid?: string };
 }
 
 async function Products({ searchParams }: ProductsSearchParams) {
@@ -17,17 +17,17 @@ async function Products({ searchParams }: ProductsSearchParams) {
   let products: any = [];
   let error = "";
 
-  const productCategory = searchParams?.productcategoryid
-    ? parseInt(searchParams.productcategoryid)
+  const productSubCategory = searchParams?.productsubcategoryid
+    ? parseInt(searchParams.productsubcategoryid)
     : null;
 
-  if (!productCategory) {
+  if (!productSubCategory) {
     error = "No product category specified.";
     return;
   }
 
   try {
-    products = await getProducts(productCategory);
+    products = await getProducts(productSubCategory);
   } catch (err) {
     console.error("Error fetching products:", err);
     error = "Check your internet connection.";
@@ -48,7 +48,7 @@ async function Products({ searchParams }: ProductsSearchParams) {
           </div>
         ) : (
           <ProductsTable
-            productCategoryId={productCategory}
+            productSubCategoryId={productSubCategory}
             products={products}
           />
         )}

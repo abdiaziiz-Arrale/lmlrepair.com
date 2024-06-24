@@ -36,19 +36,17 @@ async function main() {
     data: categories,
   });
 
-  // Delete existing records
-  await prisma.lowStockAlert.deleteMany({});
-  await prisma.inventoryAge.deleteMany({});
-  await prisma.sale.deleteMany({});
-  await prisma.internalTransfer.deleteMany({});
-  await prisma.itemReturn.deleteMany({});
-  await prisma.variation.deleteMany({});
-  await prisma.inventoryItem.deleteMany({});
-  await prisma.location.deleteMany({});
-  await prisma.vendor.deleteMany({});
-  await prisma.itemsSubCategory.deleteMany({});
-  await prisma.itemsCategory.deleteMany({});
-  await prisma.comment.deleteMany({});
+  await prisma.staff.create({
+    data: {
+      staff_id: 1,
+      staff_name: "Allem",
+      mobile_number: "634688444",
+      email: "abdelaziz.allem@gmail.com",
+      location: "hargeisa",
+      role: "admin",
+      password: "$2a$10$a.jPOyvDMEMw9/.jjo023.Wf794yqp9LJECZfWUSqoEP6S2HMtYSG",
+    },
+  });
 }
 
 main()

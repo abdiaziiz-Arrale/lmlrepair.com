@@ -44,7 +44,11 @@ const schema = z.object({
 
 type FormData = z.infer<typeof schema>;
 
-const AddProduct = ({ productCategoryId }: { productCategoryId: number }) => {
+const AddProduct = ({
+  productSubCategoryId,
+}: {
+  productSubCategoryId: number;
+}) => {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
@@ -69,7 +73,7 @@ const AddProduct = ({ productCategoryId }: { productCategoryId: number }) => {
           product_name: formData.productName,
           product_desc: formData.productDescription,
           product_image: "/lml_logo.png",
-          product_category_id: productCategoryId,
+          product_sub_category_id: productSubCategoryId,
           raw: parseInt(formData.raw),
           markup: parseFloat(formData.markup),
           tax: parseFloat(formData.tax),
@@ -96,7 +100,7 @@ const AddProduct = ({ productCategoryId }: { productCategoryId: number }) => {
         product_name: formData.productName,
         product_desc: formData.productDescription,
         product_image: imageUrl,
-        product_category_id: productCategoryId,
+        product_sub_category_id: productSubCategoryId,
         raw: parseInt(formData.raw),
         markup: parseFloat(formData.markup),
         tax: parseFloat(formData.tax),

@@ -31,14 +31,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { updateProduct } from "@/lib/db/productCrud";
-import { getProductCategories } from "@/lib/db/productCategoryCrud";
-import { ProductCategories } from "@prisma/client";
+import { getProductSubCategories } from "@/lib/db/productSubCategoryCrud";
+import { ProductSubCategories } from "@prisma/client";
 import { Pencil } from "lucide-react";
 
 const schema = z.object({
   productName: z.string().min(1, "Product name is required"),
   productDescription: z.string().min(1, "Product description is required"),
-  productCategory: z.string().min(1, "product category is required"),
+  productSubCategory: z.string().min(1, "product category is required"),
   productImage: z
     .any()
     .optional()
@@ -65,12 +65,12 @@ interface EditProductProps {
   markup: string;
   raw: string;
   shipping: string;
-  product_category_id: string;
+  product_sub_category_id: string;
 }
 
 const EditProduct = ({
   product_id,
-  product_category_id,
+  product_sub_category_id,
   product_name,
   product_desc,
   tax,
@@ -81,7 +81,7 @@ const EditProduct = ({
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
 
-  const [categories, setCategories] = useState<ProductCategories[]>([]);
+  const [categories, setCategories] = useState<ProductSubCategories[]>([]);
   const [categoriesLoading, setCategoriesLoading] = useState(false);
   const [error, setError] = useState<null | string>(null);
 
@@ -90,7 +90,7 @@ const EditProduct = ({
       setCategoriesLoading(true);
       setError(null);
       try {
-        const data = await getProductCategories();
+        const data = await getProductSubCategories();
         setCategories(data);
       } catch (err) {
         setError("Failed to fetch categories");
@@ -111,7 +111,7 @@ const EditProduct = ({
       raw: raw,
       shipping: shipping,
       tax: tax,
-      productCategory: product_category_id,
+      productSubCategory: product_sub_category_id,
     },
   });
 
@@ -131,7 +131,7 @@ const EditProduct = ({
         await updateProduct(product_id, {
           product_name: formData.productName,
           product_desc: formData.productDescription,
-          product_category_id: parseInt(formData.productCategory),
+          product_sub_category_id: parseInt(formData.productSubCategory),
           raw: parseInt(formData.raw),
           markup: parseFloat(formData.markup),
           tax: parseFloat(formData.tax),
@@ -158,7 +158,7 @@ const EditProduct = ({
         product_name: formData.productName,
         product_desc: formData.productDescription,
         product_image: imageUrl,
-        product_category_id: parseInt(formData.productCategory),
+        product_sub_category_id: parseInt(formData.productSubCategory),
         raw: parseInt(formData.raw),
         markup: parseFloat(formData.markup),
         tax: parseFloat(formData.tax),
@@ -217,7 +217,7 @@ const EditProduct = ({
 
             <FormField
               control={control}
-              name="productCategory"
+              name="productSubCategory"
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Change Category</FormLabel>
@@ -236,10 +236,10 @@ const EditProduct = ({
                           ) : (
                             categories.map((category) => (
                               <SelectItem
-                                key={category.product_category_id}
-                                value={category.product_category_id.toString()}
+                                key={category.product_sub_category_id}
+                                value={category.product_sub_category_id.toString()}
                               >
-                                {category.product_category_name}
+                                {category.product_sub_category_name}
                               </SelectItem>
                             ))
                           )}
@@ -247,8 +247,8 @@ const EditProduct = ({
                       </SelectContent>
                     </Select>
                   </FormControl>
-                  {errors.productCategory && (
-                    <p>{errors.productCategory.message}</p>
+                  {errors.productSubCategory && (
+                    <p>{errors.productSubCategory.message}</p>
                   )}
                 </FormItem>
               )}

@@ -7,7 +7,7 @@ import Faqs from "@/components/website/Faqs";
 import Header from "@/components/website/header";
 import Footer from "@/components/website/footer";
 
-export default function Home() {
+export default async function Home() {
   return (
     <div>
       <Header />

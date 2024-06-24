@@ -3,16 +3,17 @@
 import prisma from "@/lib/prisma";
 import { Products } from "@prisma/client";
 import { PartialBy } from "../type";
+
 export const getProducts = async (
   productCategoryId: number
 ): Promise<Products[]> => {
   try {
     const products = await prisma.products.findMany({
-      where: { product_category_id: productCategoryId },
+      where: { product_sub_category_id: productCategoryId },
       include: {
-        ProductCategories: {
+        ProductSubCategories: {
           select: {
-            product_category_name: true,
+            product_sub_category_name: true,
           },
         },
       },

@@ -15,16 +15,18 @@ import {
   TableRow,
   TableCell,
 } from "@/components/ui/table";
-import { ProductCategories } from "@prisma/client";
-import AddProductCategory from "@/components/AddProductCategory";
-import EditProductCategory from "@/components/EditProductCategory";
+import { ProductSubCategories } from "@prisma/client";
+import AddProductSubCategory from "@/components/AddProductSubCategory";
+import EditProductSubCategory from "@/components/EditProductSubCategory";
 
-interface ProductCategoryTableProps {
-  productCategories: ProductCategories[];
+interface ProductSubCategoryTableProps {
+  productSubCategories: ProductSubCategories[];
+  productCategoryId: number;
 }
-function ProductCategoryTable({
-  productCategories,
-}: ProductCategoryTableProps) {
+function ProductSubCategoryTable({
+  productSubCategories,
+  productCategoryId,
+}: ProductSubCategoryTableProps) {
   const [search, setSearch] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -32,17 +34,19 @@ function ProductCategoryTable({
     setSearch(inputValue);
   };
 
-  const filteredProductCategories = productCategories.filter(
-    (productCategory) => {
+  const filteredProductSubCategories = productSubCategories.filter(
+    (productSubCategory) => {
       return (
         search.toLowerCase() === "" ||
-        productCategory.product_category_name.toLowerCase().includes(search)
+        productSubCategory.product_sub_category_name
+          .toLowerCase()
+          .includes(search)
       );
     }
   );
   return (
     <CustomContainer>
-      <h1 className="text-3xl px-2 mb-4">Select Category</h1>
+      <h1 className="text-3xl px-2 mb-4">Select Sub category</h1>
       <Card className="mb-4">
         <div className="flex justify-between items-center gap-5 px-3 py-6">
           <div className="flex items-center border border-primary-foreground px-3 rounded-md ">
@@ -53,7 +57,7 @@ function ProductCategoryTable({
               onChange={handleInputChange}
             />
           </div>
-          <AddProductCategory />
+          <AddProductSubCategory productCategoryId={productCategoryId} />
         </div>
       </Card>
       <Table>
@@ -66,40 +70,43 @@ function ProductCategoryTable({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {filteredProductCategories.map((filteredProductCategory) => (
-            <TableRow key={filteredProductCategory.product_category_id}>
+          {filteredProductSubCategories.map((filteredProductSubCategory) => (
+            <TableRow key={filteredProductSubCategory.product_sub_category_id}>
               <TableCell>
                 <Link
                   className="hover:underline"
-                  href={`/dashboard/productcategory/productsubcategory?productcategoryid=${filteredProductCategory.product_category_id}`}
+                  href={`/dashboard/productcategory/productsubcategory/products?productsubcategoryid=${filteredProductSubCategory.product_sub_category_id}`}
                 >
-                  {filteredProductCategory.product_category_name}
+                  {filteredProductSubCategory.product_sub_category_name}
                 </Link>
               </TableCell>
 
               <TableCell>
                 <img
-                  src={filteredProductCategory.product_category_image}
-                  alt={filteredProductCategory.product_category_name}
+                  src={filteredProductSubCategory.product_sub_category_image}
+                  alt={filteredProductSubCategory.product_sub_category_name}
                   width={100}
                   height={100}
                   className="rounded-full object-cover"
                 />
               </TableCell>
               <TableCell>
-                {filteredProductCategory.product_category_desc}
+                {filteredProductSubCategory.product_sub_category_desc}
               </TableCell>
 
               <TableCell>
-                <EditProductCategory
+                <EditProductSubCategory
                   productCategoryId={
-                    filteredProductCategory.product_category_id
+                    filteredProductSubCategory.product_category_id
                   }
-                  productCategoryName={
-                    filteredProductCategory.product_category_name
+                  productSubCategoryId={
+                    filteredProductSubCategory.product_sub_category_id
                   }
-                  productCategoryDescription={
-                    filteredProductCategory.product_category_desc
+                  productSubCategoryName={
+                    filteredProductSubCategory.product_sub_category_name
+                  }
+                  productSubCategoryDescription={
+                    filteredProductSubCategory.product_sub_category_desc
                   }
                 />
               </TableCell>
@@ -111,4 +118,4 @@ function ProductCategoryTable({
   );
 }
 
-export default ProductCategoryTable;
+export default ProductSubCategoryTable;

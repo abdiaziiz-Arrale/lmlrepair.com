@@ -10,10 +10,11 @@ interface ServicesSearchParams {
 }
 
 async function Services({ searchParams }: ServicesSearchParams) {
+  console.log("hi");
+
   const staffInSession: Session | null = await getServerSession(authOptions);
   if (!staffInSession) {
     redirect("/");
-    return null; // Ensure no further processing if redirected
   }
 
   let services: any[] = [];

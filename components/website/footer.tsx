@@ -55,7 +55,7 @@ export default async function Footer() {
                       href="/dashboard"
                       className=" text-lg font-light bg-yellow-500 text-white py-2 px-4 rounded-md shadow-lg hover:bg-yellow-600 hover:text-yellow-300 hover:underline me-4 md:me-6 transition duration-300"
                     >
-                      Login
+                      Dashboard
                     </Link>
 
                     <LogoutButton />

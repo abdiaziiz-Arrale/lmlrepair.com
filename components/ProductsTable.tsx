@@ -19,9 +19,9 @@ import EditProduct from "./EditProduct";
 
 interface ProductsTableProps {
   products: Products[];
-  productCategoryId: number;
+  productSubCategoryId: number;
 }
-function ProductsTable({ products, productCategoryId }: ProductsTableProps) {
+function ProductsTable({ products, productSubCategoryId }: ProductsTableProps) {
   const [search, setSearch] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,7 +48,7 @@ function ProductsTable({ products, productCategoryId }: ProductsTableProps) {
               onChange={handleInputChange}
             />
           </div>
-          <AddProduct productCategoryId={productCategoryId} />
+          <AddProduct productSubCategoryId={productSubCategoryId} />
         </div>
       </Card>
       <Table>
@@ -107,7 +107,7 @@ function ProductsTable({ products, productCategoryId }: ProductsTableProps) {
               </TableCell>
               <TableCell>
                 <EditProduct
-                  product_category_id={product.product_category_id.toString()}
+                  product_sub_category_id={product.product_sub_category_id.toString()}
                   product_id={product.product_id}
                   product_name={product.product_name}
                   product_desc={product.product_desc}

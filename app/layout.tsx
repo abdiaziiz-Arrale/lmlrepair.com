@@ -1,11 +1,11 @@
 import { Metadata } from "next";
-import { Bangers } from "next/font/google";
+import { Poppins } from "next/font/google";
 import "./globals.css";
 
-const bangers = Bangers({
+const poppins = Poppins({
   weight: "400",
   subsets: ["latin"],
-  variable: "--font-bangers",
+  variable: "--font-poppins",
   style: "normal",
 });
 export const metadata: Metadata = {
@@ -22,7 +22,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={bangers.className}>
+      <body className={poppins.className}>
         <main>{children}</main>
       </body>
     </html>

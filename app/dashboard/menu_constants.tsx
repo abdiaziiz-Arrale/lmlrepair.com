@@ -29,8 +29,19 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
       },
       {
         title: "Services",
-        path: "/dashboard/servicetype",
-        icon: <HandCoins size={20} />,
+        path: "/services",
+        icon: <BsKanban size={20} />,
+        submenu: true,
+        subMenuItems: [
+          {
+            title: "General Services",
+            path: "/dashboard/services?servicetype=general_service",
+          },
+          {
+            title: "Repair Services",
+            path: "/dashboard/services?servicetype=repairs_service",
+          },
+        ],
       },
       {
         title: "Inventory",

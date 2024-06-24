@@ -4,24 +4,24 @@ import { Products } from "@prisma/client";
 import Header from "@/components/website/header";
 import Footer from "@/components/website/footer";
 interface ProductsSearchParams {
-  searchParams?: { productcategoryid?: string };
+  searchParams?: { productsubcategoryid?: string };
 }
 
 async function ProductsWebsite({ searchParams }: ProductsSearchParams) {
   let products: Products[] = [];
   let error = "";
 
-  const productCategory = searchParams?.productcategoryid
-    ? parseInt(searchParams.productcategoryid)
+  const productSubCategory = searchParams?.productsubcategoryid
+    ? parseInt(searchParams.productsubcategoryid)
     : null;
 
-  if (!productCategory) {
-    error = "No product category specified.";
+  if (!productSubCategory) {
+    error = "No product sub category specified.";
     return;
   }
 
   try {
-    products = await getProducts(productCategory);
+    products = await getProducts(productSubCategory);
   } catch (err) {
     console.error("Error fetching products:", err);
     error = "Check your internet connection.";

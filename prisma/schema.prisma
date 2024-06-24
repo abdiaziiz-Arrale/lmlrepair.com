@@ -40,7 +40,7 @@ model Brand {
 }
 
 model Products {
-  product_id          Int               @id @default(autoincrement())
+  product_id               Int                  @id @default(autoincrement())
   product_name        String
   product_image       String
   product_desc        String
@@ -48,12 +48,11 @@ model Products {
   tax                 Float
   shipping            Float
   markup              Float
-  product_category_id Int
-  ProductCategories   ProductCategories @relation(fields: [product_category_id], references: [product_category_id])
+  product_sub_category_id  Int
+  ProductSubCategories     ProductSubCategories @relation(fields: [product_sub_category_id], references: [product_sub_category_id])
 
-  @@index([product_category_id], map: "idx_product_category_id")
+  @@index([product_sub_category_id], map: "idx_product_sub_category_id")
 }
-
 model Series {
   series_id    Int     @id @default(autoincrement())
   series_name  String
@@ -183,6 +182,7 @@ model InternalTransfer {
   toLocationId                                       Int
   transferDate                                       DateTime      @default(now())
   status                                             String
+  variationId                                        Int
   Location_InternalTransfer_fromLocationIdToLocation Location      @relation("InternalTransfer_fromLocationIdToLocation", fields: [fromLocationId], references: [locationId])
   InventoryItem                                      InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   Location_InternalTransfer_toLocationIdToLocation   Location      @relation("InternalTransfer_toLocationIdToLocation", fields: [toLocationId], references: [locationId])
@@ -190,6 +190,7 @@ model InternalTransfer {
   @@index([fromLocationId], map: "InternalTransfer_fromLocationId_fkey")
   @@index([inventoryItemId], map: "InternalTransfer_inventoryItemId_fkey")
   @@index([toLocationId], map: "InternalTransfer_toLocationId_fkey")
+  @@index([variationId], map: "InternalTransfer_variationId_fkey")
 }
 
 model Sale {
@@ -222,13 +223,24 @@ model LowStockAlert {
 }
 
 model ProductCategories {
-  product_category_id    Int        @id @default(autoincrement())
+  product_category_id    Int                  @id @default(autoincrement())
   product_category_name  String
   product_category_desc  String
   product_category_image String
-  Products               Products[]
+  ProductSubCategories   ProductSubCategories[]
 }
 
+model ProductSubCategories {
+  product_sub_category_id    Int                  @id @default(autoincrement())
+  product_sub_category_name  String
+  product_sub_category_desc  String
+  product_sub_category_image String
+  product_category_id        Int
+  ProductCategories          ProductCategories    @relation(fields: [product_category_id], references: [product_category_id])
+  Products                   Products[]
+  
+  @@index([product_category_id], map: "idx_product_category_id")
+}
 model Comment {
   commentId     Int        @id @default(autoincrement())
   stockReturnId Int
@@ -249,10 +261,12 @@ model ItemReturn {
   request         String
   result          String
   returningParty  String        @default("Customer")
+  variationId     Int
   Comment         Comment[]
   InventoryItem   InventoryItem @relation(fields: [inventoryItemId], references: [inventoryItemId])
   Location        Location      @relation(fields: [locationId], references: [locationId])
 
   @@index([inventoryItemId], map: "ItemReturn_inventoryItemId_fkey")
   @@index([locationId], map: "ItemReturn_locationId_fkey")
+  @@index([variationId], map: "InternalTransfer_variationId_fkey")
 }
