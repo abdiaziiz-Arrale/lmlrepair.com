@@ -22,7 +22,7 @@ type Model = {
   model_name: string;
   model_image: string;
   series_id: number;
-  series: {
+  Series: {
     brand_id: number;
     series_name: string;
   };
@@ -51,7 +51,7 @@ function ModalTable({ models, seriesId, brandId }: ModalTableProps) {
   return (
     <CustomContainer>
       <h1 className="text-3xl px-2 mb-4">
-        {models.length !== 0 ? models[0].series.series_name : "No"} model
+        {models.length !== 0 ? models[0].Series.series_name : "No"} model
       </h1>
       <Card className="mb-4">
         <div className="flex justify-between items-center gap-5 px-3 py-6">
@@ -77,11 +77,11 @@ function ModalTable({ models, seriesId, brandId }: ModalTableProps) {
         </TableHeader>
         <TableBody>
           {filteredModel.map((model) => (
-            <TableRow>
+            <TableRow key={model.model_id}>
               <TableCell>
                 <Link
                   className="hover:underline"
-                  href={`/dashboard/brands/${model.series.brand_id}/series/${seriesId}/model/${model.model_id}/modelcategory?modelName=${model.model_name}`}
+                  href={`/dashboard/brands/${model.Series.brand_id}/series/${seriesId}/model/${model.model_id}/modelcategory?modelName=${model.model_name}`}
                 >
                   {model.model_name}
                 </Link>

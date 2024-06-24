@@ -39,7 +39,7 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
           },
           {
             title: "Repair Services",
-            path: "/dashboard/services?servicetype=repairs_service",
+            path: "/dashboard/brands",
           },
         ],
       },

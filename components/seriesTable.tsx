@@ -76,7 +76,7 @@ function seriesTable({ series, brandId }: seriesTableProps) {
         </TableHeader>
         <TableBody>
           {filteredSeries.map((series) => (
-            <TableRow>
+            <TableRow key={series.series_id}>
               <TableCell>
                 <Link
                   className="hover:underline"
