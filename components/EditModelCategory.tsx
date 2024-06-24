@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/TopDialog";
 import { Button } from "@/components/ui/button";
 import { updateModelCategory } from "@/lib/db/modelCategoryCrud";
 import { useForm } from "react-hook-form";
