@@ -1,191 +1,234 @@
-"use client";
-import React, { useRef, useState } from "react";
+'use client';
+import React, { useRef, useState } from 'react';
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+   Dialog,
+   DialogContent,
+   DialogFooter,
+   DialogHeader,
+   DialogTitle,
+   DialogTrigger,
+} from '@/components/TopDialog';
+import { Button } from '@/components/ui/button';
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { createService } from "@/lib/db/serviceCrud";
-import moment from "moment";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import type { PutBlobResult } from "@vercel/blob";
+   Select,
+   SelectContent,
+   SelectGroup,
+   SelectItem,
+   SelectLabel,
+   SelectTrigger,
+   SelectValue,
+} from '@/components/ui/select';
+import { createService } from '@/lib/db/serviceCrud';
+import { Input } from './ui/input';
+import type { PutBlobResult } from '@vercel/blob';
+import { useForm, FieldValues } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+   Form,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormControl,
+} from '@/components/ui/form';
+
+const schema = z.object({
+   serviceName: z.string().min(1, 'Service name is required'),
+   serviceDescription: z.string().min(1, 'Service description is required'),
+   serviceCategory: z.string().min(1, 'Service category is required'),
+   serviceImage: z
+      .any()
+      .optional()
+      .refine(
+         (files) =>
+            !files ||
+            (files.length > 0 &&
+               ['image/jpeg', 'image/png', 'image/jpg'].includes(
+                  files[0]?.type
+               )),
+         'Only jpg, jpeg, and png files are allowed'
+      ),
+});
+
+type FormData = z.infer<typeof schema>;
 
 const AddService = () => {
-  const inputFileRef = useRef<HTMLInputElement>(null);
+   const inputFileRef = useRef<HTMLInputElement>(null);
+   const [loading, setLoading] = useState(false);
 
-  const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    serviceName: "",
-    serviceDescription: "",
-    serviceImage: "",
-  });
-  const [type, setType] = useState("");
+   const methods = useForm<FormData>({
+      resolver: zodResolver(schema),
+   });
 
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+   const {
+      handleSubmit,
+      control,
+      formState: { errors },
+   } = methods;
 
-  async function onSubmit() {
-    if (!formData.serviceName || !type || !formData.serviceDescription) {
-      alert("missing info");
-      return 0;
-    }
-    try {
-      setLoading(true);
-      let imageUrl: string | null = null;
-      if (inputFileRef.current?.files) {
-        const file = inputFileRef.current.files[0];
+   async function onSubmit(formData: FieldValues) {
+      try {
+         setLoading(true);
+         let imageUrl: string | null = null;
+         const file = formData.serviceImage?.[0];
 
-        if (!file) {
-          await createService({
+         if (!file) {
+            await createService({
+               service_name: formData.serviceName,
+               service_desc: formData.serviceDescription,
+               service_type: formData.serviceCategory,
+               service_image: '/lml_logo.png',
+            });
+            setLoading(false);
+            window.location.reload();
+            return;
+         }
+
+         const response = await fetch(`/api/upload?filename=${file.name}`, {
+            method: 'POST',
+            body: file,
+         });
+
+         if (!response.ok) {
+            throw new Error('Failed to upload file.');
+         }
+
+         const newBlob = (await response.json()) as PutBlobResult;
+         imageUrl = newBlob.url;
+
+         await createService({
             service_name: formData.serviceName,
             service_desc: formData.serviceDescription,
-            service_type: type,
-            service_image: "/lml_logo.png",
-          });
-          setLoading(false);
-          window.location.href = "/dashboard/services";
-          return;
-        }
+            service_type: formData.serviceCategory,
+            service_image: imageUrl,
+         });
 
-        const response = await fetch(`/api/upload?filename=${file.name}`, {
-          method: "POST",
-          body: file,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload file.");
-        }
-
-        const newBlob = (await response.json()) as PutBlobResult;
-        imageUrl = newBlob.url;
-      } else {
-        throw new Error("Please provide an image for the brand.");
+         setLoading(false);
+         window.location.reload();
+      } catch (error) {
+         console.error('An error occurred:', error);
+         setLoading(false);
       }
+   }
 
-      if (!imageUrl) {
-        throw new Error("Image upload failed. Please try again.");
-      }
+   return (
+      <Dialog>
+         <DialogTrigger asChild>
+            <Button variant='default'>Add new</Button>
+         </DialogTrigger>
+         <DialogContent className='sm:max-w-[425px]'>
+            <DialogHeader>
+               <DialogTitle>Add Service</DialogTitle>
+            </DialogHeader>
 
-      await createService({
-        service_id: undefined,
-        service_name: formData.serviceName,
-        service_desc: formData.serviceDescription,
-        service_type: type,
-        service_image: imageUrl,
-      });
+            <Form {...methods}>
+               <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className='grid gap-4 py-4'
+               >
+                  <FormField
+                     control={control}
+                     name='serviceName'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Service Name</FormLabel>
+                           <FormControl>
+                              <Input placeholder='Service Name' {...field} />
+                           </FormControl>
+                           {errors.serviceName && (
+                              <p>{errors.serviceName.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
 
-      setLoading(false);
-      window.location.href = "/dashboard/services";
-    } catch (error) {
-      console.error("An error occurred:", error);
-      setLoading(false);
-    }
-  }
+                  <FormField
+                     control={control}
+                     name='serviceDescription'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Service Description</FormLabel>
+                           <FormControl>
+                              <Input
+                                 placeholder='Service Description'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.serviceDescription && (
+                              <p>{errors.serviceDescription.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
 
-  return (
-    <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="default">Add new</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Service</DialogTitle>
-        </DialogHeader>
+                  <FormField
+                     control={control}
+                     name='serviceCategory'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Service Category</FormLabel>
+                           <FormControl>
+                              <Select onValueChange={field.onChange}>
+                                 <SelectTrigger className='w-max'>
+                                    <SelectValue placeholder='Select Type' />
+                                 </SelectTrigger>
+                                 <SelectContent>
+                                    <SelectGroup>
+                                       <SelectLabel>Type:</SelectLabel>
+                                       <SelectItem value='repair_service'>
+                                          Repair service
+                                       </SelectItem>
+                                       <SelectItem value='general_service'>
+                                          General services
+                                       </SelectItem>
+                                    </SelectGroup>
+                                 </SelectContent>
+                              </Select>
+                           </FormControl>
+                           {errors.serviceCategory && (
+                              <p>{errors.serviceCategory.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceName" className="text-right">
-              service name
-            </Label>
-            <Input
-              name="serviceName"
-              value={formData.serviceName}
-              onChange={handleInputChange}
-              className="col-span-3"
-              placeholder="Service Name"
-            />
-          </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceDescription" className="text-right">
-              Description
-            </Label>
-            <Input
-              name="serviceDescription"
-              value={formData.serviceDescription}
-              onChange={handleInputChange}
-              className="col-span-3"
-              placeholder="Service Description"
-            />
-          </div>
+                  <FormField
+                     control={control}
+                     name='serviceImage'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel
+                              htmlFor='serviceImage'
+                              className='text-right mb-2'
+                           >
+                              Image
+                           </FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='file'
+                                 accept='image/*'
+                                 ref={inputFileRef}
+                                 id='serviceImage'
+                                 className='col-span-3'
+                                 onChange={(e) =>
+                                    field.onChange(e.target.files)
+                                 }
+                              />
+                           </FormControl>
+                        </FormItem>
+                     )}
+                  />
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="serviceImage" className="text-right">
-              Image
-            </Label>
-            <Input
-              name="serviceImage"
-              value={formData.serviceImage}
-              onChange={handleInputChange}
-              className="col-span-3"
-              type="file"
-              accept="image/*"
-              ref={inputFileRef}
-            />
-          </div>
-
-          <div className=" ml-12 flex items-center gap-4">
-            <Label htmlFor="serviceType" className="text-right">
-              Type
-            </Label>
-            <Select required onValueChange={(value: any) => setType(value)}>
-              <SelectTrigger className="w-max">
-                <SelectValue placeholder="Select Type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Type:</SelectLabel>
-                  <SelectItem value="repair_service">Repair service</SelectItem>
-                  <SelectItem value="general_service">
-                    General services
-                  </SelectItem>
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-          </div>
-        </div>
-
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            disabled={loading}
-            variant="default"
-          >
-            {loading ? "Loading" : "Save"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
-  );
+                  <DialogFooter>
+                     <Button type='submit' disabled={loading} variant='default'>
+                        {loading ? 'Loading' : 'Save'}
+                     </Button>
+                  </DialogFooter>
+               </form>
+            </Form>
+         </DialogContent>
+      </Dialog>
+   );
 };
 
 export default AddService;

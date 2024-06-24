@@ -27,39 +27,40 @@ import {
 const prisma = new PrismaClient();
 
 async function main() {
-   // await prisma.brand.createMany({
-   //    data: brands,
-   // });
-   // await prisma.service.createMany({
-   //    data: services,
-   // });
-   // await prisma.series.createMany({
-   //    data: series,
-   // });
-   // await prisma.modelCategory.createMany({
-   //    data: modelCategory,
-   // });
-   // await prisma.model.createMany({
-   //    data: model,
-   // });
-   // await prisma.category.createMany({
-   //    data: categories,
-   // });
-   // Todo Delete existing records
-   // await prisma.lowStockAlert.deleteMany({});
-   // await prisma.inventoryAge.deleteMany({});
-   // await prisma.sale.deleteMany({});
-   // await prisma.internalTransfer.deleteMany({});
-   // // Delete comments first
-   // await prisma.comment.deleteMany({});
-   // // Then delete item returns
-   // await prisma.itemReturn.deleteMany({});
-   // await prisma.variation.deleteMany({});
-   // await prisma.inventoryItem.deleteMany({});
-   // await prisma.location.deleteMany({});
-   // await prisma.vendor.deleteMany({});
-   // await prisma.itemsSubCategory.deleteMany({});
-   // await prisma.itemsCategory.deleteMany({});
+   await prisma.brand.createMany({
+      data: brands,
+   });
+   await prisma.service.createMany({
+      data: services,
+   });
+   await prisma.series.createMany({
+      data: series,
+   });
+
+   await prisma.model.createMany({
+      data: model,
+   });
+   await prisma.modelCategory.createMany({
+      data: modelCategory,
+   });
+
+   await prisma.category.createMany({
+      data: categories,
+   });
+
+   await prisma.staff.create({
+      data: {
+         staff_id: 1,
+         staff_name: 'Allem',
+         mobile_number: '634688444',
+         email: 'abdelaziz.allem@gmail.com',
+         location: 'hargeisa',
+         role: 'admin',
+         password:
+            '$2a$10$a.jPOyvDMEMw9/.jjo023.Wf794yqp9LJECZfWUSqoEP6S2HMtYSG',
+      },
+   });
+
    // Todo: Insert new records
    await prisma.itemsCategory.createMany({
       data: ItemsCategory,

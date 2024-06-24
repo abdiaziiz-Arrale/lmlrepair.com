@@ -7,75 +7,104 @@ import {
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '@/components/ui/dialog';
+} from '@/components/TopDialog';
 import { Button } from '@/components/ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
 import type { PutBlobResult } from '@vercel/blob';
 import { updateBrand } from '@/lib/db/brandCrud';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+   Form,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormControl,
+} from '@/components/ui/form';
+import { Pencil } from 'lucide-react';
 
-interface EditBrandProps {
+const schema = z.object({
+   brandName: z.string().min(1, 'Brand name is required'),
+   brandDescription: z.string().min(1, 'Brand description is required'),
+   brandImage: z
+      .any()
+      .optional()
+      .refine(
+         (files) =>
+            !files ||
+            (files.length > 0 &&
+               ['image/jpeg', 'image/png', 'image/jpg'].includes(
+                  files[0]?.type
+               )),
+         'Only jpg, jpeg, and png files are allowed'
+      ),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const EditBrand = ({
+   brandId,
+   brandName,
+   brandDescription,
+}: {
    brandId: number;
    brandName: string;
    brandDescription: string;
-}
-
-const EditBrand = ({ brandId }: EditBrandProps) => {
+}) => {
    const inputFileRef = useRef<HTMLInputElement>(null);
-
    const [loading, setLoading] = useState(false);
-   const [formData, setFormData] = useState({
-      brandName: '',
-      brandDescription: '',
+
+   const methods = useForm<FormData>({
+      resolver: zodResolver(schema),
+      defaultValues: {
+         brandName: brandName,
+         brandDescription: brandDescription,
+      },
    });
 
-   const handleInputChange = (event: any) => {
-      const { name, value } = event.target;
-      setFormData({
-         ...formData,
-         [name]: value,
-      });
-   };
+   const {
+      handleSubmit,
+      control,
+      formState: { errors },
+   } = methods;
 
-   async function onSubmit() {
-      if (!formData.brandName || !formData.brandDescription) {
-         alert('missing info');
-         return 0;
-      }
+   async function onSubmit(formData: FormData) {
       try {
          setLoading(true);
          let imageUrl: string | null = null;
-         if (inputFileRef.current?.files) {
-            const file = inputFileRef.current.files[0];
+         const file = formData.brandImage?.[0];
 
-            const response = await fetch(`/api/upload?filename=${file.name}`, {
-               method: 'POST',
-               body: file,
+         if (!file) {
+            await updateBrand(brandId, {
+               brand_name: formData.brandName,
+               brand_desc: formData.brandDescription,
             });
-
-            if (!response.ok) {
-               throw new Error('Failed to upload file.');
-            }
-
-            const newBlob = (await response.json()) as PutBlobResult;
-            imageUrl = newBlob.url;
-         } else {
-            throw new Error('Please provide an image for the department.');
+            setLoading(false);
+            window.location.reload();
+            return;
          }
 
-         if (!imageUrl) {
-            throw new Error('Image upload failed. Please try again.');
+         const response = await fetch(`/api/upload?filename=${file.name}`, {
+            method: 'POST',
+            body: file,
+         });
+
+         if (!response.ok) {
+            throw new Error('Failed to upload file.');
          }
+
+         const newBlob = (await response.json()) as PutBlobResult;
+         imageUrl = newBlob.url;
 
          await updateBrand(brandId, {
-            brand_id: brandId,
             brand_name: formData.brandName,
             brand_desc: formData.brandDescription,
             brand_image: imageUrl,
          });
 
          setLoading(false);
-         window.location.href = '/dashboard/brand';
+         window.location.reload();
       } catch (error) {
          console.error('An error occurred:', error);
          setLoading(false);
@@ -85,63 +114,89 @@ const EditBrand = ({ brandId }: EditBrandProps) => {
    return (
       <Dialog>
          <DialogTrigger asChild>
-            <Button variant='default'>Add new</Button>
+            <Button variant='default'>
+               <Pencil />
+            </Button>
          </DialogTrigger>
          <DialogContent className='sm:max-w-[425px]'>
             <DialogHeader>
-               <DialogTitle>Add Brand</DialogTitle>
+               <DialogTitle>Edit {brandName}</DialogTitle>
             </DialogHeader>
 
-            <div className='grid gap-4 py-4'>
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='brandName' className='text-right'>
-                     brand name
-                  </Label>
-                  <Input
-                     name='brandName'
-                     value={formData.brandName}
-                     onChange={handleInputChange}
-                     className='col-span-3'
-                     placeholder='brand Name'
-                  />
-               </div>
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='brandDescription' className='text-right'>
-                     Description
-                  </Label>
-                  <Input
-                     name='brandDescription'
-                     value={formData.brandDescription}
-                     onChange={handleInputChange}
-                     className='col-span-3'
-                     placeholder='Service Description'
-                  />
-               </div>
-
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='serviceImage' className='text-right'>
-                     Image
-                  </Label>
-                  <Input
-                     name='serviceImage'
-                     className='col-span-3'
-                     type='file'
-                     accept='image/*'
-                     ref={inputFileRef}
-                  />
-               </div>
-            </div>
-
-            <DialogFooter>
-               <Button
-                  type='submit'
-                  onClick={onSubmit}
-                  disabled={loading}
-                  variant='default'
+            <Form {...methods}>
+               <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className='grid gap-4 py-4'
                >
-                  {loading ? 'Loading' : 'Save'}
-               </Button>
-            </DialogFooter>
+                  <FormField
+                     control={control}
+                     name='brandName'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Brand Name</FormLabel>
+                           <FormControl>
+                              <Input placeholder='Brand Name' {...field} />
+                           </FormControl>
+                           {errors.brandName && (
+                              <p>{errors.brandName.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
+
+                  <FormField
+                     control={control}
+                     name='brandDescription'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Brand Description</FormLabel>
+                           <FormControl>
+                              <Input
+                                 placeholder='Brand Description'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.brandDescription && (
+                              <p>{errors.brandDescription.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
+
+                  <FormField
+                     control={control}
+                     name='brandImage'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel
+                              htmlFor='brandImage'
+                              className='text-right mb-2'
+                           >
+                              Image
+                           </FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='file'
+                                 accept='image/*'
+                                 ref={inputFileRef}
+                                 id='brandImage'
+                                 className='col-span-3'
+                                 onChange={(e) =>
+                                    field.onChange(e.target.files)
+                                 }
+                              />
+                           </FormControl>
+                        </FormItem>
+                     )}
+                  />
+
+                  <DialogFooter>
+                     <Button type='submit' disabled={loading} variant='default'>
+                        {loading ? 'Loading' : 'Save'}
+                     </Button>
+                  </DialogFooter>
+               </form>
+            </Form>
          </DialogContent>
       </Dialog>
    );

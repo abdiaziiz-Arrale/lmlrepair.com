@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import { BsList } from 'react-icons/bs';
 import { ThemeSwitcher } from './theme-switcher';
 import { UserNav } from './usernav';
+import { SessionProvider } from 'next-auth/react';
 
 function Header() {
    const { toggleCollapse, invokeToggleCollapse } = useSideBarToggle();
@@ -32,7 +33,9 @@ function Header() {
                   <ThemeSwitcher />
                </div>
                <div className='h-10 w-10 rounded-full bg-sidebar-muted flex items-center justify-center text-center'>
-                  <UserNav />
+                  <SessionProvider>
+                     <UserNav />
+                  </SessionProvider>
                </div>
             </div>
          </div>

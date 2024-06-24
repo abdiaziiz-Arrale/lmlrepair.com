@@ -14,6 +14,7 @@ model Service {
   service_desc  String
   service_image String
   service_type  String
+  Category      Category[]
 }
 
 model Category {
@@ -24,7 +25,8 @@ model Category {
   shipping       Float
   timeFrame      String
   service_id     Int
-  labour         Int    @default(100)
+  labour         Int     @default(100)
+  Service        Service @relation(fields: [service_id], references: [service_id])
 
   @@index([service_id], map: "Category_service_id_fkey")
 }
@@ -34,10 +36,11 @@ model Brand {
   brand_name  String
   brand_image String
   brand_desc  String
+  Series      Series[]
 }
 
 model Products {
-  product_id          Int    @id @default(autoincrement())
+  product_id               Int                  @id @default(autoincrement())
   product_name        String
   product_image       String
   product_desc        String
@@ -45,26 +48,30 @@ model Products {
   tax                 Float
   shipping            Float
   markup              Float
-  product_category_id Int
+  product_sub_category_id  Int
+  ProductSubCategories     ProductSubCategories @relation(fields: [product_sub_category_id], references: [product_sub_category_id])
 
-  @@index([product_category_id], map: "idx_product_category_id")
+  @@index([product_sub_category_id], map: "idx_product_sub_category_id")
 }
-
 model Series {
   series_id    Int    @id @default(autoincrement())
   series_name  String
   series_image String
   series_desc  String
   brand_id     Int
+  Model        Model[]
+  Brand        Brand   @relation(fields: [brand_id], references: [brand_id])
 
   @@index([brand_id], map: "Series_brand_id_fkey")
 }
 
 model Model {
-  model_id    Int    @id @default(autoincrement())
-  model_name  String
-  model_image String
-  series_id   Int
+  model_id      Int             @id @default(autoincrement())
+  model_name    String
+  model_image   String
+  series_id     Int
+  Series        Series          @relation(fields: [series_id], references: [series_id])
+  ModelCategory ModelCategory[]
 
   @@index([series_id], map: "Model_series_id_fkey")
 }
@@ -78,6 +85,7 @@ model ModelCategory {
   timeFrame        String
   model_id         Int
   labour           Int    @default(100)
+  Model            Model  @relation(fields: [model_id], references: [model_id])
 
   @@index([model_id], map: "ModelCategory_model_id_fkey")
 }
@@ -218,11 +226,25 @@ model LowStockAlert {
 }
 
 model ProductCategories {
-  product_category_id    Int    @id @default(autoincrement())
+  product_category_id    Int                  @id @default(autoincrement())
   product_category_name  String
   product_category_desc  String
   product_category_image String
+  ProductSubCategories   ProductSubCategories[]
 }
+
+model ProductSubCategories {
+  product_sub_category_id    Int                  @id @default(autoincrement())
+  product_sub_category_name  String
+  product_sub_category_desc  String
+  product_sub_category_image String
+  product_category_id        Int
+  ProductCategories          ProductCategories    @relation(fields: [product_category_id], references: [product_category_id])
+  Products                   Products[]
+  
+  @@index([product_category_id], map: "idx_product_category_id")
+}
+
 
 model ItemReturn {
   stockReturnId   Int           @id @default(autoincrement())

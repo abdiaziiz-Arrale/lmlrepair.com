@@ -78,8 +78,12 @@ function ItemReturnTable({ returnedItems }: any) {
                               </TableCell>
                            )}
                            <TableCell>{item.reason}</TableCell>
-                           {item.result === 'Success' ? (
+                           {item.result === 'Approved' ? (
                               <TableCell className='text-green-500 font-semibold'>
+                                 {item.result}
+                              </TableCell>
+                           ) : item.result === 'Pending' ? (
+                              <TableCell className='text-yellow-600 semibold'>
                                  {item.result}
                               </TableCell>
                            ) : (

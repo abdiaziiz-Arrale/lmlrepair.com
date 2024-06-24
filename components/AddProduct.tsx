@@ -1,5 +1,5 @@
 'use client';
-import { Button } from '@/components/ui/button';
+import React, { useRef, useState } from 'react';
 import {
    Dialog,
    DialogContent,
@@ -7,99 +7,110 @@ import {
    DialogHeader,
    DialogTitle,
    DialogTrigger,
-} from '@/components/ui/dialog';
-import { createProduct } from '@/lib/db/productCrud';
-import type { PutBlobResult } from '@vercel/blob';
-import { useRef, useState } from 'react';
+} from '@/components/TopDialog';
+import { Button } from '@/components/ui/button';
 import { Input } from './ui/input';
-import { Label } from './ui/label';
+import type { PutBlobResult } from '@vercel/blob';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+   Form,
+   FormField,
+   FormItem,
+   FormLabel,
+   FormControl,
+} from '@/components/ui/form';
+import { createProduct } from '@/lib/db/productCrud';
 
-const AddProduct = () => {
+const schema = z.object({
+   productName: z.string().min(1, 'Product name is required'),
+   productDescription: z.string().min(1, 'Product description is required'),
+   productImage: z
+      .any()
+      .optional()
+      .refine(
+         (files) =>
+            !files ||
+            (files.length > 0 &&
+               ['image/jpeg', 'image/png', 'image/jpg'].includes(
+                  files[0]?.type
+               )),
+         'Only jpg, jpeg, and png files are allowed'
+      ),
+   raw: z.string().min(1, 'Raw is required'),
+   shipping: z.string().min(1, 'Shipping is required'),
+   tax: z.string().min(1, 'Tax is required'),
+   markup: z.string().min(1, 'Markup is required'),
+});
+
+type FormData = z.infer<typeof schema>;
+
+const AddProduct = ({
+   productSubCategoryId,
+}: {
+   productSubCategoryId: number;
+}) => {
    const inputFileRef = useRef<HTMLInputElement>(null);
-
    const [loading, setLoading] = useState(false);
-   const [formData, setFormData] = useState({
-      productName: '',
-      productDescription: '',
-      markup: 0,
 
-      shipping: 0,
-      raw: 0,
-      tax: 0,
+   const methods = useForm<FormData>({
+      resolver: zodResolver(schema),
    });
 
-   const handleInputChange = (event: any) => {
-      const { name, value } = event.target;
-      setFormData({
-         ...formData,
-         [name]: value,
-      });
-   };
+   const {
+      handleSubmit,
+      control,
+      formState: { errors },
+   } = methods;
 
-   async function onSubmit() {
-      if (
-         !formData.productName ||
-         !formData.productDescription ||
-         !formData.markup ||
-         !formData.shipping ||
-         !formData.raw ||
-         !formData.tax
-      ) {
-         alert('missing info');
-         return 0;
-      }
+   async function onSubmit(formData: FormData) {
       try {
          setLoading(true);
          let imageUrl: string | null = null;
-         if (inputFileRef.current?.files) {
-            const file = inputFileRef.current.files[0];
+         const file = formData.productImage?.[0];
 
-            if (!file) {
-               await createProduct({
-                  product_name: formData.productName,
-                  product_desc: formData.productDescription,
-                  product_image: '/lml_logo.png',
-                  raw: formData.raw,
-                  markup: formData.markup,
-                  tax: formData.tax,
-                  shipping: formData.shipping,
-               });
-               setLoading(false);
-               window.location.href = '/dashboard/products';
-               return;
-            }
-
-            const response = await fetch(`/api/upload?filename=${file.name}`, {
-               method: 'POST',
-               body: file,
+         if (!file) {
+            await createProduct({
+               product_name: formData.productName,
+               product_desc: formData.productDescription,
+               product_image: '/lml_logo.png',
+               product_sub_category_id: productSubCategoryId,
+               raw: parseInt(formData.raw),
+               markup: parseFloat(formData.markup),
+               tax: parseFloat(formData.tax),
+               shipping: parseInt(formData.shipping),
             });
-
-            if (!response.ok) {
-               throw new Error('Failed to upload file.');
-            }
-
-            const newBlob = (await response.json()) as PutBlobResult;
-            imageUrl = newBlob.url;
-         } else {
-            throw new Error('Please provide an image for the brand.');
+            setLoading(false);
+            window.location.reload();
+            return;
          }
 
-         if (!imageUrl) {
-            throw new Error('Image upload failed. Please try again.');
+         const response = await fetch(`/api/upload?filename=${file.name}`, {
+            method: 'POST',
+            body: file,
+         });
+
+         if (!response.ok) {
+            throw new Error('Failed to upload file.');
          }
+
+         const newBlob = (await response.json()) as PutBlobResult;
+         imageUrl = newBlob.url;
 
          await createProduct({
             product_name: formData.productName,
             product_desc: formData.productDescription,
             product_image: imageUrl,
-            raw: formData.raw,
-            markup: formData.markup,
-            tax: formData.tax,
-            shipping: formData.shipping,
+            product_sub_category_id: productSubCategoryId,
+            raw: parseInt(formData.raw),
+            markup: parseFloat(formData.markup),
+            tax: parseFloat(formData.tax),
+            shipping: parseInt(formData.shipping),
          });
 
          setLoading(false);
-         window.location.href = '/dashboard/products';
+         window.location.reload();
       } catch (error) {
          console.error('An error occurred:', error);
          setLoading(false);
@@ -115,96 +126,135 @@ const AddProduct = () => {
             <DialogHeader>
                <DialogTitle>Add Product</DialogTitle>
             </DialogHeader>
-
-            <div className='grid gap-4 py-4'>
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='productName' className='text-right'>
-                     product name
-                  </Label>
-                  <Input
-                     name='productName'
-                     value={formData.productName}
-                     onChange={handleInputChange}
-                     className='col-span-3'
-                     placeholder='product Name'
-                  />
-               </div>
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='productDescription' className='text-right'>
-                     Description
-                  </Label>
-                  <Input
-                     name='productDescription'
-                     value={formData.productDescription}
-                     onChange={handleInputChange}
-                     className='col-span-3'
-                     placeholder='productDescription'
-                  />
-               </div>
-
-               <div className='grid grid-cols-4 items-center gap-4'>
-                  <Label htmlFor='serviceImage' className='text-right'>
-                     Image
-                  </Label>
-                  <Input
-                     name='serviceImage'
-                     className='col-span-3'
-                     type='file'
-                     accept='image/*'
-                     ref={inputFileRef}
-                  />
-               </div>
-            </div>
-
-            <div className='grid grid-cols-4 items-center gap-4'>
-               <Label htmlFor='shipping' className='text-right'>
-                  shipping
-               </Label>
-               <Input
-                  name='shipping'
-                  value={formData.shipping}
-                  onChange={handleInputChange}
-                  className='col-span-3'
-                  placeholder='shipping'
-               />
-            </div>
-
-            <div className='grid grid-cols-4 items-center gap-4'>
-               <Label htmlFor='tax' className='text-right'>
-                  tax
-               </Label>
-               <Input
-                  name='tax'
-                  value={formData.tax}
-                  onChange={handleInputChange}
-                  className='col-span-3'
-                  placeholder='tax'
-               />
-            </div>
-
-            <div className='grid grid-cols-4 items-center gap-4'>
-               <Label htmlFor='markup' className='text-right'>
-                  Markup
-               </Label>
-               <Input
-                  name='markup'
-                  value={formData.markup}
-                  onChange={handleInputChange}
-                  className='col-span-3'
-                  placeholder='markup'
-               />
-            </div>
-
-            <DialogFooter>
-               <Button
-                  type='submit'
-                  onClick={onSubmit}
-                  disabled={loading}
-                  variant='default'
+            <Form {...methods}>
+               <form
+                  onSubmit={handleSubmit(onSubmit)}
+                  className='grid gap-4 py-4'
                >
-                  {loading ? 'Loading' : 'Save'}
-               </Button>
-            </DialogFooter>
+                  <FormField
+                     control={control}
+                     name='productName'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Product Name</FormLabel>
+                           <FormControl>
+                              <Input placeholder='Product Name' {...field} />
+                           </FormControl>
+                           {errors.productName && (
+                              <p>{errors.productName.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='productDescription'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Description</FormLabel>
+                           <FormControl>
+                              <Input placeholder='Description' {...field} />
+                           </FormControl>
+                           {errors.productDescription && (
+                              <p>{errors.productDescription.message}</p>
+                           )}
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='productImage'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Image</FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='file'
+                                 accept='image/*'
+                                 ref={inputFileRef}
+                                 onChange={(e) =>
+                                    field.onChange(e.target.files)
+                                 }
+                              />
+                           </FormControl>
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='raw'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Raw</FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='number'
+                                 placeholder='Raw'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.raw && <p>{errors.raw.message}</p>}
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='shipping'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Shipping</FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='number'
+                                 placeholder='Shipping'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.shipping && <p>{errors.shipping.message}</p>}
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='tax'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Tax %</FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='number'
+                                 placeholder='Tax'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.tax && <p>{errors.tax.message}</p>}
+                        </FormItem>
+                     )}
+                  />
+                  <FormField
+                     control={control}
+                     name='markup'
+                     render={({ field }) => (
+                        <FormItem>
+                           <FormLabel>Markup %</FormLabel>
+                           <FormControl>
+                              <Input
+                                 type='number'
+                                 placeholder='Markup'
+                                 {...field}
+                              />
+                           </FormControl>
+                           {errors.markup && <p>{errors.markup.message}</p>}
+                        </FormItem>
+                     )}
+                  />
+                  <DialogFooter>
+                     <Button type='submit' disabled={loading} variant='default'>
+                        {loading ? 'Loading' : 'Save'}
+                     </Button>
+                  </DialogFooter>
+               </form>
+            </Form>
          </DialogContent>
       </Dialog>
    );

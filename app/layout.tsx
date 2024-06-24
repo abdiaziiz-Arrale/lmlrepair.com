@@ -1,17 +1,20 @@
 import { Toaster } from '@/components/ui/toaster';
-import { Metadata } from 'next';
-import { Karla } from 'next/font/google';
-import './globals.css';
 import ModalProvider from '@/providers/model-provider';
+import { Metadata } from 'next';
+import { Poppins } from 'next/font/google';
+import './globals.css';
 
-const karla = Karla({
-   weight: ['200', '300', '400', '500', '600', '700', '800'],
+const poppins = Poppins({
+   weight: '400',
    subsets: ['latin'],
-   variable: '--font-karla',
+   variable: '--font-poppins',
+   style: 'normal',
 });
 export const metadata: Metadata = {
-   title: 'LML',
-   description: 'LML',
+   title: 'LML Repair',
+   description:
+      'LML Repair is a repair service company that specializes in fixing electronics.',
+   icons: '/lml_logo.png',
 };
 
 export default function RootLayout({
@@ -21,7 +24,7 @@ export default function RootLayout({
 }) {
    return (
       <html lang='en' suppressHydrationWarning>
-         <body className={karla.className}>
+         <body className={poppins.className}>
             <ModalProvider>
                <main>{children}</main>
                <Toaster />

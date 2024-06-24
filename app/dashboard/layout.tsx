@@ -25,19 +25,21 @@ export default function DashboardLayout({
    children: React.ReactNode;
 }) {
    return (
-      <ThemeProvider
-         themes={['dark', 'custom', 'light']}
-         attribute='class'
-         enableSystem
-         disableTransitionOnChange
-      >
-         <div className='h-screen overflow-hidden'>
-            <SideBar />
-            <div className='flex flex-col h-full w-full '>
-               <Header />
-               <PageWrapper>{children}</PageWrapper>
+      <div className={karla.className}>
+         <ThemeProvider
+            themes={['dark', 'custom', 'light']}
+            attribute='class'
+            enableSystem
+            disableTransitionOnChange
+         >
+            <div className=' h-screen overflow-hidden'>
+               <SideBar />
+               <div className='flex flex-col h-full w-full '>
+                  <Header />
+                  <PageWrapper children={children} />
+               </div>
             </div>
-         </div>
-      </ThemeProvider>
+         </ThemeProvider>
+      </div>
    );
 }

@@ -1,60 +1,56 @@
 "use client";
 import React, { useState } from "react";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  Sheet,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
 import { createModelCategory } from "@/lib/db/modelCategoryCrud";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  Form,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormControl,
+} from "@/components/ui/form";
+import { Input } from "./ui/input";
+
+const schema = z.object({
+  typeOfRepair: z.string().min(1, "Type of repair is required"),
+  raw: z.string().min(1, "Raw value is required"),
+  tax: z.string().min(1, "Tax value is required"),
+  shipping: z.string().min(1, "Shipping value is required"),
+  labour: z.string().min(1, "Labour value is required"),
+  timeFrame: z.string().min(1, "Time frame is required"),
+});
+
+type FormData = z.infer<typeof schema>;
 
 interface AddModelCategoryProps {
   modelId: number;
-  brandId: number;
-  seriesId: number;
-  modelName: string;
 }
 
-const AddModelCategory = ({
-  modelId,
-  modelName,
-  brandId,
-  seriesId,
-}: AddModelCategoryProps) => {
+const AddModelCategory = ({ modelId }: AddModelCategoryProps) => {
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    typeOfRepair: "",
-    raw: "0",
-    tax: "0",
-    shipping: "0",
-    labour: "0",
-    timeFrame: "0",
+
+  const methods = useForm<FormData>({
+    resolver: zodResolver(schema),
   });
 
-  const handleInputChange = (event: any) => {
-    const { name, value } = event.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-  };
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = methods;
 
-  async function onSubmit() {
-    if (
-      !formData.typeOfRepair ||
-      !formData.timeFrame ||
-      !formData.labour ||
-      !formData.tax ||
-      !formData.shipping
-    ) {
-      alert("missing info");
-      return 0;
-    }
+  async function onSubmit(formData: FormData) {
     try {
       setLoading(true);
 
@@ -69,7 +65,7 @@ const AddModelCategory = ({
       });
 
       setLoading(false);
-      window.location.href = `/dashboard/brands/${brandId}/series/${seriesId}/model/${modelId}/modelcategory?modelName=${modelName}`;
+      window.location.reload();
     } catch (error) {
       console.error("An error occurred:", error);
       setLoading(false);
@@ -77,115 +73,122 @@ const AddModelCategory = ({
   }
 
   return (
-    <Dialog>
-      <DialogTrigger asChild>
+    <Sheet>
+      <SheetTrigger asChild>
         <Button>Add new</Button>
-      </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Add Category</DialogTitle>
-        </DialogHeader>
+      </SheetTrigger>
+      <SheetContent className="sm:max-w-[425px]">
+        <SheetHeader>
+          <SheetTitle>Add Category</SheetTitle>
+        </SheetHeader>
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="typeOfRepair" className="text-right">
-              Type of repair
-            </Label>
-            <Input
+        <Form {...methods}>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid gap-4 py-4">
+            <FormField
+              control={control}
               name="typeOfRepair"
-              value={formData.typeOfRepair}
-              onChange={handleInputChange}
-              className="col-span-3"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="typeOfRepair" className="text-right">
+                    Type of repair
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.typeOfRepair && <p>{errors.typeOfRepair.message}</p>}
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="raw" className="text-right">
-              Raw
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="raw"
-              value={formData.raw}
-              onChange={handleInputChange}
-              className="col-span-3"
-              type="number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="raw" className="text-right">
+                    Raw
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.raw && <p>{errors.raw.message}</p>}
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="tax" className="text-right">
-              Tax
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="tax"
-              value={formData.tax}
-              onChange={handleInputChange}
-              className="col-span-3"
-              type="number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="tax" className="text-right">
+                    Tax %
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.tax && <p>{errors.tax.message}</p>}
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="shipping" className="text-right">
-              Shipping
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="shipping"
-              value={formData.shipping}
-              onChange={handleInputChange}
-              className="col-span-3"
-              type="number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="shipping" className="text-right">
+                    Shipping
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.shipping && <p>{errors.shipping.message}</p>}
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="labour" className="text-right">
-              Labour
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="labour"
-              value={formData.labour}
-              onChange={handleInputChange}
-              className="col-span-3"
-              type="number"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="labour" className="text-right">
+                    Labour
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} type="number" />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.labour && <p>{errors.labour.message}</p>}
 
-        <div className="grid gap-4 py-4">
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="timeFrame" className="text-right">
-              Time frame
-            </Label>
-            <Input
+            <FormField
+              control={control}
               name="timeFrame"
-              value={formData.timeFrame}
-              onChange={handleInputChange}
-              className="col-span-3"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel htmlFor="timeFrame" className="text-right">
+                    Time frame
+                  </FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                </FormItem>
+              )}
             />
-          </div>
-        </div>
+            {errors.timeFrame && <p>{errors.timeFrame.message}</p>}
 
-        <DialogFooter>
-          <Button
-            type="submit"
-            onClick={onSubmit}
-            disabled={loading}
-            variant="default"
-          >
-            {loading ? "Loading" : "Save"}
-          </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+            <SheetFooter>
+              <Button type="submit" disabled={loading} variant="default">
+                {loading ? "Loading" : "Save"}
+              </Button>
+            </SheetFooter>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
   );
 };
 

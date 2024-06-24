@@ -78,12 +78,7 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
               >
                 <ArrowLeftIcon />
               </Button>
-              <AddModelCategory
-                modelId={parseInt(params.modelId)}
-                modelName={searchParams.modelName}
-                brandId={parseInt(params.id)}
-                seriesId={parseInt(params.seriesId)}
-              />
+              <AddModelCategory modelId={parseInt(params.modelId)} />
             </div>
           </div>
         </Card>
@@ -119,7 +114,7 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
                       {modelCategory.tax} %
                     </TableCell>
                     <TableCell className="font-medium">
-                      {modelCategory.shipping}
+                      $ {modelCategory.shipping}
                     </TableCell>
                     <TableCell className="font-medium">
                       {modelCategory.labour}
@@ -129,19 +124,17 @@ const ModelCategoryPage = ({ params, searchParams }: Props) => {
                     </TableCell>
                     <TableCell className="font-medium">
                       $
-                      {modelCategory.raw +
-                        modelCategory.raw * modelCategory.tax +
-                        modelCategory.shipping +
-                        modelCategory.labour}
+                      {Math.ceil(
+                        modelCategory.raw +
+                          modelCategory.raw * (modelCategory.tax / 100) +
+                          modelCategory.shipping +
+                          modelCategory.labour
+                      )}
                     </TableCell>
 
                     <TableCell className="font-medium">
                       <EditModelCategory
-                        brandId={parseInt(params.id)}
-                        seriesId={parseInt(params.seriesId)}
-                        modelCategory_id={modelCategory.modelCategory_id}
-                        modelId={modelCategory.model_id}
-                        modelName={searchParams.modelName}
+                        modelCategoryId={modelCategory.modelCategory_id}
                         tax={modelCategory.tax.toString()}
                         labour={modelCategory.labour.toString()}
                         shipping={modelCategory.shipping.toString()}

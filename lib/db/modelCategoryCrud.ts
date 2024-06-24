@@ -10,6 +10,7 @@ export const getModelCategory = async (
   try {
     return await prisma.modelCategory.findMany({
       where: { model_id: modelId },
+      include: { Model: true },
       orderBy: { type_of_repair: "asc" },
     });
   } catch (error) {
@@ -33,7 +34,7 @@ export const createModelCategory = async (
 
 export const updateModelCategory = async (
   modelCategory: number,
-  updatedData: PartialBy<ModelCategory, "modelCategory_id">
+  updatedData: PartialBy<ModelCategory, "modelCategory_id" | "model_id">
 ) => {
   try {
     return await prisma.modelCategory.update({

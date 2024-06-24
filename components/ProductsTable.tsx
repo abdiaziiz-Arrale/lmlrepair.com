@@ -19,8 +19,9 @@ import EditProduct from "./EditProduct";
 
 interface ProductsTableProps {
   products: Products[];
+  productSubCategoryId: number;
 }
-function ProductsTable({ products }: ProductsTableProps) {
+function ProductsTable({ products, productSubCategoryId }: ProductsTableProps) {
   const [search, setSearch] = useState("");
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,21 +48,21 @@ function ProductsTable({ products }: ProductsTableProps) {
               onChange={handleInputChange}
             />
           </div>
-          <AddProduct />
+          <AddProduct productSubCategoryId={productSubCategoryId} />
         </div>
       </Card>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead className="w-72">Prodct name</TableHead>
+            <TableHead className="w-72"> Name</TableHead>
             <TableHead>Image</TableHead>
             <TableHead className="w-80">Description</TableHead>
             <TableHead>Raw</TableHead>
-            <TableHead>Tax</TableHead>
+            <TableHead>Tax %</TableHead>
             <TableHead>Shipping</TableHead>
-            <TableHead>Price</TableHead>
-            <TableHead>Markup</TableHead>
             <TableHead>Cost</TableHead>
+            <TableHead>Markup %</TableHead>
+            <TableHead>Price</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
         </TableHeader>
@@ -82,23 +83,31 @@ function ProductsTable({ products }: ProductsTableProps) {
               <TableCell>{product.product_desc}</TableCell>
               <TableCell>{product.raw}</TableCell>
               <TableCell>{product.tax}%</TableCell>
-              <TableCell>{product.shipping}</TableCell>
+              <TableCell>$ {product.shipping}</TableCell>
               <TableCell>
                 $
-                {product.raw +
-                  product.raw * product.tax +
-                  product.shipping +
-                  (product.raw +
-                    product.raw * product.tax +
-                    product.shipping +
-                    product.markup)}
+                {Math.ceil(
+                  product.raw +
+                    product.raw * (product.tax / 100) +
+                    product.shipping
+                )}
               </TableCell>
               <TableCell>{product.markup}%</TableCell>
               <TableCell>
-                $ {product.raw + product.raw * product.tax + product.shipping}
+                $
+                {Math.round(
+                  product.raw +
+                    product.raw * (product.tax / 100) +
+                    product.shipping +
+                    (product.raw +
+                      product.raw * (product.tax / 100) +
+                      product.shipping) *
+                      (product.markup / 100)
+                )}
               </TableCell>
               <TableCell>
                 <EditProduct
+                  product_sub_category_id={product.product_sub_category_id.toString()}
                   product_id={product.product_id}
                   product_name={product.product_name}
                   product_desc={product.product_desc}
