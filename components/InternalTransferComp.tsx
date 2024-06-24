@@ -38,7 +38,7 @@ type InternalTransfer = {
    };
 };
 
-function InternalTransferComp({ transfer }: InternalTransfer) {
+function InternalTransferComp({ transfer }: any) {
    const router = useRouter();
 
    return (
@@ -76,10 +76,10 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                            {transfer.inventoryItem.variations &&
                               transfer.inventoryItem.variations
                                  .filter(
-                                    (vr) =>
+                                    (vr: any) =>
                                        vr.variationId === transfer.variationId
                                  )
-                                 .map((vr) => vr.name)}
+                                 .map((vr: any) => vr.name)}
                         </span>
                      </div>
 
@@ -118,7 +118,7 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                                     $
                                     {Math.min(
                                        ...transfer.inventoryItem.variations.map(
-                                          (vr) => vr.price
+                                          (vr: any) => vr.price
                                        )
                                     )}{' '}
                                  </span>
@@ -127,7 +127,7 @@ function InternalTransferComp({ transfer }: InternalTransfer) {
                                     $
                                     {Math.max(
                                        ...transfer.inventoryItem.variations.map(
-                                          (vr) => vr.price
+                                          (vr: any) => vr.price
                                        )
                                     )}
                                  </span>

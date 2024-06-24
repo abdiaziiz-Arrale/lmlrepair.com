@@ -1,16 +1,5 @@
 import ItemsTable from '@/components/ItemsTable';
-import { getInventoryItems } from '@/lib/db/InventoryItemCrud';
-import { InventoryItem } from '@prisma/client';
-
-export async function fetchItems() {
-   try {
-      const items: InventoryItem[] = await getInventoryItems();
-
-      return { items, error: null };
-   } catch (err) {
-      return { items: [], error: 'Check your internet connection.' };
-   }
-}
+import { fetchItems } from '@/lib/FetchItems';
 
 async function Items() {
    const { items, error } = await fetchItems();

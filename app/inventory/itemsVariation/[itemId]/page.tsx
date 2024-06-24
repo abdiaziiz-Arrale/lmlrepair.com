@@ -1,4 +1,4 @@
-import { getInventoryItemById } from '@/lib/db/InventoryItemCrud';
+import { fetchOneItem } from '@/lib/FetchOneItem';
 import ItemsVariationList from './FetchOneVariation';
 
 type paramsProps = {
@@ -7,17 +7,8 @@ type paramsProps = {
    };
 };
 
-export async function fetchItems(itemId: number) {
-   try {
-      const item = await getInventoryItemById(itemId);
-      return { item, error: null };
-   } catch (err) {
-      return { item: [], error: 'Check your internet connection.' };
-   }
-}
-
 async function FetchOneItem({ params }: paramsProps) {
-   const { item, error } = await fetchItems(Number(params.itemId));
+   const { item, error } = await fetchOneItem(Number(params.itemId));
 
    return (
       <div>

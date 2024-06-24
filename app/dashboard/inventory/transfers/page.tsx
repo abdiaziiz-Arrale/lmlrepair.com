@@ -1,17 +1,5 @@
-import { AddReturnItemDialog } from '@/components/AddReturnItem';
 import InternalTransfersTable from '@/components/InternalTransfersTable';
-import { Input } from '@/components/ui/input';
-import { getInternalTransfers } from '@/lib/db/internalTransfersCrud';
-import { TransferItemDialog } from '@/components/AddTransferItem';
-
-export async function fetchInternalTransfers() {
-   try {
-      const transfers = await getInternalTransfers();
-      return { transfers, error: null };
-   } catch (err) {
-      return { transfers: [], error: 'Check your internet connection.' };
-   }
-}
+import { fetchInternalTransfers } from '@/lib/FetchTransfers';
 
 async function TransfersPage() {
    const { transfers, error } = await fetchInternalTransfers();

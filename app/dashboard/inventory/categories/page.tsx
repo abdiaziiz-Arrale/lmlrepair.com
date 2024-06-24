@@ -1,14 +1,5 @@
 import CategoryTable from '@/components/CategoryTable';
-import { getCategoryWithSubCategory } from '@/lib/db/ItemCategoryCrud';
-
-export async function fetchCategories() {
-   try {
-      const categories = await getCategoryWithSubCategory();
-      return { categories, error: null };
-   } catch (err) {
-      return { categories: [], error: 'Check your internet connection.' };
-   }
-}
+import { fetchCategories } from '@/lib/FetchCategories';
 
 async function Categories() {
    const { categories, error } = await fetchCategories();
