@@ -154,7 +154,7 @@ function EditItemForm({
                for (const variation of variationsData) {
                   if (variation.image && variation.image instanceof File) {
                      const response = await fetch(
-                        s`/api/upload?filename=${variation.image.name}`,
+                        `/api/upload?filename=${variation.image.name}`,
                         {
                            method: 'POST',
                            body: variation.image,
