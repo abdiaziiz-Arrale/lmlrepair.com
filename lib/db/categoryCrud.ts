@@ -44,3 +44,18 @@ export const updateCategory = async (
     throw new Error("Failed to update category");
   }
 };
+
+export const deleteCategory = async (categoryId: number) => {
+  try {
+    await prisma.category.delete({
+      where: {
+        category_id: categoryId,
+      },
+    });
+  } catch (error) {
+    console.error(error);
+    return null;
+  } finally {
+    await prisma.$disconnect();
+  }
+};

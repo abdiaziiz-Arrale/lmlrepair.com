@@ -9,12 +9,12 @@ import {
   DialogTrigger,
 } from "@/components/TopDialog";
 import { Button } from "@/components/ui/button";
-import { deleteProduct } from "@/lib/db/productCrud";
+import { deleteCategory } from "@/lib/db/categoryCrud";
 import { useRouter } from "next/navigation";
 import { useToast } from "./ui/use-toast";
 import { Trash } from "lucide-react";
 
-const DeleteProduct = ({ productId }: { productId: number }) => {
+const DeleteCategory = ({ categoryId }: { categoryId: number }) => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -24,7 +24,7 @@ const DeleteProduct = ({ productId }: { productId: number }) => {
     try {
       setLoading(true);
 
-      await deleteProduct(productId);
+      await deleteCategory(categoryId);
 
       setLoading(false);
       setDialogOpen(false);
@@ -59,4 +59,4 @@ const DeleteProduct = ({ productId }: { productId: number }) => {
   );
 };
 
-export default DeleteProduct;
+export default DeleteCategory;

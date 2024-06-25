@@ -35,8 +35,8 @@ const DeleteModelCategory = ({
       router.refresh();
     } catch (error) {
       toast({
-        title: "Mobile number already exists",
-        description: "Try again with a different mobile number.",
+        title: "Something went wrong",
+        description: "Try again.",
       });
       setLoading(false);
     }

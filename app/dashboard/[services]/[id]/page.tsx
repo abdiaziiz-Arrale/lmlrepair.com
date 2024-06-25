@@ -1,6 +1,7 @@
 "use client";
 import AddCategory from "@/components/AddCategory";
 import CustomContainer from "@/components/CustomContainer";
+import DeleteCategory from "@/components/DeleteCategory";
 import EditCategory from "@/components/EditCategory";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -146,6 +147,10 @@ const Service = ({ params, searchParams }: Props) => {
                         timeFrame={category.timeFrame}
                         typeOfRepair={category.type_Of_Repair.toString()}
                       />
+                    </TableCell>
+
+                    <TableCell className="font-medium">
+                      <DeleteCategory categoryId={category.category_id} />
                     </TableCell>
                   </TableRow>
                 ))}
