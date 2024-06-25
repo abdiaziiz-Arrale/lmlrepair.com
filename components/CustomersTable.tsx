@@ -1,5 +1,4 @@
 "use client";
-
 import { Search } from "lucide-react";
 import Image from "next/image";
 import CustomContainer from "./CustomContainer";
@@ -17,6 +16,9 @@ import { useState } from "react";
 import { Customer } from "@prisma/client";
 import EditCustomer from "./EditCustomer";
 import AddCustomer from "./AddCustomer";
+import UploadCustomers from "./UploadCustomers";
+import DeleteCustomer from "./DeleteCustomer";
+
 
 interface CustomersTableProps {
   customers: Customer[];
@@ -49,6 +51,7 @@ function CustomersTable({ customers }: CustomersTableProps) {
             />
           </div>
           <AddCustomer />
+          <UploadCustomers />
         </div>
       </Card>
       <Table>
@@ -79,6 +82,10 @@ function CustomersTable({ customers }: CustomersTableProps) {
                   customerAddress={customer.customer_address}
                 />
               </TableCell>
+              <TableCell>
+                <DeleteCustomer customerId={customer.customer_id} />
+              </TableCell>
+
             </TableRow>
           ))}
         </TableBody>
