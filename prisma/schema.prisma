@@ -105,8 +105,24 @@ model Staff {
   mobile_number String
   email         String @unique
   location      String
+  job_title     String @default("technician")
   role          String @default("admin")
   password      String @db.VarChar(255)
+  leaves        Leave[]
+}
+
+
+model Leave {
+  leave_id     Int      @id @default(autoincrement())
+  start_date   String
+  end_date     String
+  type         String
+  description  String
+  status       String   @default("pending")
+  staff_id     Int
+  staff        Staff    @relation(fields: [staff_id], references: [staff_id])
+
+  @@index([staff_id])
 }
 
 model InventoryItem {
@@ -216,6 +232,8 @@ model Sale {
 
   @@index([inventoryItemId], map: "Sale_inventoryItemId_fkey")
 }
+
+
 
 model InventoryAge {
   inventoryAgeId  Int            @id @default(autoincrement())

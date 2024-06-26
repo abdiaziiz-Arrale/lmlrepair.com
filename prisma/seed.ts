@@ -55,7 +55,7 @@ async function main() {
       mobile_number: "634688444",
       email: "abdelaziz.allem@gmail.com",
       location: "hargeisa",
-      role: "admin",
+      role: "manager",
       password: "$2a$10$a.jPOyvDMEMw9/.jjo023.Wf794yqp9LJECZfWUSqoEP6S2HMtYSG",
     },
   });

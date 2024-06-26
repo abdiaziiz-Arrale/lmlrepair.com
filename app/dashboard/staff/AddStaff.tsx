@@ -36,7 +36,8 @@ import { useRouter } from "next/navigation";
 
 const schema = z.object({
   staffName: z.string().min(1, "Staff name is required"),
-  mobileNumber: z.string().min(1, "Staff  is required"),
+  mobileNumber: z.string().min(1, "Staff mobile number  is required"),
+  jobTitle: z.string().min(1, "Staff title is required"),
   email: z.string().min(1, "Staff email is required"),
   location: z.string().min(1, "Staff location is required"),
   password: z.string().min(1, "Staff role is required"),
@@ -75,6 +76,7 @@ const AddStaff = () => {
         location: formData.location,
         role: formData.role,
         password: hashedPassword,
+        job_title: formData.jobTitle,
       });
 
       setLoading(false);
@@ -159,6 +161,32 @@ const AddStaff = () => {
 
             <FormField
               control={control}
+              name="jobTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job title</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-max">
+                        <SelectValue placeholder="Select Titles" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Titles:</SelectLabel>
+                          <SelectItem value="technician">Technician</SelectItem>
+                          <SelectItem value="reception">Reception</SelectItem>
+                          <SelectItem value="cashier">Cashier</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {errors.jobTitle && <p>{errors.jobTitle.message}</p>}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
               name="password"
               render={({ field }) => (
                 <FormItem>
@@ -186,7 +214,8 @@ const AddStaff = () => {
                         <SelectGroup>
                           <SelectLabel>Roles:</SelectLabel>
                           <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
+                          <SelectItem value="manager">Manager</SelectItem>
+                          <SelectItem value="member">Team member</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>

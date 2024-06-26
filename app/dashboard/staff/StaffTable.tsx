@@ -1,7 +1,6 @@
 "use client";
 
 import { Search } from "lucide-react";
-import Link from "next/link";
 import {
   Table,
   TableBody,
@@ -18,6 +17,7 @@ import { Input } from "@/components/ui/input";
 import AddStaff from "./AddStaff";
 import EditStaff from "./EditStaff";
 import DeleteStaff from "./DeleteStaff";
+import { Badge } from "@/components/ui/badge";
 
 interface StaffTableProps {
   staff: Staff[];
@@ -61,6 +61,7 @@ function StaffTable({ staff }: StaffTableProps) {
             <TableHead>Mobile #</TableHead>
             <TableHead>Email</TableHead>
             <TableHead>Location</TableHead>
+            <TableHead>Title</TableHead>
             <TableHead>Role</TableHead>
             <TableHead>Action</TableHead>
           </TableRow>
@@ -72,6 +73,9 @@ function StaffTable({ staff }: StaffTableProps) {
               <TableCell>{staff.mobile_number}</TableCell>
               <TableCell>{staff.email}</TableCell>
               <TableCell>{staff.location}</TableCell>
+              <TableCell>
+                <Badge variant={"secondary"}>{staff.job_title}</Badge>
+              </TableCell>
               <TableCell>{staff.role}</TableCell>
               <TableCell>
                 <EditStaff
@@ -81,6 +85,7 @@ function StaffTable({ staff }: StaffTableProps) {
                   email={staff.email}
                   location={staff.location}
                   role={staff.role}
+                  jobTitle={staff.job_title}
                 />
               </TableCell>
               <TableCell>

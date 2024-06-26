@@ -12,6 +12,7 @@ import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { useSession } from "next-auth/react";
 import { LogoutButton } from "../app/auth";
+import Link from "next/link";
 
 export function UserNav() {
   const { data: session, status } = useSession();
@@ -38,7 +39,18 @@ export function UserNav() {
             </p>
           </div>
         </DropdownMenuLabel>
+
         <DropdownMenuSeparator />
+
+        {/* <DropdownMenuItem>
+          <Link href={`/dashboard/leave`}>Requested leaves</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={`/dashboard/leave/requestleave`}>Change Password</Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem>
+          <Link href={`/dashboard/leave/requestleave`}>Request leave</Link>
+        </DropdownMenuItem> */}
         <DropdownMenuItem>
           <LogoutButton />
         </DropdownMenuItem>

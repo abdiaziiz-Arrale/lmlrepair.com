@@ -7,7 +7,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
+} from "@/components/TopDialog";
 import { Button } from "@/components/ui/button";
 import { updateStaff } from "@/lib/db/staffCrud";
 import { useForm } from "react-hook-form";
@@ -33,7 +33,6 @@ import { Input } from "@/components/ui/input";
 import { Pencil } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
-import { set } from "date-fns";
 
 const schema = z.object({
   staffName: z.string().min(1, "Staff name is required"),
@@ -41,6 +40,7 @@ const schema = z.object({
   email: z.string().min(1, "Staff email is required"),
   location: z.string().min(1, "Staff location is required"),
   role: z.string().min(1, "Staff role is required"),
+  jobTitle: z.string().min(1, "Staff jobTitle is required"),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -52,6 +52,7 @@ interface EditStaffProps {
   email: string;
   location: string;
   role: string;
+  jobTitle: string;
 }
 
 const EditStaff = ({
@@ -61,6 +62,7 @@ const EditStaff = ({
   email,
   role,
   location,
+  jobTitle,
 }: EditStaffProps) => {
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -74,6 +76,7 @@ const EditStaff = ({
       email,
       location,
       role,
+      jobTitle,
     },
   });
 
@@ -93,6 +96,7 @@ const EditStaff = ({
         email: formData.email,
         location: formData.location,
         role: formData.role,
+        job_title: formData.jobTitle,
       });
 
       setLoading(false);
@@ -183,6 +187,32 @@ const EditStaff = ({
 
             <FormField
               control={control}
+              name="jobTitle"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Job title</FormLabel>
+                  <FormControl>
+                    <Select onValueChange={field.onChange}>
+                      <SelectTrigger className="w-max">
+                        <SelectValue placeholder="Select Titles" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Titles:</SelectLabel>
+                          <SelectItem value="technician">Technician</SelectItem>
+                          <SelectItem value="reception">Reception</SelectItem>
+                          <SelectItem value="cashier">Cashier</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {errors.jobTitle && <p>{errors.jobTitle.message}</p>}
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={control}
               name="role"
               render={({ field }) => (
                 <FormItem>
@@ -196,7 +226,8 @@ const EditStaff = ({
                         <SelectGroup>
                           <SelectLabel>Roles:</SelectLabel>
                           <SelectItem value="admin">Admin</SelectItem>
-                          <SelectItem value="user">User</SelectItem>
+                          <SelectItem value="manager">Manager</SelectItem>
+                          <SelectItem value="member">Team member</SelectItem>
                         </SelectGroup>
                       </SelectContent>
                     </Select>
