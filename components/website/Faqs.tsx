@@ -42,7 +42,7 @@ function Faqs() {
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> Can you handle fixing my device?</span>
+                <span> What digital marketing services do you offer?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -60,14 +60,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                Yes. If the device is not too worn up, it can be fixed.
+              Our services include SEO (Search Engine Optimization), PPC (Pay-Per-Click) advertising, social media marketing, content marketing, email marketing, and digital strategy consulting. We tailor our approach to meet your specific business goals and target audience.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span>Where are you located?</span>
+                <span>How do you approach software development projects?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -85,15 +85,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                We have three locations, all of which are similar buildings. For
-                more info, check the contacts pages for each location.
+              We follow an agile development methodology, ensuring flexibility and responsiveness throughout the project lifecycle. Our process involves thorough requirements gathering, iterative development, rigorous testing, and continuous client feedback to deliver robust and scalable software solutions.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> How long does a repair take?</span>
+                <span> What industries do you specialize in?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -111,16 +110,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                It depends on the device and the exact repair. Most repairs are
-                done within an hour. Others are done same day. There are certain
-                extensive repairs that could take a couple days.
+              We have extensive experience across various industries, including but not limited to technology startups, e-commerce, healthcare, finance, and education. Our adaptable solutions cater to the unique challenges and opportunities of each industry.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> Do you offer any discounts?</span>
+                <span> Can you help improve our digital presence and user experience?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -138,15 +135,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                Yes! We offer discounts for multiple repairs considering your
-                needs. There may be other temporary discounts. Call us
+              Absolutely. We provide comprehensive UI/UX design services aimed at enhancing user engagement and satisfaction across your digital platforms. Our approach integrates user research, wireframing, prototyping, and iterative design improvements to achieve optimal results.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> Do you accept credit cards?</span>
+                <span> How do you measure the success of digital marketing campaigns?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -164,15 +160,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                Yes. We take Mastercard, Visa, Discover, and even American
-                Express ect.
+              We utilize advanced analytics tools to track key performance indicators (KPIs) such as website traffic, conversion rates, ROI (Return on Investment), and engagement metrics. These insights enable us to refine strategies and optimize campaigns for maximum effectiveness.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> Do you offer warranty?</span>
+                <span> What sets your company apart from competitors?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -190,18 +185,14 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                Our 60-day warranty guarantees the quality of both the parts we
-                use and our labour. If any replaced part malfunctions within
-                this period, we'll redo the repair at no extra charge. Please
-                note that our warranty does not cover new damage, lost or
-                water-damaged devices, or issues unrelated to our repair.
+              Our commitment to innovation, personalized service, and a deep understanding of both technology and marketing landscapes distinguishes us. We prioritize building long-term partnerships, delivering tangible results, and staying ahead of industry trends.
               </p>
             </details>
           </div>
           <div className="py-5">
             <details className="group">
               <summary className="flex justify-between items-center font-medium cursor-pointer list-none">
-                <span> Are you closed on holidays?</span>
+                <span> How do we get started with LML Digitals?</span>
                 <span className="transition group-open:rotate-180">
                   <svg
                     fill="none"
@@ -219,7 +210,7 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-                No. We are always open.
+              Getting started is simple. Reach out to us through our website or contact us directly to schedule a consultation. During this initial meeting, we'll discuss your objectives, challenges, and how our services can align with your business goals. From there, we'll outline a customized strategy to kickstart our collaboration.
               </p>
             </details>
           </div>

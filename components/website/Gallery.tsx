@@ -18,9 +18,9 @@ export default function Gallery() {
         variants={fadeIn("up", "tween", 0.2, 1)}
         className="text-center mb-14"
       >
-        <h1 className="text-yellow-300 tracking-wider">gallery</h1>
+        <h1 className="text-yellow-300 tracking-wider">clients</h1>
         <h1 className="text-xl md:text-2xl tracking-wider">
-          Explore our Repair Gallery
+          Explore Our Clients
         </h1>
       </motion.div>
       <motion.div

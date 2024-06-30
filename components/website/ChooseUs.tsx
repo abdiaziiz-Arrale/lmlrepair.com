@@ -21,7 +21,7 @@ function ChooseUs() {
         >
           <h1 className="text-yellow-300 tracking-wider">why choose Us?</h1>
           <h1 className="text-xl md:text-2xl tracking-wider">
-            Trust Our Experts for Reliable Electronic Repair Services
+            Trust Our Experts for Reliable Software and Digital Solutions
           </h1>
         </motion.div>
         <motion.div
@@ -38,10 +38,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>HIGH-QUALITY PARTS</h1>
+            <h1>Expertise in Digital Solutions</h1>
             <p className="text-md mt-3">
-              LML Repair only uses high-quality OEM and aftermarket parts for
-              repairs
+            With specialized knowledge in software development and digital marketing, we deliver tailored solutions that align with your business goals.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
@@ -54,10 +53,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>LOST COST DIAGNOSIS</h1>
+            <h1>Innovative Approach</h1>
             <p className="text-md mt-3">
-              Not sure what’s wrong? We’ll diagnose your issue at a low cost.
-              With fix, no fee
+            We combine cutting-edge technology with creative expertise to turn your ideas into impactful digital solutions that drive results.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
@@ -70,10 +68,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>CERTIFIED TECHNICIANS</h1>
+            <h1>Proven Track Record</h1>
             <p className="text-md mt-3">
-              Knowledgeable, passionate service from qualified and trained
-              experts.
+            Over years of operation, we've successfully empowered startups and established brands alike, helping them achieve their digital objectives.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
@@ -86,9 +83,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>60 DAY WARRANTY</h1>
+            <h1>Comprehensive Services</h1>
             <p className="text-md mt-3">
-              All repairs come with a 60 day Warranty for your peace of mind
+            From initial consultation to ongoing support, we offer a full spectrum of services including software development, digital marketing, UI/UX design, and more.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
@@ -101,10 +98,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>BEST REPAIR SERVICE</h1>
+            <h1>Commitment to Excellence</h1>
             <p className="text-md mt-3">
-              LML Repair offers Seattle’s friendliest, fastest repair service
-              with expert repairs for a variety of devices.
+            We're committed to delivering quality and reliability in every project, backed by transparent communication and dedicated support.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">

@@ -34,7 +34,7 @@ export default async function Footer() {
                   href="/productcategories"
                   className="hover:underline me-4 md:me-6"
                 >
-                  products
+                  blogs
                 </Link>
               </li>
               <li>
@@ -44,7 +44,7 @@ export default async function Footer() {
               </li>
               <li>
                 <Link href="contact" className="hover:underline me-4 md:me-6">
-                  contact
+                  contact us
                 </Link>
               </li>
 
@@ -70,7 +70,7 @@ export default async function Footer() {
           <span className="block text-sm text-gray-600 sm:text-center dark:text-gray-600">
             © 2024
             <Link href="/" className=" ml-2 mr-2 hover:underline">
-              LML Repair
+              LML Digitals
             </Link>
             All Rights Reserved.
           </span>

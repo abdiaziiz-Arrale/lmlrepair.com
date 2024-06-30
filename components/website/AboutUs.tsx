@@ -20,7 +20,7 @@ function AboutUs() {
       >
         <h1 className="text-yellow-300 tracking-wider">About Us</h1>
         <h1 className="text-xl md:text-2xl tracking-wider ">
-          Expert Solutions for Your Electronic Repair Needs Today
+          Expert Solutions for Your Business Needs Today
         </h1>
       </motion.div>
       <motion.div
@@ -29,17 +29,10 @@ function AboutUs() {
       >
         <div className="flex flex-col justify-between h-full bg-gray-100 w-full md:w-1/2 p-4 md:p-7">
           <h1 className="mb-5 text-xl md:text-2xl ">
-            Experience An LML Repair Today
+            Experience An LML Services Today
           </h1>
           <p>
-            Enter our office today, and you can expect premier customer service,
-            starting with a low cost diagnostic test and a free quote for
-            repairs with no obligation to purchase. With waiting times as short
-            as 30 minutes and a large stock of high quality parts, and
-            reasonable prices we are ready to help you should you decide to go
-            ahead with the fix. Combine this 5-star service with afforable
-            warranty plans on all repairs, and it’s no wonder that LML Repair is
-            Seattle’s first choice for electronic repairs.
+          At LML Digitals, we combine innovation with precision in software development and digital marketing. Our expertise lies in creating tailored solutions that enhance your digital presence and deliver impactful results. Leveraging the latest technology and creative insights, we turn ideas into successful realities. Whether you're a startup looking to make a mark or an established brand needing a digital overhaul, LML Digitals is your reliable partner in achieving digital excellence. Discover how we can support your journey to success.
           </p>
         </div>
         <div className="w-full md:w-1/3 md:ml-10">
@@ -65,13 +58,10 @@ function AboutUs() {
         </div>
         <div className="flex flex-col justify-between h-full bg-gray-100 md:ml-10 w-full md:w-1/2 p-4 md:p-7">
           <h1 className="mb-5 text-xl md:text-2xl">
-            Schedule your repair online!
+            Schedule your Business online!
           </h1>
           <p>
-            At LML Repair, all repairs come with low cost diagnostics and
-            afforable warranty plans – use our fast device repair services with
-            confidence and leave with peace of mind that we’ve got your back, no
-            matter what happens.
+          At LML Digitals, we provide comprehensive digital marketing and software development services. With our affordable packages and dedicated support, you can trust us to elevate your digital presence and ensure long-term success.
           </p>
         </div>
         <div className="block md:hidden w-full md:w-1/3 ">

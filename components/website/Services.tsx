@@ -20,7 +20,7 @@ function Services() {
       >
         <h1 className="text-yellow-300 tracking-wider">Our services</h1>
         <h1 className="text-lg md:text-xl tracking-wider ">
-          Electronic Repair Services-Fast, Reliable Solutions for You
+          Our Services are Fast, Reliable Solutions tailored for You
         </h1>
       </motion.div>
       <motion.div
@@ -38,9 +38,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Expert Electronic Repair</h1>
+            <h1>Software Development</h1>
             <p className="text-md ">
-              Reliable solutions for all device malfunctions.
+            Custom software solutions tailored to your business needs, from web applications to mobile apps.
             </p>
           </div>
         </div>
@@ -55,9 +55,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Advanced Diagnostic Solutions</h1>
+            <h1>Digital Marketing</h1>
             <p className="text-md ">
-              Precision diagnostics for troubleshooting with innovation.
+            Strategic digital marketing campaigns to boost brand visibility, attract leads, and increase conversions.
             </p>
           </div>
         </div>
@@ -72,9 +72,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Buyback</h1>
+            <h1>UI/UX Design</h1>
             <p className="text-md ">
-              Trade-in old electronics for cash or credit
+            Creative and user-centric design solutions for intuitive and engaging user experiences.
             </p>
           </div>
         </div>
@@ -96,9 +96,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Thorough Device Cleaning</h1>
+            <h1>Consulting and Support</h1>
             <p className="text-md ">
-              Revitalize gadgets with meticulous cleaning services.
+            Expert advice and ongoing support to optimize your digital strategy and ensure seamless operations.
             </p>
           </div>
         </div>
@@ -113,9 +113,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Customized Repair Solutions</h1>
+            <h1>Branding and Identity</h1>
             <p className="text-md ">
-              Tailor your device to match your unique style and preferences.
+             Crafting unique brand identities and strategies that resonate with your target audience.
             </p>
           </div>
         </div>
@@ -130,9 +130,9 @@ function Services() {
             />
           </div>
           <div className="flex flex-col ml-4">
-            <h1>Seamless Unlocking Services</h1>
+            <h1>Maintenance and Upgrades</h1>
             <p className="text-md ">
-              Unlock your device for expanded flexibility and functionality.
+            Regular maintenance and updates to keep your digital assets secure and up-to-date.
             </p>
           </div>
         </div>

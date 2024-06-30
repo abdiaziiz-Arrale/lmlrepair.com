@@ -12,7 +12,7 @@ export const Navlink = [
 
   {
     id: "/productcategories",
-    title: "Products",
+    title: "Blogs",
   },
 
   {

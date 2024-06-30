@@ -32,19 +32,17 @@ export default function Hero() {
           variants={fadeIn("up", "tween", 0.2, 1)}
           className="flex flex-col justify-center  w-full h-full p-2 md:p-5 pt-5 md:pt-28 pr-20"
         >
-          <h1 className="text-4xl md:text-6xl mb-3 ">
-            Electronic<span className="text-yellow-300"> Repair</span>
+          <h1 className="text-2xl md:text-4xl mb-3 ">
+            Software Development and Digital <span className="text-yellow-300"> Marketing</span>
           </h1>
           <h4>
-            Experience seamless electronic repair services. Our expert
-            technicians ensure swift, reliable solutions, restoring your devices
-            to optimal performance. Trust us with your repairs today.
+          LML Digitals offers innovative software and digital marketing services, crafting bespoke solutions to enhance your digital presence. We transform ideas into success stories using cutting-edge technology and creative expertise. Whether you're a startup or an established brand, we empower your digital journey to excellence.
           </h4>
           <Link
             href="/bookings"
             className="bg-yellow-300 px-2 py-2 flex justify-center items-center w-32 mt-10"
           >
-            Book Now
+            Contact Us
           </Link>
         </motion.div>
         {/* Blocks on medium and large screen */}
