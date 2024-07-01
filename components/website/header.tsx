@@ -3,13 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
+import ServicesCardsComponent from "@/app/services/ServicesCardsComponent";
 
 export const Navlink = [
   {
     id: "/",
     title: "Home",
   },
-
   {
     id: "/services",
     title: "Services",
@@ -19,7 +19,7 @@ export const Navlink = [
     title: "Blogs",
   },
   {
-    id: "/contact",
+    id: "/bookings",
     title: "Contact Us",
   },
 ];
@@ -73,11 +73,11 @@ function Header() {
             <div>
               <Link href="/">
                 <Image
-                  src="/images/favicon.png"
+                  src="/newlogo.png"
                   alt="logo"
                   width={100}
                   height={100}
-                  className="w-9 md:w-12"
+                  //className="w-9 md:w-12"
                 />
               </Link>
             </div>
@@ -87,10 +87,10 @@ function Header() {
                 <ul
                   key={index}
                   className={`text-xl ${
-                    activePage === nav.title ? " text-yellow-300" : ""
+                    activePage === nav.title ? " text-red-500" : ""
                   } ${
                     index === Navlink.length - 1
-                      ? " text-black bg-yellow-300  py-2 px-3 ml-64 "
+                      ? " text-white bg-red-500 py-2 px-3 ml-64 transform transition-transform duration-300 hover:translate-y-1 "
                       : ""
                   }`}
                   onClick={(e) => {
@@ -142,7 +142,7 @@ function Header() {
                 key={index}
                 className={`w-full mt-7 flex items-center text-md font-semibold ${
                   index === Navlink.length - 1
-                    ? "bg-yellow-300  flex justify-center text-center py-2 tracking-wider text-xl"
+                    ? "bg-red-600 flex justify-center text-center py-2 tracking-wider text-xl transform transition-transform duration-300 hover: translate-x-4"
                     : ""
                 }`}
                 onClick={() => {

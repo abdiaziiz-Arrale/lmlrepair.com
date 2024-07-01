@@ -33,14 +33,14 @@ export default function Hero() {
           className="flex flex-col justify-center  w-full h-full p-2 md:p-5 pt-5 md:pt-28 pr-20"
         >
           <h1 className="text-2xl md:text-4xl mb-3 ">
-            Software Development and Digital <span className="text-yellow-300"> Marketing</span>
+            Software Development and Digital <span className="text-red-500"> Marketing</span>
           </h1>
           <h4>
           LML Digitals offers innovative software and digital marketing services, crafting bespoke solutions to enhance your digital presence. We transform ideas into success stories using cutting-edge technology and creative expertise. Whether you're a startup or an established brand, we empower your digital journey to excellence.
           </h4>
           <Link
             href="/bookings"
-            className="bg-yellow-300 px-2 py-2 flex justify-center items-center w-32 mt-10"
+            className="bg-red-500 px-2 py-2 flex justify-center items-center w-32 mt-10 text-white"
           >
             Contact Us
           </Link>
@@ -57,7 +57,7 @@ export default function Hero() {
             width={450}
             height={450}
             className="w-96"
-            src="/hero.png"
+            src="/growthhero.png"
           />
         </motion.div>
       </div>

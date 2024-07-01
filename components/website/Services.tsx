@@ -18,7 +18,7 @@ function Services() {
         variants={fadeIn("up", "tween", 0.2, 1)}
         className="text-center mb-10"
       >
-        <h1 className="text-yellow-300 tracking-wider">Our services</h1>
+        <h1 className="text-red-500 tracking-wider">Our services</h1>
         <h1 className="text-lg md:text-xl tracking-wider ">
           Our Services are Fast, Reliable Solutions tailored for You
         </h1>
@@ -28,7 +28,7 @@ function Services() {
         className="flex flex-wrap justify-center items-center gap-3 mt-5"
       >
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3   bg-gray-50 px-5 py-7 radius">
-          <div className="w-20 bg-yellow-200 rounded-full p-2 mb-3">
+          <div className="w-20 bg-red-500 rounded-full p-2 mb-3">
             <Image
               alt="expert"
               width={100}
@@ -45,7 +45,7 @@ function Services() {
           </div>
         </div>
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3  bg-gray-50 px-5 py-7 radius">
-          <div className="w-20 bg-yellow-200 rounded-full p-2 mb-3">
+          <div className="w-20 bg-red-500 rounded-full p-2 mb-3">
             <Image
               alt="diagnostic"
               width={40}
@@ -62,7 +62,7 @@ function Services() {
           </div>
         </div>
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3  bg-gray-50 px-5 py-7 radius">
-          <div className="w-16 bg-yellow-200 rounded-full p-3 mb-3">
+          <div className="w-16 bg-red-500 rounded-full p-3 mb-3">
             <Image
               alt="price"
               width={100}
@@ -83,10 +83,10 @@ function Services() {
           width={100}
           height={100}
           className="w-52"
-          src="/service.png"
+          src="/coding.png"
         />
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3  bg-gray-50 px-5 py-7 radius">
-          <div className="w-20 bg-yellow-200 rounded-full p-2 mb-3">
+          <div className="w-20 bg-red-500 rounded-full p-2 mb-3">
             <Image
               alt="clean"
               width={100}
@@ -103,7 +103,7 @@ function Services() {
           </div>
         </div>
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3  bg-gray-50 px-5 py-7 radius">
-          <div className="w-20 bg-yellow-200 rounded-full p-3 mb-3">
+          <div className="w-20 bg-red-500 rounded-full p-3 mb-3">
             <Image
               alt="repair"
               width={80}
@@ -120,7 +120,7 @@ function Services() {
           </div>
         </div>
         <div className=" flex flex-row justify-center items-center w-full md:w-1/3  bg-gray-50 px-5 py-7 radius">
-          <div className="w-20 bg-yellow-200 rounded-full p-2 mb-3">
+          <div className="w-20 bg-red-500 rounded-full p-2 mb-3">
             <Image
               alt="unlock"
               width={100}

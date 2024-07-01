@@ -18,7 +18,7 @@ function AboutUs() {
         variants={fadeIn("up", "tween", 0.2, 1)}
         className="text-center mb-10"
       >
-        <h1 className="text-yellow-300 tracking-wider">About Us</h1>
+        <h1 className="text-red-500 tracking-wider">About Us</h1>
         <h1 className="text-xl md:text-2xl tracking-wider ">
           Expert Solutions for Your Business Needs Today
         </h1>
@@ -40,7 +40,7 @@ function AboutUs() {
             alt="assistant"
             width={350}
             height={350}
-            src="/images/about us/assistant.png"
+            src="/businesstalk.svg"
           />
         </div>
       </motion.div>
@@ -53,7 +53,7 @@ function AboutUs() {
             alt="appiontment"
             width={350}
             height={350}
-            src="/images/about us/appiontment.png"
+            src="/becomeclient.png"
           />
         </div>
         <div className="flex flex-col justify-between h-full bg-gray-100 md:ml-10 w-full md:w-1/2 p-4 md:p-7">

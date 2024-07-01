@@ -19,7 +19,7 @@ function ChooseUs() {
           variants={fadeIn("up", "tween", 0.2, 1)}
           className="text-center mb-10"
         >
-          <h1 className="text-yellow-300 tracking-wider">why choose Us?</h1>
+          <h1 className="text-red-500 tracking-wider">why choose Us?</h1>
           <h1 className="text-xl md:text-2xl tracking-wider">
             Trust Our Experts for Reliable Software and Digital Solutions
           </h1>
@@ -29,7 +29,7 @@ function ChooseUs() {
           className="flex flex-wrap justify-center items-center gap-3 mt-5"
         >
           <div className="flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}
@@ -44,7 +44,7 @@ function ChooseUs() {
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}
@@ -59,7 +59,7 @@ function ChooseUs() {
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}
@@ -74,7 +74,7 @@ function ChooseUs() {
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}
@@ -89,7 +89,7 @@ function ChooseUs() {
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}
@@ -104,7 +104,7 @@ function ChooseUs() {
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
-            <div className="w-14 bg-yellow-300 rounded-full p-4 mb-3">
+            <div className="w-14 bg-red-500 rounded-full p-4 mb-3">
               <Image
                 alt="repair"
                 width={100}

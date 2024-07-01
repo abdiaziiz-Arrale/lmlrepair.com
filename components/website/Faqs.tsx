@@ -24,15 +24,15 @@ function Faqs() {
           width={400}
           height={400}
           className="w-full"
-          src="/faq2.png"
+          src="/newfaq2.png"
         />
       </motion.div>
       <motion.div
         variants={fadeIn("up", "tween", 0.2, 1)}
-        className="w-full md:w-1/2 px-5 bg-yellow-50 "
+        className="w-full md:w-1/2 px-5 bg-red-50 "
       >
         <div className="flex flex-col items-center">
-          <h1 className="font-bold text-5xl mt-5  text-yellow-300 tracking-wider">
+          <h1 className="font-bold text-5xl mt-5  text-red-500 tracking-wider">
             FAQ
           </h1>
           <h1 className="text-neutral-500 text-xl mt-3 tracking-wider">

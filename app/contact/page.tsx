@@ -10,7 +10,7 @@ export default function Contact() {
 
       <main className="flex flex-col  justify-center items-center p-5 md:p-10 py-16 md:py-32">
         <div className="mb-5">
-          <h1 className="text-4xl text-yellow-300 tracking-widest mx-auto flex justify-center text-center">
+          <h1 className="text-4xl text-red-500 tracking-widest mx-auto flex justify-center text-center">
             Contact
           </h1>
           <p className="text-md ">

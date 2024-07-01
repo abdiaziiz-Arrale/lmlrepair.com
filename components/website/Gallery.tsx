@@ -18,7 +18,7 @@ export default function Gallery() {
         variants={fadeIn("up", "tween", 0.2, 1)}
         className="text-center mb-14"
       >
-        <h1 className="text-yellow-300 tracking-wider">Gallary</h1>
+        <h1 className="text-red-500 tracking-wider">Gallary</h1>
         <h1 className="text-xl md:text-2xl tracking-wider">
           Gallery
         </h1>
