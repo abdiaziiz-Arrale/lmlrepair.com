@@ -38,9 +38,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>Expertise in Digital Solutions</h1>
+            <h1>Expertise</h1>
             <p className="text-md mt-3">
-            With specialized knowledge in software development and digital marketing, we deliver tailored solutions that align with your business goals.
+            Benefit from our deep expertise in digital marketing and software development to achieve your business goals.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
@@ -53,9 +53,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>Innovative Approach</h1>
+            <h1>Innovation</h1>
             <p className="text-md mt-3">
-            We combine cutting-edge technology with creative expertise to turn your ideas into impactful digital solutions that drive results.
+            Drive growth with our innovative approach to digital solutions that stay ahead of industry trends.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
@@ -68,9 +68,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>Proven Track Record</h1>
+            <h1>Agile</h1>
             <p className="text-md mt-3">
-            Over years of operation, we've successfully empowered startups and established brands alike, helping them achieve their digital objectives.
+            Stay adaptable with our agile approach, ensuring quick and effective solutions.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
@@ -83,9 +83,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>Comprehensive Services</h1>
+            <h1>Reliability</h1>
             <p className="text-md mt-3">
-            From initial consultation to ongoing support, we offer a full spectrum of services including software development, digital marketing, UI/UX design, and more.
+            Count on our proven track record of reliability, delivering consistent results and exceptional service.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-gray-50 px-10 py-7 radius1">
@@ -98,9 +98,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>Commitment to Excellence</h1>
+            <h1>Excellence</h1>
             <p className="text-md mt-3">
-            We're committed to delivering quality and reliability in every project, backed by transparent communication and dedicated support.
+            Experience excellence in every aspect of our services, from strategy formulation to execution and beyond.
             </p>
           </div>
           <div className=" flex flex-col justify-center items-center w-full md:w-1/4  bg-yellow-50 px-10 py-7 radius1">
@@ -113,10 +113,9 @@ function ChooseUs() {
                 src="/repair.png"
               />
             </div>
-            <h1>CONVENIENT LOCATIONS </h1>
+            <h1>Transparency </h1>
             <p className="text-md mt-3">
-              With multiple locations across the city, finding a nearby LML
-              Repair shop is easy and convenient for you
+            Trust in clear communication and open collaboration throughout our partnership.
             </p>
           </div>
         </motion.div>

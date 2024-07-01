@@ -18,9 +18,9 @@ export default function Gallery() {
         variants={fadeIn("up", "tween", 0.2, 1)}
         className="text-center mb-14"
       >
-        <h1 className="text-yellow-300 tracking-wider">clients</h1>
+        <h1 className="text-yellow-300 tracking-wider">Gallary</h1>
         <h1 className="text-xl md:text-2xl tracking-wider">
-          Explore Our Clients
+          Gallery
         </h1>
       </motion.div>
       <motion.div
@@ -33,14 +33,14 @@ export default function Gallery() {
             width={300}
             height={300}
             className="rounded-lg w-36 h-36 md:w-72 md:h-80 "
-            src="/images/gallery/pic1.jpg"
+            src="/gall2.jpg"
           />
           <Image
             alt="gallery"
             width={300}
             height={300}
             className="rounded-lg  w-36 h-36 md:w-72 md:h-52 "
-            src="/images/gallery/pic2.jpg"
+            src="/gall3.png"
           />
         </div>
         <div className="flex md:flex-col gap-4">
@@ -49,14 +49,14 @@ export default function Gallery() {
             width={300}
             height={300}
             className="rounded-lg w-36 h-36 md:w-72 md:h-52 "
-            src="/images/gallery/pic4.jpg"
+            src="/gall4.png"
           />
           <Image
             alt="gallery"
             width={300}
             height={300}
             className="rounded-lg  w-36 h-36 md:w-72 md:h-80 "
-            src="/images/gallery/pic3.jpg"
+            src="/gall5.jpg"
           />
         </div>
 
@@ -66,7 +66,7 @@ export default function Gallery() {
             width={300}
             height={300}
             className="rounded-lg w-36 h-36 md:w-72 md:h-80 "
-            src="/images/gallery/pic5.jpg"
+            src="/gall6.jpg"
           />
           <Image
             alt="gallery"

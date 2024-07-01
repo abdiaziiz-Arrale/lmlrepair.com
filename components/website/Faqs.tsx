@@ -4,6 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { fadeIn, staggerContainer, planetVariants } from "../../utils/motion";
 import Image from "next/image";
+import Link from "next/link";
 
 function Faqs() {
   return (
@@ -210,7 +211,7 @@ function Faqs() {
                 </span>
               </summary>
               <p className="text-neutral-600 mt-3 group-open:animate-fadeIn">
-              Getting started is simple. Reach out to us through our website or contact us directly to schedule a consultation. During this initial meeting, we'll discuss your objectives, challenges, and how our services can align with your business goals. From there, we'll outline a customized strategy to kickstart our collaboration.
+              Simply reach out to us through our contact form on our <Link href="/contact" className="underline text-blue-600">Contact us</Link> page. We'll discuss your specific needs and goals, and tailor a plan to kickstart your journey towards digital excellence.
               </p>
             </details>
           </div>

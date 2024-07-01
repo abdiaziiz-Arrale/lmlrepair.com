@@ -11,22 +11,16 @@ export const Navlink = [
   },
 
   {
-    id: "/productcategories",
-    title: "Blogs",
-  },
-
-  {
     id: "/services",
     title: "Services",
   },
-
   {
-    id: "/contact",
-    title: "Contact",
+    id: "/blogs", //Linked to productCategories
+    title: "Blogs",
   },
   {
-    id: "/bookings",
-    title: "Bookings",
+    id: "/contact",
+    title: "Contact Us",
   },
 ];
 

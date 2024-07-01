@@ -4,7 +4,6 @@ import { getServices } from "@/lib/db/serviceCrud";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
-
 interface ServicesSearchParams {
   searchParams?: { servicetype?: string };
 }
@@ -31,7 +30,7 @@ async function Services({ searchParams }: ServicesSearchParams) {
       }
     } catch (err) {
       console.error("Error fetching services:", err);
-      error = "Check your internet connection.";
+      error = "Check your internet connectionw waryaa.";
     }
   }
 

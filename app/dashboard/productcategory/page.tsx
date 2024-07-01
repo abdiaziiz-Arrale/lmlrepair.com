@@ -4,6 +4,7 @@ import CustomContainer from "@/components/CustomContainer";
 import { Session, getServerSession } from "next-auth";
 import { authOptions } from "@/lib/config/authOptions";
 import { redirect } from "next/navigation";
+
 const ProductCategory = async () => {
   let productCategories: any = [];
   let error = "";

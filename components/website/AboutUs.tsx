@@ -29,10 +29,10 @@ function AboutUs() {
       >
         <div className="flex flex-col justify-between h-full bg-gray-100 w-full md:w-1/2 p-4 md:p-7">
           <h1 className="mb-5 text-xl md:text-2xl ">
-            Experience An LML Services Today
+            Experience LML Digitals Today
           </h1>
           <p>
-          At LML Digitals, we combine innovation with precision in software development and digital marketing. Our expertise lies in creating tailored solutions that enhance your digital presence and deliver impactful results. Leveraging the latest technology and creative insights, we turn ideas into successful realities. Whether you're a startup looking to make a mark or an established brand needing a digital overhaul, LML Digitals is your reliable partner in achieving digital excellence. Discover how we can support your journey to success.
+          Discover the transformative power of LML Digitals through innovative strategies and personalized digital solutions. Embrace excellence and elevate your online presence with us today..
           </p>
         </div>
         <div className="w-full md:w-1/3 md:ml-10">
@@ -58,10 +58,10 @@ function AboutUs() {
         </div>
         <div className="flex flex-col justify-between h-full bg-gray-100 md:ml-10 w-full md:w-1/2 p-4 md:p-7">
           <h1 className="mb-5 text-xl md:text-2xl">
-            Schedule your Business online!
+            Become a Client Today!
           </h1>
           <p>
-          At LML Digitals, we provide comprehensive digital marketing and software development services. With our affordable packages and dedicated support, you can trust us to elevate your digital presence and ensure long-term success.
+          Unlock your business potential with our cutting-edge solutions tailored to your needs. Partner with us and experience exceptional growth and success.
           </p>
         </div>
         <div className="block md:hidden w-full md:w-1/3 ">

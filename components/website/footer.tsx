@@ -47,7 +47,6 @@ export default async function Footer() {
                   contact us
                 </Link>
               </li>
-
               <li>
                 {staffInSession ? (
                   <>
