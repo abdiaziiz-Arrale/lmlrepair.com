@@ -24,7 +24,7 @@ export default function Hero() {
             height={450}
             width={450}
             className="w-64  md:w-full md:h-full"
-            src="/hero.png"
+            src="/growthhero.png"
           />
         </motion.div>
         {/* Every screen */}
