@@ -1,47 +1,63 @@
-// components/ContactForm.tsx
-'use client'
+'use client';
 
 import React, { useState } from 'react';
+import emailjs from 'emailjs-com';
 import Link from 'next/link';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    email: '',
-    name: '',
+    "{{from_name}}": '',
     phone: '',
-    subject: '',
+    email: '',
+    dropdown: '',
     message: '',
-    dropdown: '', // Added dropdown to formData state
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
     setFormData(prevData => ({
       ...prevData,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form data submitted:', formData);
-    // You can add form submission logic here (e.g., API call)
+    console.log('Form Data:', formData); // Log form data before submission
+    
+    try {
+      await emailjs.sendForm(
+        'service_hyeanlk', // replace with your service ID
+        'template_hj7f2ip', // replace with your template ID
+        e.target as HTMLFormElement,
+        '9v7frkj4uMmaMblc9' // replace with your user ID
+      );
+      alert('Email sent successfully!');
+      setFormData({
+        "{{from_name}}": '',
+        phone: '',
+        email: '',
+        dropdown: '',
+        message: '',
+      });
+    } catch (error) {
+      console.error('Error submitting form:', error);
+      alert('Failed to send email');
+    }
   };
 
   return (
     <div className="px-4 sm:px-6 lg:px-8 m-11" id='contactus'>
-      <form className="w-full max-w-6xl mx-auto bg-red-200 shadow-md rounded-lg p-6 md:p-8 lg:p-10 xl:p-12 mt-11">
-        {/* <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800 mb-6 text-center">Contact Us</h2> */}
-        
+      <form onSubmit={handleSubmit} className="w-full max-w-6xl mx-auto bg-red-200 shadow-md rounded-lg p-6 md:p-8 lg:p-10 xl:p-12 mt-11">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
           <div>
             <input
               type="text"
-              id="name"
-              name="name"
+              id="{{from_name}}"
+              name="{{from_name}}"
               placeholder="Name*"
               className="w-full px-4 py-3 rounded-full border focus:outline-none focus:ring focus:border-blue-300"
-              value={formData.name}
+              value={formData["{{from_name}}"]}
               onChange={handleChange}
               required
             />
@@ -59,7 +75,7 @@ const ContactForm = () => {
             />
           </div>
         </div>
-        
+
         <div className="flex justify-center mb-6">
           <div className="w-full md:w-auto px-4">
             <input
@@ -86,12 +102,12 @@ const ContactForm = () => {
             required
           >
             <option value="">Choose a reason</option>
-            <option value="option1">Facebook</option>
-            <option value="option2">Twitter</option>
-            <option value="option3">LinkedIn</option>
+            <option value="Facebook">Facebook</option>
+            <option value="Twitter">Twitter</option>
+            <option value="LinkedIn">LinkedIn</option>
           </select>
         </div>
-        
+
         <div className="mb-8">
           <textarea
             id="message"
@@ -104,8 +120,9 @@ const ContactForm = () => {
             required
           />
         </div>
+
         <p className='text-gray-600 p-4 text-sm'> By submitting this form I accept the <Link href="/" className='underline'>Privacy Policy</Link> of this site.</p>
-        
+
         <div className="flex justify-start">
           <button
             type="submit"
