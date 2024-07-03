@@ -1,5 +1,5 @@
 "use client";
-import Script from "next/script";
+import ContactForm from "../../../components/ContactUs";
 import Link from "next/link";
 import Image from "next/image";
 import ImageGallery from "react-image-gallery";
@@ -116,14 +116,13 @@ export default function WestSeattle() {
                 <small>Use callbox at the elevator or dial 00332 </small>
               </b>
             </div>
-            <Script
-              strategy="afterInteractive"
-              src="https://apps.elfsight.com/p/platform.js"
-              defer
-            ></Script>
           </div>
         </div>
-        <div className="elfsight-app-f52470e7-b405-4034-bae9-508e7e2452a9 w-full md:w-1/2 md:ml-20 bg-gray-100 p-5 md:p-10 rounded-lg"></div>
+        <div className=" w-full md:w-1/2 md:ml-20 bg-gray-100 p-5 md:p-10 rounded-lg">
+               <ContactForm Customerlocation="WestSeatle" />
+
+        </div>
+    
       </div>
 
       <div>

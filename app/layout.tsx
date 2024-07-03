@@ -3,6 +3,7 @@ import ModalProvider from "@/providers/model-provider";
 import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import Script from 'next/script';
 
 const poppins = Poppins({
   weight: "400",
@@ -33,6 +34,12 @@ export default function RootLayout({
           <main>{children}</main>
           <Toaster />
         </ModalProvider>
+          <Script
+          src="https://static.elfsight.com/platform/platform.js"
+          data-use-service-core
+          strategy="lazyOnload"
+        />
+        <div className="elfsight-app-2c0a143a-11a1-4e98-87e4-49a89e2fc941" data-elfsight-app-lazy></div>
       </body>
     </html>
   );

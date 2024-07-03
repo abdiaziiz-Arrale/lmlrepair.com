@@ -5,6 +5,7 @@ import Image from "next/image";
 
 import ImageGallery from "react-image-gallery";
 import "react-image-gallery/styles/css/image-gallery.css";
+import ContactForm from "@/components/ContactUs";
 
 export default function NorthSeattle() {
   const images1 = [
@@ -105,14 +106,13 @@ export default function NorthSeattle() {
                 <small>Use callbox at the elevator or dial 00231 </small>
               </b>
             </div>
-            <Script
-              strategy="afterInteractive"
-              src="https://apps.elfsight.com/p/platform.js"
-              defer
-            ></Script>
+           
           </div>
         </div>
-        <div className="elfsight-app-5f780629-a146-4756-8761-d6f427d9ec90 w-full md:w-1/2 md:ml-20 bg-gray-100 p-5 md:p-10 rounded-lg"></div>
+        <div className=" w-full md:w-1/2 md:ml-20 bg-gray-100 p-5 md:p-10 rounded-lg">
+                       <ContactForm Customerlocation="NorthSeatle" />
+
+        </div>
       </div>
 
       <div>
