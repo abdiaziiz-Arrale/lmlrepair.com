@@ -6,7 +6,7 @@ import Link from 'next/link';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
-    "{{from_name}}": '',
+    userName: '',
     phone: '',
     email: '',
     dropdown: '',
@@ -27,14 +27,14 @@ const ContactForm = () => {
     
     try {
       await emailjs.sendForm(
-        'service_hyeanlk', // replace with your service ID
-        'template_hj7f2ip', // replace with your template ID
+        'service_hyeanlk', // encrypt this
+        'template_hj7f2ip', // encrypt this
         e.target as HTMLFormElement,
-        '9v7frkj4uMmaMblc9' // replace with your user ID
+        '9v7frkj4uMmaMblc9' // encrypt this
       );
       alert('Email sent successfully!');
       setFormData({
-        "{{from_name}}": '',
+        userName: '',
         phone: '',
         email: '',
         dropdown: '',
@@ -53,11 +53,11 @@ const ContactForm = () => {
           <div>
             <input
               type="text"
-              id="{{from_name}}"
-              name="{{from_name}}"
+              id="userName"
+              name="userName"
               placeholder="Name*"
               className="w-full px-4 py-3 rounded-full border focus:outline-none focus:ring focus:border-blue-300"
-              value={formData["{{from_name}}"]}
+              value={formData.userName}
               onChange={handleChange}
               required
             />
