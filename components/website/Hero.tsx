@@ -39,7 +39,7 @@ export default function Hero() {
           LML Digitals offers innovative software and digital marketing services, crafting bespoke solutions to enhance your digital presence. We transform ideas into success stories using cutting-edge technology and creative expertise. Whether you're a startup or an established brand, we empower your digital journey to excellence.
           </h4>
           <Link
-            href="/bookings"
+            href="/contactus"
             className="bg-red-500 px-2 py-2 flex justify-center items-center w-32 mt-10 text-white"
           >
             Contact Us

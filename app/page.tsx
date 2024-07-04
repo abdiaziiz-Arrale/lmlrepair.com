@@ -17,7 +17,6 @@ export default async function Home() {
          <ChooseUs />
          <Gallery />
          <Faqs />
-         <Footer />
       </div>
    );
 }

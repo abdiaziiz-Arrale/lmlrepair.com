@@ -1,11 +1,10 @@
-import Link from "next/link";
-import Image from "next/image";
-import { LoginButton, LogoutButton } from "../../app/auth";
-import { Session, getServerSession } from "next-auth";
-import { authOptions } from "@/lib/config/authOptions";
 
-export default async function Footer() {
-  const staffInSession: Session | null = await getServerSession(authOptions);
+import Image from "next/image";
+import Link from "next/link";
+
+
+export default  function Footer() {
+
   return (
     <>
       <footer className="bg-gray-50  shadow px-5 md:px-16   ">
@@ -31,38 +30,23 @@ export default async function Footer() {
               </li>
               <li>
                 <Link
-                  href="/productcategories"
+                  href="/blogs/posts"
                   className="hover:underline me-4 md:me-6"
                 >
                   blogs
                 </Link>
               </li>
               <li>
-                <Link href="services" className="hover:underline me-4 md:me-6">
+                <Link href="/services" className="hover:underline me-4 md:me-6">
                   services
                 </Link>
               </li>
               <li>
-                <Link href="contact" className="hover:underline me-4 md:me-6">
+                <Link href="/contactus" className="hover:underline me-4 md:me-6">
                   contact us
                 </Link>
               </li>
-              <li>
-                {staffInSession ? (
-                  <>
-                    <Link
-                      href="/dashboard"
-                      className=" text-lg font-light bg-red-500 text-white py-2 px-4 rounded-md shadow-lg hover:bg-red-600 hover:text-red-300 hover:underline me-4 md:me-6 transition duration-300"
-                    >
-                      Dashboard
-                    </Link>
-
-                    <LogoutButton />
-                  </>
-                ) : (
-                  <LoginButton />
-                )}
-              </li>
+          
             </ul>
           </div>
           <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />

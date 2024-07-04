@@ -15,11 +15,11 @@ export const Navlink = [
     title: "Services",
   },
   {
-    id: "/blogs", //Linked to productCategories
+    id: "/blogs/post", //Linked to productCategories
     title: "Blogs",
   },
   {
-    id: "/bookings",
+    id: "/contactus",
     title: "Contact Us",
   },
 ];

@@ -3,6 +3,7 @@ import ModalProvider from "@/providers/model-provider";
 import { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import Footer from "@/components/website/footer";
 
 const poppins = Poppins({
   weight: "400",
@@ -29,10 +30,14 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={poppins.className}>
-        <ModalProvider>
-          <main>{children}</main>
+        
+          <main>
+            
+            {children}
+            <Footer/>
+          </main>
           <Toaster />
-        </ModalProvider>
+       
       </body>
     </html>
   );

@@ -1,20 +1,7 @@
-import Footer from "@/components/website/footer";
 import Header from "@/components/website/header";
-import { getServices } from "@/lib/db/serviceCrud";
-import { Service } from "@prisma/client";
-import Link from "next/link";
 import ServicesCardsComponent from "./ServicesCardsComponent";
 
 export default async function Services() {
-  let services: Service[] = [];
-  let error = "";
-
-  try {
-    services = await getServices();
-  } catch (err) {
-    console.error("Error fetching services:", err);
-    error = "Check your internet connection.";
-  }
 
   return (
     <>
@@ -24,7 +11,7 @@ export default async function Services() {
         <ServicesCardsComponent/>
       </div>
       </main>
-      <Footer />
+      
     </>
   );
 }

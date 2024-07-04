@@ -20,7 +20,7 @@ const ServicesCardsComponent = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-white p-5 text-white">
-      <h1 className="text-4xl tracking-widest text-red-500 mb-10">Our Services</h1>
+      <h1 className="text-4xl tracking-widest text-red-500 mb-10">Choose a Service</h1>
       <div className="flex flex-col md:flex-row gap-10 justify-center w-full max-w-6xl">
         <Link href={services[0].link} className="w-full md:w-1/2">
           <div
