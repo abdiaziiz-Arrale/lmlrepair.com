@@ -343,3 +343,11 @@ model VariationOnLocation {
   @@index([locationId], map: "VariationOnLocation_locationId_fkey")
   @@index([variationId], map: "VariationOnLocation_variationId_fkey")
 }
+
+model AnnouncementBadge {
+  announcementId Int      @id @default(autoincrement())
+  content        String
+  tag            String
+  Active         Boolean  @default(false)
+  createdAt      DateTime @default(now())
+}

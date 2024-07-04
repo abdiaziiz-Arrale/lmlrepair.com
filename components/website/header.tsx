@@ -4,6 +4,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import Announcement from "@/components/ui/annoucment"; 
+import { getAnnouncement } from "@/lib/db/announcementCrud"; 
+import { AnnouncementBadge } from "@prisma/client";
+
 type AnnouncementType = {
   text: string;
   time: Date;
@@ -41,11 +44,20 @@ function Header() {
   const [activePage, setActivePage] = useState("Home");
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-const announcements: AnnouncementType[] = [
-  { text: "Hurry, sale ends in 05:23", time: new Date("2024-07-05T23:59:59Z"), active: true },
-  { text: "New collection launching soon", time: new Date("2024-08-01T00:00:00Z"), active: true },
-];
+  const [announcements, setAnnouncements] = useState<AnnouncementBadge[]>([]);
+    useEffect(() => {
+    const fetchAnnouncements = async () => {
+      try {
+         const announcements = await getAnnouncement();
+      setAnnouncements(announcements)
+      } catch (error) {
+        console.error("Error fetching announcements:", error);
+        // Handle error if needed
+      }
+    };
 
+    fetchAnnouncements();
+  }, []);
   useEffect(() => {
     const handleScroll = () => {
       const scrollTop = window.scrollY;
@@ -76,13 +88,13 @@ const announcements: AnnouncementType[] = [
       setActivePage(title);
     }
   };
-  const activeAnnouncements = announcements.filter(announcement => announcement.active);
+  const activeAnnouncements = announcements.filter(announcement => announcement.Active);
 
   return (
     <nav className="fixed top-0 z-20 w-full">
             {/* Announcements */}
       {activeAnnouncements.map((announcement, index) => (
-        <Announcement key={index} time={announcement.time } text={announcement.text} />
+        <Announcement key={index} time={announcement.createdAt } text={announcement.content} />
       ))}
 
       {/* Desktop and Tablet screen  */}

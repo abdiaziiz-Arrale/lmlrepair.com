@@ -59,6 +59,11 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
         path: "/dashboard/customers",
         icon: <Users size={20} />,
       },
+      {
+        title: "Announcement",
+        path: "/dashboard/announcement",
+        icon: <HandCoins size={20} />,
+      },
 
       {
         title: "Staff",

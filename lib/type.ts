@@ -42,3 +42,10 @@ export type ItemReturnExtended = ItemReturn & {
    location: Location;
    Comment: Comment[];
 };
+export type Announcement = {
+  content  :      String
+  tag       :     String
+  Active     :    Boolean  
+  createdAt    :  Date
+};
+
