@@ -68,8 +68,8 @@ function AnnouncementsTable({ announcements }: AnnouncementsTableProps) {
           {filteredAnnouncements.map((announcement:any) => (
             <TableRow key={announcement.announcementId}>
               <TableCell>{announcement.content}</TableCell>
-              <TableCell>{announcement.tag}</TableCell>
-              <TableCell>{announcement.active ? "Yes" : "No"}</TableCell>
+              <TableCell>{announcement.tag}{ announcement.active }</TableCell>
+              <TableCell>{announcement.Active ? "Active" : "Inactive"}</TableCell>
               <TableCell>{new Date(announcement.createdAt).toLocaleDateString()}</TableCell>
               <TableCell>
                 <EditAnnouncement

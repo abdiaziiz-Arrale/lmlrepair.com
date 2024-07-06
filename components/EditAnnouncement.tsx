@@ -28,7 +28,7 @@ import { useToast } from "./ui/use-toast";
 const schema = z.object({
   content: z.string().min(1, "Content is required"),
   tag: z.string().min(1, "Tag is required"),
-  active: z.boolean(),
+  active: z.boolean().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -51,6 +51,7 @@ const EditAnnouncement = ({
   const { toast } = useToast();
 
   const router = useRouter();
+  const tagOptions = ["services", "productcategories"];
 
   const methods = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -74,7 +75,7 @@ const EditAnnouncement = ({
       await updateAnnouncement(announcementId, {
         content: formData.content,
         tag: formData.tag,
-        Active: formData.active,
+        Active: formData.active||false,
         createdAt: new Date(), 
       });
 
@@ -126,13 +127,23 @@ const EditAnnouncement = ({
                 <FormItem>
                   <FormLabel>Tag</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <select
+                      {...field}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+
+                      {tagOptions.map((tag, index) => (
+
+                        <option key={index} value={tag} >
+                          {tag}
+                        </option>
+                      ))}
+                    </select>
                   </FormControl>
                   {errors.tag && <p>{errors.tag.message}</p>}
                 </FormItem>
               )}
             />
-
             <FormField
               control={control}
               name="active"

@@ -48,4 +48,19 @@ export type Announcement = {
   Active     :    Boolean  
   createdAt    :  Date
 };
+export type Post = {
+  id      :        number      
+  title    :       String
+  content     :    String
+  authorId    :    number
+  blogCategoryId:  number
+  tag        :     String
+  published  :     Boolean 
+  createdAt     :  Date  
+  updatedAt  :     Date
+  metaTitle?    :   String
+  metaDescription? :String
+  publishedAt?    : Date
+
+};
 

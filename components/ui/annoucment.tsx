@@ -2,29 +2,28 @@
 import Link from "next/link"
 type AnnouncementProps = {
   text: string;
+  tag: string;
     time: Date;
 };
-export default function Announcement({ text, time }: AnnouncementProps) {
+export default function Announcement({ text, time,tag }: AnnouncementProps) {
   return (
     <div className="bg-yellow-300 text-primary-foreground py-3 px-4 flex items-center justify-between gap-4 animate-slide-in">
       <div className="flex items-center gap-4 overflow-hidden ">
         <MegaphoneIcon className="w-5 h-5 animate-bounce  text-black" />
         <div className="flex-1 overflow-x-auto whitespace-nowrap">
-          <span className="inline-block animate-marquee  text-black">{text}:</span>
+          <span className="inline-block animate-marquee  text-black">{text}</span>
         </div>
       </div>
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2 text-sm font-medium">
-          <ClockIcon className="w-4 h-4 animate-spin text-black" />
-          <span className=" text-black">{new Date(time).toDateString()}</span>
         </div>
         <Link
-          href="#"
+          href={`${tag}`}
           className="inline-flex items-center gap-2  text-black rounded-md bg-primary-foreground px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
           prefetch={false}
         >
           <RocketIcon className="w-4 h-4 animate-pulse  text-black  " />
-          Shop Now
+          Offers
         </Link>
       </div>
     </div>

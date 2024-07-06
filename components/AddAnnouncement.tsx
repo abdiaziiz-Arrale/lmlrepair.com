@@ -27,7 +27,7 @@ import { useToast } from "./ui/use-toast";
 const schema = z.object({
   content: z.string().min(1, "Content is required"),
   tag: z.string().min(1, "Tag is required"),
-  Active: z.boolean(),
+  Active: z.boolean().optional(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -37,7 +37,7 @@ const AddAnnouncement = () => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { toast } = useToast();
-
+  const tagOptions = ["services", "productcategories"];
   const methods = useForm<FormData>({
     resolver: zodResolver(schema),
   });
@@ -45,16 +45,17 @@ const AddAnnouncement = () => {
   const {
     handleSubmit,
     control,
+        reset,
     formState: { errors },
   } = methods;
 
   async function onSubmit(formData: FormData) {
     try {
       setLoading(true);
-
+console.log(formData.Active);
       await createAnnouncement({
         content: formData.content,
-        Active: formData.Active,
+        Active: formData.Active||false,
         tag: formData.tag,
                 createdAt: new Date(), 
 
@@ -63,6 +64,7 @@ const AddAnnouncement = () => {
       setLoading(false);
       setDialogOpen(false);
       router.refresh();
+      reset(); 
     } catch (error) {
       toast({
         title: "An error occurred",
@@ -105,18 +107,30 @@ const AddAnnouncement = () => {
                 <FormItem>
                   <FormLabel>Tag</FormLabel>
                   <FormControl>
-                    <Input {...field} />
+                    <select
+                      {...field}
+                      className="mt-1 block w-full px-3 py-2 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                    >
+                              <option value="">{`Select The Tags`}</option>
+
+                      {tagOptions.map((tag, index) => (
+
+                        <option key={index} value={tag} >
+                          {tag}
+                        </option>
+                      ))}
+                    </select>
                   </FormControl>
                   {errors.tag && <p>{errors.tag.message}</p>}
                 </FormItem>
               )}
             />
+            
  <FormField
               control={control}
               name="Active"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Active</FormLabel>
                   <FormControl>
                     <Controller
                       name="Active"
@@ -130,6 +144,8 @@ const AddAnnouncement = () => {
                       )}
                     />
                   </FormControl>
+                                    <FormLabel>Active</FormLabel>
+
                   {errors.Active && <p>{errors.Active.message}</p>}
                 </FormItem>
               )}

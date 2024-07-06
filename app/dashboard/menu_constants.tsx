@@ -1,5 +1,5 @@
 import { SideNavItemGroup } from "@/types/type";
-import { Boxes, HandCoins, Key, Users } from "lucide-react";
+import { Boxes, HandCoins, Key, NotebookPen, PartyPopper, Users } from "lucide-react";
 import {
   BsGear,
   BsHouseDoor,
@@ -59,16 +59,21 @@ export const SIDENAV_ITEMS: SideNavItemGroup[] = [
         path: "/dashboard/customers",
         icon: <Users size={20} />,
       },
-      {
-        title: "Announcement",
-        path: "/dashboard/announcement",
-        icon: <HandCoins size={20} />,
-      },
 
       {
         title: "Staff",
         path: "/dashboard/staff",
         icon: <Key size={20} />,
+      },
+       {
+        title: "Announcement",
+        path: "/dashboard/announcement",
+        icon: <PartyPopper size={20} />,
+      },
+      {
+        title: "BlogPost",
+        path: "/dashboard/blog",
+        icon: <NotebookPen size={20} />,
       },
     ],
   },

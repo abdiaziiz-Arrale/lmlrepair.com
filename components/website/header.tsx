@@ -23,6 +23,10 @@ export const Navlink = [
     id: "/productcategories",
     title: "Products",
   },
+  {
+    id: "/Blogpost",
+    title: "Blogs",
+  },
 
   {
     id: "/services",
@@ -94,7 +98,7 @@ function Header() {
     <nav className="fixed top-0 z-20 w-full">
             {/* Announcements */}
       {activeAnnouncements.map((announcement, index) => (
-        <Announcement key={index} time={announcement.createdAt } text={announcement.content} />
+        <Announcement key={index} time={announcement.createdAt } text={announcement.content} tag={announcement.tag} />
       ))}
 
       {/* Desktop and Tablet screen  */}
